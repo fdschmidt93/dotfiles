@@ -1,4 +1,4 @@
-" [0] Plugins
+" [0] Plugins{{{
 call plug#begin('~/dotfiles/nvim/plugged')
 " Extend Vim 
 Plug 'tpope/vim-commentary'
@@ -24,16 +24,16 @@ Plug 'haya14busa/incsearch.vim'
 Plug '~/.fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'lervag/vimtex'
-call plug#end()
+call plug#end()"}}}
 
-" [1] General
+" [1] General{{{
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab		" indentation for yaml files
 filetype plugin indent on                                       " tab to space
 filetype plugin on
 let g:incsearch#auto_nohlsearch = 1                             " Search config: no highlighting
 set expandtab                                                   " On pressing tab, insert 4 spaces
+set foldmethod=marker 						                    " Enable folding (1)
 set foldlevel=99 							                    " Enable folding (2)
-set foldmethod=indent 						                    " Enable folding (1)
 set ignorecase 								                    " Search config: ignore case
 set incsearch 								                    " Search config: incremental search
 set nocompatible
@@ -42,18 +42,18 @@ set shiftwidth=4                                                " when indenting
 set smartcase 								                    " Search config: smart case
 set splitright 								                    " Set split window right
 set tabstop=4                                                   " show existing tab with 4 spaces width
-syntax on
+syntax on"}}}
 
-" [2] Theme & Syntax Highlighting
+" [2] Theme & Syntax Highlighting{{{
 set termguicolors 							" Enable full colorscheme
 let g:gruvbox_contrast_dark = 'hard'
 " let g:gruvbox_colors = { 'bg0': ['#251a10', 0] }
 set background=dark
 colorscheme gruvbox
 syntax enable 								" Syntax highlighting
-let g:python_highlight_all = 1 						" Python syntax highlighting
+let g:python_highlight_all = 1 						" Python syntax highlighting}}}
 
-" [3] Keymappings
+" [3] Keymappings{{{
 nnoremap <space> za|	     	 	                " Enable folding with the spacebar
 imap jk <Esc>|								        " Go to normal mode with jk
 nmap oo m`o<Esc>``|							        " Insert empty line below with oo
@@ -78,21 +78,21 @@ nnoremap <A-k> <C-w>k|
 nnoremap <A-l> <C-w>l|
 map /  <Plug>(incsearch-forward)
 map ?  <Plug>(incsearch-backward)
-map g/ <Plug>(incsearch-stay)
+map g/ <Plug>(incsearch-stay)"}}}
 
-" [4.1] vim-repeat
-silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)
+" [4.1] vim-repeat{{{
+silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)}}}
 
-" [4.2] vim-slime
+" [4.2] vim-slime{{{
 let g:slime_target = "neovim"
-let g:slime_python_ipython = 1
+let g:slime_python_ipython = 1"}}}
 
-" [4.3] fzf
+" [4.3] fzf{{{
 nnoremap <Leader>f :Files<cr>
 nnoremap <Leader>b :Buffers<cr>
-nnoremap <Leader>rg :Rg<cr>
+nnoremap <Leader>rg :Rg<cr>"}}}
 
-" [4.4] vimtex
+" [4.4] vimtex{{{
 let g:tex_flavor  = 'latex'
 let g:vimtex_fold_manual = 1
 let g:vimtex_latexmk_continuous = 1
@@ -100,17 +100,17 @@ let g:vimtex_compiler_progname = 'nvr'
 let g:vimtex_view_method = 'zathura'
 let g:vimtex_quickfix_mode=0
 set conceallevel=1
-let g:tex_conceal='abdmg'
+let g:tex_conceal='abdmg'"}}}
 
-" [4.5] vim-airline
+" [4.5] vim-airline{{{
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#coc#enabled = 1
-let g:airline_powerline_fonts = 1
+let g:airline_powerline_fonts = 1"}}}
 
-" [4.6] vim-doge
-let g:doge_enable_mappings = 1 
+" [4.6] vim-doge{{{
+let g:doge_enable_mappings = 1 "}}}
 
-" [4.7] coc.nvim
+" [4.7] coc.nvim{{{
 let g:coc_global_extensions = ['coc-json', 'coc-vimtex', 'coc-snippets', 'coc-python']
 
 set updatetime=300
@@ -194,4 +194,4 @@ let g:coc_snippet_next = '<c-j>'
 let g:coc_snippet_prev = '<c-k>'
 
 " Use <C-j> for both expand and jump (make expand higher priority.)
-imap <C-j> <Plug>(coc-snippets-expand-jump)
+imap <C-j> <Plug>(coc-snippets-expand-jump)"}}}
