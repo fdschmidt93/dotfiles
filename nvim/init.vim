@@ -1,88 +1,50 @@
 " [0] Plugins
-" -------------------------------------------------------------------------------------------------------------------------------
 call plug#begin('~/dotfiles/nvim/plugged')
-"Plug 'ambv/black'
-Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
-Plug 'gruvbox-community/gruvbox'
-Plug 'haya14busa/incsearch.vim'
-Plug 'jpalardy/vim-slime'
-Plug '~/.fzf'
-Plug 'junegunn/fzf.vim'
-Plug 'kkoomen/vim-doge'
-Plug 'lervag/vimtex'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'iCyMind/NeoSolarized'
-Plug 'crusoexia/vim-monokai'
-" Plug 'neovim/nvim-lsp'
-" Plug 'haorenW1025/completion-nvim'
-" Plug 'vigoux/completion-treesitter'
+" Extend Vim 
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+" Coding
+Plug 'jpalardy/vim-slime'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'kkoomen/vim-doge'
+" Python
 Plug 'vim-python/python-syntax'
 Plug 'vimwiki/vimwiki'
+" Themes
+Plug 'crusoexia/vim-monokai'
+Plug 'gruvbox-community/gruvbox'
+Plug 'iCyMind/NeoSolarized'
+Plug 'arcticicestudio/nord-vim'
+" Convenience
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'haya14busa/incsearch.vim'
+Plug '~/.fzf'
+Plug 'junegunn/fzf.vim'
+Plug 'lervag/vimtex'
 call plug#end()
 
-" " set updatetime=300
-" lua require'nvim_lsp'.pyls_ms.setup{on_attach=require'completion'.on_attach}
-" au Filetype python setl omnifunc=v:lua.vim.lsp.omnifunc
-" autocmd BufEnter * lua require'completion'.on_attach()
-
-" " Set completeopt to have a better completion experience
-" set completeopt=menuone,noinsert,noselect
-" function! s:check_back_space() abort
-"     let col = col('.') - 1
-"     return !col || getline('.')[col - 1]  =~ '\s'
-" endfunction
-
-" inoremap <silent><expr> <c-space> completion#trigger_completion() "
-" nnoremap <leader>rn <cmd>lua vim.lsp.buf.rename()<CR>
-" nnoremap <silent> K <cmd>lua vim.lsp.buf.hover()<CR>
-" nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
-" nnoremap <silent> gr <cmd>lua vim.lsp.buf.references()<CR>
-
-" let g:completion_chain_complete_list = [
-"     \{'complete_items': ['lsp']},
-"     \{'complete_items': ['snippet']},
-"     \{'mode': '<c-p>'},
-"     \{'mode': '<c-n>'},
-"     \{'mode': 'file'}
-"     \]
-" let g:completion_trigger_character = ['.', ',']
-
-" let g:complete_ts_highlight_at_point = 1
-
 " [1] General
-" -------------------------------------------------------------------------------------------------------------------------------
-set foldmethod=indent 							" Enable folding (1)
-set foldlevel=99 							" Enable folding (2)
-nnoremap <space> za|	     	 					" Enable folding with the spacebar
-set splitright 								" Set split window right
-set number relativenumber 						" Numbering
-set incsearch 								" Search config: incremental search
-set ignorecase 								" Search config: ignore case
-set smartcase 								" Search config: smart case
-" set nohls 								" Search config: no highlighting
-let g:incsearch#auto_nohlsearch = 1
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab		" indentation for yaml files
-set nocompatible
+filetype plugin indent on                                       " tab to space
 filetype plugin on
+let g:incsearch#auto_nohlsearch = 1                             " Search config: no highlighting
+set expandtab                                                   " On pressing tab, insert 4 spaces
+set foldlevel=99 							                    " Enable folding (2)
+set foldmethod=indent 						                    " Enable folding (1)
+set ignorecase 								                    " Search config: ignore case
+set incsearch 								                    " Search config: incremental search
+set nocompatible
+set number relativenumber 			                            " Numbering
+set shiftwidth=4                                                " when indenting with '>', use 4 spaces width
+set smartcase 								                    " Search config: smart case
+set splitright 								                    " Set split window right
+set tabstop=4                                                   " show existing tab with 4 spaces width
 syntax on
-" correct tab to space
-filetype plugin indent on
-" show existing tab with 4 spaces width
-set tabstop=4
-" when indenting with '>', use 4 spaces width
-set shiftwidth=4
-" On pressing tab, insert 4 spaces
-set expandtab
-
 
 " [2] Theme & Syntax Highlighting
-" -------------------------------------------------------------------------------------------------------------------------------
 set termguicolors 							" Enable full colorscheme
 let g:gruvbox_contrast_dark = 'hard'
 " let g:gruvbox_colors = { 'bg0': ['#251a10', 0] }
@@ -91,23 +53,17 @@ colorscheme gruvbox
 syntax enable 								" Syntax highlighting
 let g:python_highlight_all = 1 						" Python syntax highlighting
 
-function Test()
-    :split | term
-endfunction
-
 " [3] Keymappings
-" -------------------------------------------------------------------------------------------------------------------------------
-imap jk <Esc>|								" Go to normal mode with jk
-nmap oo m`o<Esc>``|							" Insert empty line below with oo
-nmap OO m`O<Esc>``|							" Insert empty line above with OO
-nmap <Leader>y "+y|							" Copy to global clipboard with leader prefix
-nmap <Leader>p "+p|							" Paste from global clipboard with leader prefix
-nmap <Leader>t :vs+te<CR>|						" Open right-sided terminal with <leader>t
-nmap <Leader><C-t> :new+te<CR>:resize 15<CR><C-w>r|                 " Open right-sided terminal with <leader>t
-nmap <Leader>w :w<CR>|							" Save buffer with <leader>w
-nmap <Leader>q :q!<CR>|							" Close buffer with <leader>q
-
-
+nnoremap <space> za|	     	 	                " Enable folding with the spacebar
+imap jk <Esc>|								        " Go to normal mode with jk
+nmap oo m`o<Esc>``|							        " Insert empty line below with oo
+nmap OO m`O<Esc>``|							        " Insert empty line above with OO
+nmap <Leader>y "+y|							        " Copy to global clipboard with leader prefix
+nmap <Leader>p "+p|							        " Paste from global clipboard with leader prefix
+nmap <Leader>t :vs+te<CR>|					    	" Open right-sided terminal with <leader>t
+nmap <Leader><C-t> :new+te<CR>:resize 15<CR><C-w>r| " Open right-sided terminal with <leader>t
+nmap <Leader>w :w<CR>|							    " Save buffer with <leader>w
+nmap <Leader>q :q!<CR>|							    " Close buffer with <leader>q
 tnoremap <A-h> <C-\><C-N><C-w>h|					" Move with M from any mode
 tnoremap <A-j> <C-\><C-N><C-w>j|
 tnoremap <A-k> <C-\><C-N><C-w>k|
@@ -124,9 +80,6 @@ map /  <Plug>(incsearch-forward)
 map ?  <Plug>(incsearch-backward)
 map g/ <Plug>(incsearch-stay)
 
-" [4] Plugin Settings
-" ---------------------------------------------------------------------------------------------------------------------
-
 " [4.1] vim-repeat
 silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)
 
@@ -138,7 +91,6 @@ let g:slime_python_ipython = 1
 nnoremap <Leader>f :Files<cr>
 nnoremap <Leader>b :Buffers<cr>
 nnoremap <Leader>rg :Rg<cr>
-
 
 " [4.4] vimtex
 let g:tex_flavor  = 'latex'
@@ -159,23 +111,21 @@ let g:airline_powerline_fonts = 1
 let g:doge_enable_mappings = 1 
 
 " [4.7] coc.nvim
-
-let g:coc_global_extensions = ['coc-json', 'coc-vimtex', 'coc-snippets', 'coc-python', 'coc-rls']
+let g:coc_global_extensions = ['coc-json', 'coc-vimtex', 'coc-snippets', 'coc-python']
 
 set updatetime=300
 
-inoremap <silent><expr> <c-space> coc#refresh()|			" Use <c-space> for trigger completion.
+inoremap <silent><expr> <c-space> coc#refresh()|			        " Use <c-space> for trigger completion.
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"|		" <cr> to confirm
 
-nmap <silent> [c <Plug>(coc-diagnostic-prev)|				" Use `[c` and `]c` for navigate diagnostics
+nmap <silent> [c <Plug>(coc-diagnostic-prev)|				        " Use `[c` and `]c` for navigate diagnostics
 nmap <silent> ]c <Plug>(coc-diagnostic-next)
-
-nmap <silent> gd <Plug>(coc-definition)|				" Remap keys for gotos
-nmap <silent> gD <Plug>(coc-declaration)|				" Remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)|				            " Remap keys for gotos
+nmap <silent> gD <Plug>(coc-declaration)|				            " Remap keys for gotos
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
-nmap <leader>rn <Plug>(coc-rename)|					" Remap for rename current word
+nmap <leader>rn <Plug>(coc-rename)|					                " Remap for rename current word
 
 function! s:show_documentation()
   if &filetype == 'vim'
@@ -185,11 +135,8 @@ function! s:show_documentation()
   endif
 endfunction
 
-nnoremap <silent> K :call <SID>show_documentation()<CR>|		" K to show docs in preview window
-
-" Highlight symbol under cursor on CursorHold
-autocmd CursorHold * silent call CocActionAsync('highlight')
-
+nnoremap <silent> K :call <SID>show_documentation()<CR>|		    " K to show docs in preview window
+autocmd CursorHold * silent call CocActionAsync('highlight')        " Highlight symbol under cursor on CursorHold
 
 augroup mygroup autocmd!
   " Setup formatexpr specified filetype(s).
@@ -198,9 +145,8 @@ augroup mygroup autocmd!
   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
 augroup end
 
-vmap <leader>cf  <Plug>(coc-format-selected)|				" Remap for format selected region
+vmap <leader>cf  <Plug>(coc-format-selected)|				        " Remap for format selected region
 nmap <leader>cf  <Plug>(coc-format-selected)
-
 
 " Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
 vmap <leader>a  <Plug>(coc-codeaction-selected)
@@ -218,8 +164,7 @@ command! -nargs=0 Format :call CocAction('format')
 command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 
 " Using CocList
-" Show all diagnostics
-nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
+nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>" Show all diagnostics
 " Manage extensions
 nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
 " Show commands
@@ -250,4 +195,3 @@ let g:coc_snippet_prev = '<c-k>'
 
 " Use <C-j> for both expand and jump (make expand higher priority.)
 imap <C-j> <Plug>(coc-snippets-expand-jump)
-

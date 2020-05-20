@@ -4,5 +4,4 @@
 	"python.linting.enabled": false,
 	"python.autoUpdateLanguageServer": true,
 	"suggest.enablePreview": true
-
 }
