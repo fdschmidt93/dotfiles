@@ -1,3 +1,4 @@
+# requires root privileges
 # remove and update
 sudo rm /etc/apt/sources.list.d/cuda*
 sudo apt remove --autoremove nvidia-cuda-toolkit

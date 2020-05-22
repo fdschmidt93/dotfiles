@@ -1,70 +1,84 @@
-" [0] Plugins{{{
+"# [0] vim-plug
 call plug#begin('~/dotfiles/nvim/plugged')
 " Extend Vim 
+Plug 'romainl/vim-cool'
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
-Plug 'tpope/vim-fugitive'
 " Coding
 Plug 'jpalardy/vim-slime'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'kkoomen/vim-doge'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Python
 Plug 'vim-python/python-syntax'
-Plug 'vimwiki/vimwiki'
 " Themes
+Plug 'arcticicestudio/nord-vim'
 Plug 'crusoexia/vim-monokai'
 Plug 'gruvbox-community/gruvbox'
 Plug 'iCyMind/NeoSolarized'
-Plug 'arcticicestudio/nord-vim'
-" Convenience
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'haya14busa/incsearch.vim'
+" fzf
 Plug '~/.fzf'
 Plug 'junegunn/fzf.vim'
+" Other
 Plug 'lervag/vimtex'
-call plug#end()"}}}
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'vimwiki/vimwiki'
+call plug#end()
 
-" [1] General{{{
-autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab		" indentation for yaml files
-filetype plugin indent on                                       " tab to space
-filetype plugin on
-let g:incsearch#auto_nohlsearch = 1                             " Search config: no highlighting
-set expandtab                                                   " On pressing tab, insert 4 spaces
-set foldmethod=marker 						                    " Enable folding (1)
-set foldlevel=99 							                    " Enable folding (2)
-set ignorecase 								                    " Search config: ignore case
-set incsearch 								                    " Search config: incremental search
-set nocompatible
-set number relativenumber 			                            " Numbering
-set shiftwidth=4                                                " when indenting with '>', use 4 spaces width
-set smartcase 								                    " Search config: smart case
-set splitright 								                    " Set split window right
-set tabstop=4                                                   " show existing tab with 4 spaces width
-syntax on"}}}
+"# [1] General
+filetype plugin indent on
+" On pressing tab, insert spaces
+set expandtab
+" Number of spaces that a <Tab> in the file counts for
+set tabstop=4
+" Search config
+set ignorecase
+set smartcase
+" (Relative) Line Numbering
+set number relativenumber
+" when indenting with '>', use 4 spaces width
+set shiftwidth=4
+" Set split window right
+set splitright
+" Fold by syntax
+set foldmethod=syntax
+set modelineexpr
 
-" [2] Theme & Syntax Highlighting{{{
-set termguicolors 							" Enable full colorscheme
-let g:gruvbox_contrast_dark = 'hard'
-" let g:gruvbox_colors = { 'bg0': ['#251a10', 0] }
+"# [2] Theme & Syntax Highlighting
+" Theme
+set termguicolors
 set background=dark
+let g:gruvbox_contrast_dark = 'hard'
 colorscheme gruvbox
-syntax enable 								" Syntax highlighting
-let g:python_highlight_all = 1 						" Python syntax highlighting}}}
+" Syntax highlighting
+syntax on
+syntax enable
+" Python syntax highlighting
+let g:python_highlight_all = 1
 
-" [3] Keymappings{{{
-nnoremap <space> za|	     	 	                " Enable folding with the spacebar
-imap jk <Esc>|								        " Go to normal mode with jk
-nmap oo m`o<Esc>``|							        " Insert empty line below with oo
-nmap OO m`O<Esc>``|							        " Insert empty line above with OO
-nmap <Leader>y "+y|							        " Copy to global clipboard with leader prefix
-nmap <Leader>p "+p|							        " Paste from global clipboard with leader prefix
-nmap <Leader>t :vs+te<CR>|					    	" Open right-sided terminal with <leader>t
-nmap <Leader><C-t> :new+te<CR>:resize 15<CR><C-w>r| " Open right-sided terminal with <leader>t
-nmap <Leader>w :w<CR>|							    " Save buffer with <leader>w
-nmap <Leader>q :q!<CR>|							    " Close buffer with <leader>q
-tnoremap <A-h> <C-\><C-N><C-w>h|					" Move with M from any mode
+"# [3] Mappings
+" Go to normal mode with jk
+imap jk <Esc>|
+" Insert empty line below with oo
+nmap oo m`o<Esc>``|
+" Insert empty line above with OO
+nmap OO m`O<Esc>``|
+" Copy to global clipboard with leader prefix
+nmap <Leader>y "+y|
+" Paste from global clipboard with leader prefix
+nmap <Leader>p "+p|
+" Open right-sided terminal with <leader>t
+nmap <Leader>t :vs+te<CR>|
+" Open (smaller) terminal below
+nmap <Leader><C-t> :new+te<CR>:resize 15<CR><C-w>r|
+" Save buffer with <leader>w
+nmap <Leader>w :w<CR>|
+" Close buffer with <leader>q
+nmap <Leader>q :q!<CR>|
+" Move with M from any mode
+tnoremap <A-h> <C-\><C-N><C-w>h|
 tnoremap <A-j> <C-\><C-N><C-w>j|
 tnoremap <A-k> <C-\><C-N><C-w>k|
 tnoremap <A-l> <C-\><C-N><C-w>l|
@@ -76,23 +90,23 @@ nnoremap <A-h> <C-w>h|
 nnoremap <A-j> <C-w>j|
 nnoremap <A-k> <C-w>k|	
 nnoremap <A-l> <C-w>l|
-map /  <Plug>(incsearch-forward)
-map ?  <Plug>(incsearch-backward)
-map g/ <Plug>(incsearch-stay)"}}}
 
-" [4.1] vim-repeat{{{
-silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)}}}
+"# [4] Plugins
 
-" [4.2] vim-slime{{{
+"# [4.1] vim-repeat
+silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)
+
+"# [4.2] vim-slime
 let g:slime_target = "neovim"
-let g:slime_python_ipython = 1"}}}
+let g:slime_python_ipython = 1"
 
-" [4.3] fzf{{{
+"# [4.3] fzf
 nnoremap <Leader>f :Files<cr>
 nnoremap <Leader>b :Buffers<cr>
-nnoremap <Leader>rg :Rg<cr>"}}}
+nnoremap <Leader>rg :Rg<cr>
+nnoremap <Leader>co :Colors<cr>
 
-" [4.4] vimtex{{{
+"# [4.4] vimtex
 let g:tex_flavor  = 'latex'
 let g:vimtex_fold_manual = 1
 let g:vimtex_latexmk_continuous = 1
@@ -100,32 +114,37 @@ let g:vimtex_compiler_progname = 'nvr'
 let g:vimtex_view_method = 'zathura'
 let g:vimtex_quickfix_mode=0
 set conceallevel=1
-let g:tex_conceal='abdmg'"}}}
+let g:tex_conceal='abdmg'"
 
-" [4.5] vim-airline{{{
+"# [4.5] vim-airline
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#coc#enabled = 1
-let g:airline_powerline_fonts = 1"}}}
+let g:airline_powerline_fonts = 1"
 
-" [4.6] vim-doge{{{
-let g:doge_enable_mappings = 1 "}}}
+"# [4.6] vim-doge
+let g:doge_enable_mappings = 1 "
 
-" [4.7] coc.nvim{{{
+"# [4.7] coc.nvim
 let g:coc_global_extensions = ['coc-json', 'coc-vimtex', 'coc-snippets', 'coc-python']
 
 set updatetime=300
 
-inoremap <silent><expr> <c-space> coc#refresh()|			        " Use <c-space> for trigger completion.
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"|		" <cr> to confirm
+" Use <c-space> for trigger completion.
+inoremap <silent><expr> <c-space> coc#refresh()|
+" <cr> to confirm
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"|
 
-nmap <silent> [c <Plug>(coc-diagnostic-prev)|				        " Use `[c` and `]c` for navigate diagnostics
+" Use `[c` and `]c` for navigate diagnostics
+nmap <silent> [c <Plug>(coc-diagnostic-prev)|
 nmap <silent> ]c <Plug>(coc-diagnostic-next)
-nmap <silent> gd <Plug>(coc-definition)|				            " Remap keys for gotos
-nmap <silent> gD <Plug>(coc-declaration)|				            " Remap keys for gotos
+" Remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)|
+nmap <silent> gD <Plug>(coc-declaration)|
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
-nmap <leader>rn <Plug>(coc-rename)|					                " Remap for rename current word
+" Remap for rename current word
+nmap <leader>rn <Plug>(coc-rename)|
 
 function! s:show_documentation()
   if &filetype == 'vim'
@@ -135,8 +154,10 @@ function! s:show_documentation()
   endif
 endfunction
 
-nnoremap <silent> K :call <SID>show_documentation()<CR>|		    " K to show docs in preview window
-autocmd CursorHold * silent call CocActionAsync('highlight')        " Highlight symbol under cursor on CursorHold
+" K to show docs in preview window
+nnoremap <silent> K :call <SID>show_documentation()<CR>|
+" Highlight symbol under cursor on CursorHold
+autocmd CursorHold * silent call CocActionAsync('highlight')
 
 augroup mygroup autocmd!
   " Setup formatexpr specified filetype(s).
@@ -145,7 +166,8 @@ augroup mygroup autocmd!
   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
 augroup end
 
-vmap <leader>cf  <Plug>(coc-format-selected)|				        " Remap for format selected region
+" Remap for format selected region
+vmap <leader>cf  <Plug>(coc-format-selected)|
 nmap <leader>cf  <Plug>(coc-format-selected)
 
 " Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
@@ -194,4 +216,7 @@ let g:coc_snippet_next = '<c-j>'
 let g:coc_snippet_prev = '<c-k>'
 
 " Use <C-j> for both expand and jump (make expand higher priority.)
-imap <C-j> <Plug>(coc-snippets-expand-jump)"}}}
+imap <C-j> <Plug>(coc-snippets-expand-jump)"
+
+" vim:fdm=expr:fdl=0
+" vim:fde=getline(v\:lnum)=~'^"#'?'>'.(matchend(getline(v\:lnum),'"#*')-1)\:'='
