@@ -15,7 +15,7 @@ Plug 'vim-python/python-syntax'
 " Themes
 Plug 'arcticicestudio/nord-vim'
 Plug 'crusoexia/vim-monokai'
-Plug 'gruvbox-community/gruvbox'
+Plug 'morhetz/gruvbox'
 Plug 'iCyMind/NeoSolarized'
 " fzf
 Plug '~/.fzf'
@@ -25,6 +25,7 @@ Plug 'lervag/vimtex'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vimwiki/vimwiki'
+Plug 'hardcoreplayers/oceanic-material'
 call plug#end()
 
 "# [1] General

@@ -1,16 +1,14 @@
-# Configuration for Alacritty, the GPU enhanced terminal emulator.
-
 # Any items in the `env` entry below will be added as
 # environment variables. Some entries may override variables
 # set by alacritty itself.
-#env:
-TERM: 'alacritty'
+env:
   #
   # This value is used to set the `$TERM` environment variable for
   # each instance of Alacritty. If it is not present, alacritty will
   # check the local terminfo database and use `alacritty` if it is
   # available, otherwise `xterm-256color` is used.
   #TERM: xterm-256color
+  TERM: alacritty
 
 window:
   # Window dimensions (changes require restart)
@@ -77,21 +75,21 @@ scrolling:
 font:
   # Normal (roman) font face
   normal:
-    family: Fira Code
-    style: Regular
+    family: Fira Code Nerd Font
+    style: Retina
 
   # Bold font face
   bold:
-    family: Fira Code
+    family: Fira Code Nerd Font
     style: Bold
 
   # Italic font face
   italic:
-    family: Fira Code
+    family: Fira Code Nerd Font
     style: Italic
 
   # Point size
-  size: 10
+  size: 12.5
 
   # Offset is the extra space around each character. `offset.y` can be thought of
   # as modifying the line spacing, and `offset.x` as modifying the letter spacing.
@@ -120,7 +118,7 @@ font:
   #
   # This is a global setting and will require a log out or restart to take
   # effect.
-  use_thin_strokes: true
+  use_thin_strokes: false
 
 
 
