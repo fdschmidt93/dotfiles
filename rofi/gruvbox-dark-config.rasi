@@ -1,0 +1,131 @@
+* {
+
+    default-background:                  rgba ( 40, 40, 40, 100 % );
+    default-foreground:                  rgba ( 218, 185, 151, 100 % );
+    default-border:                  rgba ( 29, 32, 33, 100 % );
+    alternative-background:            rgba ( 28, 28, 28, 0 % );
+    invisible: rgba(0, 0, 0, 0%);
+
+    hard-red:                         rgba ( 215, 95, 95, 100 % );
+    light-red:                         rgba ( 215, 95, 95, 100 % );
+    /* hard-blue:                        rgba ( 131, 173, 173, 100 % ); */
+    /* light-blue:                        rgba ( 131, 173, 173, 100 % ); */
+    hard-blue:                        rgba ( 69, 133, 136, 100 % );
+    light-blue:                        rgba ( 131, 165, 152, 100 % );
+    hard-aqua:                         rgba ( 104, 157, 106, 100 % );
+    light-aqua:                         rgba ( 142, 192, 124, 100 % );
+    hard-purple:                         rgba ( 177, 98, 134, 100 % );
+    light-purple:                         rgba ( 211, 134, 155, 100 % );
+
+    background-color: @invisible;
+    border-color: @default-border;
+    /* font: "Noto Sans 10"; */
+    font: "Fira Code 11";
+    text-color: @default-foreground;
+    spacing:                     2;
+}
+
+window {
+    background-color: @default-background;
+    border: 1;
+    border-radius: 3;
+    border-color: @default-border;
+    padding: 7;
+}
+
+mainbox {
+    border:  0;
+    padding: 0;
+}
+
+message {
+    border: 1;
+    border-radius: 3;
+    padding: 5;
+    background-color: @alternative-background;
+}
+
+textbox {
+    background-color: @entry-background;
+}
+
+listview {
+    fixed-height: 0;
+    spacing: 2;
+    scrollbar: false;
+    padding: 2 0 0;
+}
+
+element {
+    padding: 5;
+    border: 1;
+    border-radius: 3;
+    border-color: @invisible;
+}
+
+element.normal.normal {
+    background-color: @invisible;
+}
+
+element.normal.urgent {
+    background-color: @light-red;
+}
+
+element.normal.active {
+    background-color: @hard-aqua;
+    border-color:     @light-aqua;
+}
+
+element.selected.normal {
+    background-color: @hard-blue;
+    border-color:     @light-blue;
+}
+
+element.selected.urgent {
+    background-color: @light-red;
+    border-color:     @hard-red;
+}
+
+element.selected.active {
+    background-color: @hard-purple;
+    border-color:     @light-purple;
+}
+
+mode-switcher {
+    spacing: 0;
+}
+
+button {
+    border: 0 0 3 0;
+    border-color: @invisible;
+    padding: 3;
+}
+
+button.selected {
+    border-color: @hard-blue;
+}
+
+inputbar {
+    spacing: 0;
+    padding: 1;
+}
+
+case-indicator {
+    spacing: 0;
+    padding: 3px;
+    background-color: @alternative-background;
+    border: 1 1 1 0;
+    border-radius: 0 2 2 0;
+}
+
+entry {
+    background-color: @alternative-background;
+    /* background-color: @light-red; */
+    padding: 3px;
+    border: 1 0 1 1;
+    border-radius: 2 0 0 2;
+}
+
+prompt {
+    padding: 3 7 3 0;
+}

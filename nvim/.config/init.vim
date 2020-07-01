@@ -1,5 +1,5 @@
 "# [0] vim-plug
-call plug#begin('~/dotfiles/nvim/plugged')
+call plug#begin('~/.config/nvim/plugged')
 " Extend Vim 
 Plug 'romainl/vim-cool'
 Plug 'tpope/vim-commentary'

@@ -1,0 +1,303 @@
+;:set syn=dosini555
+
+[global/wm]
+#margin-top = 8
+#margin-bottom = 8
+#margin-left = 8
+#margin-right = 8
+
+
+[colors]
+;orange = #FF6200
+;orange = #d65d0e
+darkgray = ${xrdb:color8}
+orange = ${xrdb:color9}
+white = #ebdbb2
+gray = #585858
+black = #090909
+red = #c795ae
+blue = #95aec7
+yellow = #c7ae95
+green = #aec795
+#background = #1f222d
+background = #262626
+background-alt = #4e4e4e
+#foreground = #dfdfdf
+foreground = ${xrdb:foreground}
+foreground-alt = #4e4e4e
+primary = #1f222d
+secondary = #FF6200
+alert = #fb4934
+
+[bar/bar]
+monitor = ${env:MONITOR:}
+bottom = false
+; wm-restack = i3
+width = 100%
+height = 25
+offset-x = 0
+offset-y = 0
+
+locale = en_US.UTF-8
+
+enable-ipc = true
+
+padding-left = 0
+padding-right = 0
+
+module-margin-right = 0
+module-margin-left = 0
+
+modules-right = rofi-usb-mount separator keyboard separator network separator volume separator backlight separator battery separator date
+modules-left = i3
+
+background = ${colors.background}
+foreground = ${colors.foreground}
+
+underline-size = 0
+underline-color = ${colors.white}
+
+tray-detached = false
+tray-position = right
+tray-offset-x = 0
+tray-offset-y = 0
+;tray-maxsize = 16
+tray-padding = 0
+tray-transparent = true
+tray-scale = 1.0
+
+font-0 = "monospace:size=10;2"
+font-1 = "FontAwesome:size=10;2"
+font-2 = "Siji:size=10;2"
+font-3 = "DejaVu Sans:size=10;3"
+
+[module/rofi-usb-mount]
+type = custom/script
+exec = ~/.config/polybar/rofi-usb-mount.sh --check
+tail = true
+click-left = ~/.config/polybar-scripts/rofi-usb-mount.sh --mount
+click-right = ~/.config/polybar-scripts/rofi-usb-mount.sh --umount
+click-middle = ~/.config/polybar-scripts/rofi-usb-mount.sh --umount-all
+
+[module/i3]
+type = internal/i3
+format = <label-state>
+
+strip-wsnumbers = true
+index-sort = true
+
+label-visible = %icon%
+label-visible-padding = 2
+
+label-focused = %icon%
+label-focused-background = ${colors.background-alt}
+label-focused-underline= ${colors.foreground-alt}
+label-focused-padding = 2
+
+label-occupied = %icon%
+label-occupied-foreground = ${colors.darkgray}
+label-occupied-padding = 2
+
+label-unfocused = %icon%
+label-unfocused-background = ${colors.background}
+label-unfocused-foreground = ${colors.foreground-alt}
+label-unfocused-padding = 2
+
+label-urgent = %icon%
+label-urgent-background = ${colors.alert}
+label-urgent-padding = 2
+
+label-empty = %icon%
+label-empty-foreground = ${colors.foreground-alt}
+label-empty-padding = 0
+
+
+ws-icon-0 = 1;
+ws-icon-1 = 2;
+ws-icon-2 = 3;
+ws-icon-3 = 4;
+ws-icon-4 = 5;
+ws-icon-5 = 6;
+ws-icon-default = 
+
+[module/backlight]
+type = internal/backlight
+card = intel_backlight
+
+format = %{F#928374}<ramp>%{F} <label>
+format-background = ${colors.background}
+format-foreground = ${colors.foreground}
+format-padding = 1
+
+label = %percentage%%
+output = ${env:MONITOR:}
+
+ramp-0 = 🌕
+ramp-1 = 🌔
+ramp-2 = 🌓
+ramp-3 = 🌒
+ramp-4 = 🌑
+
+; Only applies if <bar> is used
+bar-width = 10
+bar-indicator = |
+bar-fill = ─
+bar-empty = ─
+
+[module/battery]
+type = internal/battery
+
+full-at = 99
+
+battery = BAT0
+adapter = ACAD
+
+poll-interval = 2
+time-format = %H:%M
+
+format-charging = %{F#928374}<animation-charging> %{F-}<label-charging>
+format-charging-background = ${colors.background}
+format-charging-foreground = ${colors.foreground}
+format-charging-underline = ${colors.white}
+format-charging-padding = 1
+
+format-discharging = %{F#928374}<ramp-capacity> %{F-}<label-discharging>
+format-discharging-underline = ${colors.white}
+format-discharging-padding = 1
+
+label-charging = %percentage%%
+label-discharging = %percentage%%
+
+label-full = Fully Charged
+label-full-background = ${colors.background}
+label-full-foreground = ${colors.foreground}
+label-full-underline = ${colors.white}
+label-full-padding = 1
+
+ramp-capacity-0 = 
+ramp-capacity-1 = 
+ramp-capacity-2 = 
+ramp-capacity-3 = 
+ramp-capacity-4 = 
+ramp-capacity-5 = 
+ramp-capacity-6 = 
+ramp-capacity-7 = 
+ramp-capacity-8 = 
+ramp-capacity-9 = 
+
+animation-charging-0 = 
+animation-charging-1 = 
+animation-charging-2 = 
+animation-charging-3 = 
+animation-charging-4 = 
+animation-charging-5 = 
+animation-charging-6 = 
+animation-charging-7 = 
+animation-charging-8 = 
+animation-charging-framerate = 750
+
+
+[module/date]
+type = internal/date
+#date-alt =   %A %H:%M 
+date = %{F#928374}%{F-} %H:%M
+interval = 5
+format-underline = ${colors.white}
+;format-background = ${colors.black}
+format-foreground = ${colors.foreground}
+format-padding = 2
+
+label-separator = |
+
+[module/volume]
+type = internal/alsa
+
+format-volume = <label-volume> 
+format-volume-padding = 2
+
+format-volume-underline = ${colors.white}
+
+label-volume = %{F#928374} %{F-}%percentage:3%%
+#label-volume-foreground = ${color.white}
+
+label-muted =%{F#928374} %{F-}mute
+format-muted = <label-muted>
+format-muted-underline = ${colors.white}
+format-muted-padding = 2
+#label-muted-foreground = ${colors.gray}
+
+format-padding = 2
+
+[module/keyboard]
+type = internal/xkeyboard
+
+; Available tags:
+;   <label-layout> (default)
+;   <label-indicator> (default)
+format = %{A1:~/.bin/toggkbl:}%{F#928374} %{F-}<label-layout> <label-indicator>%{A}
+format-spacing = 0
+format-underline = ${colors.white}
+
+; Available tokens:
+;   %layout%
+;   %name%
+;   %number%
+; Default: %layout%
+label-layout = %layout%
+format-padding = 2
+
+; Available tokens:
+;   %name%
+; Default: %name%
+label-indicator-on = %name%
+label-indicator-padding = 0
+
+[module/network]
+type = internal/network
+interface = wlp3s0
+
+; Seconds to sleep between updates
+; Default: 1
+interval = 3.0
+
+; Test connectivity every Nth update
+; A value of 0 disables the feature
+; NOTE: Experimental (needs more testing)
+; Default: 0
+;ping-interval = 3
+
+; @deprecated: Define min width using token specifiers (%downspeed:min% and %upspeed:min%)
+; Minimum output width of upload/download rate
+; Default: 3
+
+; Accumulate values from all interfaces
+; when quering for up/downspeed rate
+; Default: false
+accumulate-stats = true
+unknown-as-up = true
+
+format-connected = %{F#928374}<ramp-signal>%{F} %{A1:networkmanager_dmenu:}<label-connected>%{A}
+; format-connected = <ramp-signal> <label-connected>
+format-connected-background = ${colors.background}
+format-connected-foreground = ${colors.foreground}
+format-connected-padding = 1
+
+format-disconnected = %{A1:networkmanager_dmenu:}<label-disconnected>%{A}
+format-disconnected-background = ${colors.background}
+format-disconnected-foreground = ${colors.foreground}
+format-disconnected-padding = 1
+
+label-connected = "%essid%"
+label-disconnected =  "Not Connected"
+ramp-signal-0 = 
+ramp-signal-1 = 
+ramp-signal-2 = 
+ramp-signal-3 = 
+ramp-signal-4 = 
+
+[module/separator]
+type = custom/text
+content = |
+content-foreground = #4e4e4e
+
+; vim:ft=dosini
