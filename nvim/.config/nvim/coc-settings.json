@@ -1,0 +1,7 @@
+{
+	"python.pythonPath": "/home/fdschmidt/miniconda3/bin/python",
+	"python.jediEnabled": false,
+	"python.linting.enabled": false,
+	"python.autoUpdateLanguageServer": true,
+	"suggest.enablePreview": true
+}
