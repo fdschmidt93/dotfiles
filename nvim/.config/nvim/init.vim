@@ -17,6 +17,8 @@ Plug 'arcticicestudio/nord-vim'
 Plug 'crusoexia/vim-monokai'
 Plug 'morhetz/gruvbox'
 Plug 'iCyMind/NeoSolarized'
+Plug 'dunstontc/vim-vscode-theme'
+Plug 'joshdick/onedark.vim'
 " fzf
 Plug '~/.fzf'
 Plug 'junegunn/fzf.vim'
@@ -46,6 +48,8 @@ set splitright
 " Fold by syntax
 set foldmethod=syntax
 set modelineexpr
+" Preview substitution
+set inccommand=nosplit
 
 "# [2] Theme & Syntax Highlighting
 " Theme
@@ -107,7 +111,7 @@ nnoremap <Leader>b :Buffers<cr>
 nnoremap <Leader>rg :Rg<cr>
 nnoremap <Leader>co :Colors<cr>
 
-"# [4.4] vimtex
+"# [4.4] vimtex 
 let g:tex_flavor  = 'latex'
 let g:vimtex_fold_manual = 1
 let g:vimtex_latexmk_continuous = 1
@@ -116,6 +120,9 @@ let g:vimtex_view_method = 'zathura'
 let g:vimtex_quickfix_mode=0
 set conceallevel=1
 let g:tex_conceal='abdmg'"
+inoremap <C-f> <Esc>: silent exec '.!inkscape-figures create "'.getline('.').'" "'.b:vimtex.root.'/figures/"'<CR><CR>:w<CR>
+nnoremap <C-f> : silent exec '!inkscape-figures edit "'.b:vimtex.root.'/figures/" > /dev/null 2>&1 &'<CR><CR>:redraw!<CR>
+
 
 "# [4.5] vim-airline
 let g:airline#extensions#tabline#enabled = 1
@@ -126,7 +133,8 @@ let g:airline_powerline_fonts = 1"
 let g:doge_enable_mappings = 1 "
 
 "# [4.7] coc.nvim
-let g:coc_global_extensions = ['coc-json', 'coc-vimtex', 'coc-snippets', 'coc-python']
+" let g:coc_global_extensions = ['coc-json', 'coc-vimtex', 'coc-snippets', 'coc-python', 'coc-pyright']
+let g:coc_global_extensions = ['coc-json', 'coc-vimtex', 'coc-snippets', 'coc-pyright']
 
 set updatetime=300
 
@@ -218,6 +226,7 @@ let g:coc_snippet_prev = '<c-k>'
 
 " Use <C-j> for both expand and jump (make expand higher priority.)
 imap <C-j> <Plug>(coc-snippets-expand-jump)"
-
+"
 " vim:fdm=expr:fdl=0
 " vim:fde=getline(v\:lnum)=~'^"#'?'>'.(matchend(getline(v\:lnum),'"#*')-1)\:'='
+"

@@ -67,17 +67,18 @@ tray-transparent = true
 tray-scale = 1.0
 
 font-0 = "monospace:size=10;2"
-font-1 = "FontAwesome:size=10;2"
-font-2 = "Siji:size=10;2"
-font-3 = "DejaVu Sans:size=10;3"
+; font-0 = "Fira Code Nerd Font:size=10;2"
+font-1 = "DejaVuSans:size=10;2"
+font-2 = "FontAwesome:size=10;2"
+font-3 = "Siji:size=10;2"
 
 [module/rofi-usb-mount]
 type = custom/script
 exec = ~/.config/polybar/rofi-usb-mount.sh --check
 tail = true
-click-left = ~/.config/polybar-scripts/rofi-usb-mount.sh --mount
-click-right = ~/.config/polybar-scripts/rofi-usb-mount.sh --umount
-click-middle = ~/.config/polybar-scripts/rofi-usb-mount.sh --umount-all
+click-left = ~/.config/polybar/rofi-usb-mount.sh --mount
+click-right = ~/.config/polybar/rofi-usb-mount.sh --umount
+click-middle = ~/.config/polybar/rofi-usb-mount.sh --umount-all
 
 [module/i3]
 type = internal/i3
@@ -86,28 +87,28 @@ format = <label-state>
 strip-wsnumbers = true
 index-sort = true
 
-label-visible = %icon%
+label-visible = %index%
 label-visible-padding = 2
 
-label-focused = %icon%
+label-focused = %index%
 label-focused-background = ${colors.background-alt}
 label-focused-underline= ${colors.foreground-alt}
 label-focused-padding = 2
 
-label-occupied = %icon%
+label-occupied = %index%
 label-occupied-foreground = ${colors.darkgray}
 label-occupied-padding = 2
 
-label-unfocused = %icon%
+label-unfocused = %index%
 label-unfocused-background = ${colors.background}
 label-unfocused-foreground = ${colors.foreground-alt}
 label-unfocused-padding = 2
 
-label-urgent = %icon%
+label-urgent = %index%
 label-urgent-background = ${colors.alert}
 label-urgent-padding = 2
 
-label-empty = %icon%
+label-empty = %index%
 label-empty-foreground = ${colors.foreground-alt}
 label-empty-padding = 0
 

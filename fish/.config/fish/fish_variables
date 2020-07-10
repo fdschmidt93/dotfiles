@@ -1,7 +1,7 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
-SETUVAR --export SSH_AGENT_PID:505
-SETUVAR --export SSH_AUTH_SOCK:/tmp/ssh\x2dnKIQVO95TVZx/agent\x2e504
+SETUVAR --export SSH_AGENT_PID:503
+SETUVAR --export SSH_AUTH_SOCK:/tmp/ssh\x2df1jng89i6WJI/agent\x2e502
 SETUVAR __fish_init_2_39_8:\x1d
 SETUVAR __fish_init_2_3_0:\x1d
 SETUVAR __fish_init_3_x:\x1d
@@ -12,9 +12,11 @@ SETUVAR _fish_abbr_ca:conda\x20activate
 SETUVAR _fish_abbr_hybrid:optimus\x2dmanager\x20\x2d\x2dswitch\x20hybrid
 SETUVAR _fish_abbr_intel:optimus\x2dmanager\x20\x2d\x2dswitch\x20intel
 SETUVAR _fish_abbr_kchain:keychain\x20/home/fdschmidt/\x2essh/id_rsa
+SETUVAR _fish_abbr_kpxc:keepassxc\x2dcli\x20open\x20/home/fdschmidt/media/Stick/NewDatabase\x2ekdbx
 SETUVAR _fish_abbr_nvidia:optimus\x2dmanager\x20\x2d\x2dswitch\x20nvidia
 SETUVAR _fish_abbr_om:optimus\x2dmanager
 SETUVAR _fish_abbr_pkg__backup:sudo\x20pacman\x20\x2dQqe
+SETUVAR _fish_abbr_rr:ranger
 SETUVAR bookmarks:/home/fdschmidt
 SETUVAR budspencer_colors:000000\x1e083743\x1e445659\x1efdf6e3\x1eb58900\x1ecb4b16\x1edc121f\x1eaf005f\x1e6c71c4\x1e268bd2\x1e2aa198\x1e859900
 SETUVAR budspencer_cursors:\x5c033\x5d12\x3b\x23268bd2\x5c007\x1e\x5c033\x5d12\x3b\x23b58900\x5c007\x1e\x5c033\x5d12\x3b\x23af005f\x5c007\x1e\x5c033\x5d12\x3b\x236c71c4\x5c007

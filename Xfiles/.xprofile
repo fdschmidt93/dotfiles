@@ -1,4 +1,4 @@
 xrdb -merge ~/.Xresources
 xmodmap ~/.Xmodmap
 mons -e right
-pacman -Qqe > ~/dotfiles/pkglist.txt
+pacman -Qqe > ~/dotfiles/yay/pkglist.txt

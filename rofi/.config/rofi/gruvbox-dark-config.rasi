@@ -20,7 +20,7 @@
     background-color: @invisible;
     border-color: @default-border;
     /* font: "Noto Sans 10"; */
-    font: "Fira Code 11";
+    font: "Fira Code Nerd Font 10.5";
     text-color: @default-foreground;
     spacing:                     2;
 }
