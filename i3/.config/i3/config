@@ -66,7 +66,7 @@ bindsym XF86MonBrightnessDown exec light -U 5 # decrease screen brightness
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Return exec alacritty
 # start chromium
 bindsym $mod+t exec chromium
 # start chromium

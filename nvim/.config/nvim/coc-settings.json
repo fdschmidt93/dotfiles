@@ -3,5 +3,7 @@
 	"python.jediEnabled": false,
 	"python.linting.enabled": false,
 	"python.autoUpdateLanguageServer": true,
-	"suggest.enablePreview": true
+	"suggest.enablePreview": true,
+    "diagnostic.virtualText": true,
+    "diagnostic.virtualTextCurrentLineOnly": false
 }

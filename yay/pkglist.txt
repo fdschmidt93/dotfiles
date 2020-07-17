@@ -1,7 +1,8 @@
 acpi
 acpid
+adobe-source-han-sans-jp-fonts
 adwaita-qt
-alacritty
+alacritty-ligatures
 alsa-oss
 alsa-utils
 autoconf
@@ -15,6 +16,7 @@ bison
 chili-sddm-theme
 chromium
 cmocka
+code
 copyq
 cpupower
 cpupower-gui
@@ -23,7 +25,9 @@ cuda
 cups
 dotnet-runtime
 efibootmgr
+emacs-git
 fakeroot
+fd
 feh
 file
 findutils
@@ -50,7 +54,6 @@ i7z
 inkscape
 intel-compute-runtime
 intel-gpu-tools
-intel-hybrid-codec-driver
 intel-media-driver
 intel-media-sdk
 intel-ucode
@@ -75,6 +78,7 @@ man-db
 mons
 mpv-full
 neofetch
+neovide-git
 neovim-nightly
 neovim-remote
 nerd-fonts-fira-code
@@ -85,6 +89,7 @@ networkmanager
 networkmanager-dmenu-git
 networkmanager-openconnect
 nodejs
+nodejs-neovim
 npm
 ntfs-3g
 nvidia
@@ -96,6 +101,7 @@ optimus-manager-qt
 os-prober
 otf-font-awesome-4
 otf-font-awesome-5-free
+otf-ipafont
 pacman
 pandoc-bin
 parted
@@ -128,6 +134,7 @@ texlive-fontsextra
 texlive-formatsextra
 texlive-games
 texlive-humanities
+texlive-langjapanese
 texlive-latexextra
 texlive-music
 texlive-pictures
@@ -137,6 +144,7 @@ texlive-science
 thunderbird
 tmux
 ttf-dejavu
+ttf-hanazono
 udisks2
 unzip
 vapoursynth-git
