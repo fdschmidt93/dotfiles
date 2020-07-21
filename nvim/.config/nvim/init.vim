@@ -28,8 +28,6 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vimwiki/vimwiki'
 Plug 'norcalli/nvim-colorizer.lua'
-Plug 'kyazdani42/nvim-web-devicons' " for file icons
-Plug 'kyazdani42/nvim-tree.lua'
 Plug 'chrisbra/csv.vim'
 call plug#end()
 
@@ -67,6 +65,7 @@ syntax on
 syntax enable
 lua require'colorizer'.setup()
 highlight EndOfBuffer guifg=bg
+set guifont=Fira\ Code\ Nerd\ Font:h14
 
 "# [3] Mappings
 " Go to normal mode with jk
@@ -241,19 +240,20 @@ let g:coc_snippet_prev = '<c-k>'
 " Use <C-j> for both expand and jump (make expand higher priority.)
 imap <C-j> <Plug>(coc-snippets-expand-jump)"
 
+"
 "# [4.8] nvim-treesitter
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
     highlight = {
         enable = true,                    -- false will disable the whole extension
-        disable = { 'c', 'rust' },        -- list of language that will be disabled
+        disable = {},                     -- list of language that will be disabled
         custom_captures = {               -- mapping of user defined captures to highlight groups
           -- ["foo.bar"] = "Identifier"   -- highlight own capture @foo.bar with highlight group "Identifier", see :h nvim-treesitter-query-extensions
         },            
     },
     incremental_selection = {
         enable = true,
-        disable = { 'cpp', 'lua' },
+        disable = {},
         keymaps = {                       -- mappings for incremental selection (visual mappings)
           init_selection = 'gnn',         -- maps in normal mode to init the node/scope selection
           node_incremental = "grn",       -- increment to the upper named parent
@@ -319,40 +319,37 @@ local hlmap = vim.treesitter.TSHighlighter.hl_map
 hlmap.error = nil
 hlmap["punctuation.delimiter"] = "Delimiter"
 hlmap["punctuation.bracket"] = "Delimiter"
-hlmap["punctuation"] = "GruvboxFg3"
 
 -- Constants
-hlmap["constant"] = "gruvbox_light1"
-hlmap["constant.builtin"] = "gruvbox_bright_purple"
+hlmap["constant"] = "Constant"
+hlmap["constant.builtin"] = "Type"
 hlmap["constant.macro"] = "Define"
 hlmap["string"] = "String"
 hlmap["string.regex"] = "String"
 hlmap["string.escape"] = "SpecialChar"
 hlmap["character"] = "Character"
-hlmap["number"] = "gruvbox_light2"
-hlmap["boolean"] = "GruvboxPurple"
-hlmap["float"] = "gruvbox_light2"
+hlmap["number"] = "Number"
+hlmap["boolean"] = "Boolean"
+hlmap["float"] = "Float"
 
 -- Functions
-hlmap["function"] = "gruvbox_bright_aqua"
-hlmap["function.builtin"] = "gruvbox_bright_orange_bold"
+hlmap["function"] = "Function"
+hlmap["function.builtin"] = "Special"
 hlmap["function.macro"] = "Macro"
-hlmap["parameter"] = "gruvbox_bright_blue"
-hlmap["method"] = "gruvbox_bright_red_bold"
+hlmap["parameter"] = "Identifier"
+hlmap["method"] = "Function"
 hlmap["field"] = "Identifier"
 hlmap["property"] = "Identifier"
 hlmap["constructor"] = "Type"
 
 -- Keywords
--- hlmap["conditional"] = "Conditional"
-hlmap["conditional"] = "gruvbox_bright_blue"
+hlmap["conditional"] = "Conditional"
 hlmap["repeat"] = "Repeat"
--- hlmap["label"] = "Label"
 hlmap["label"] = "Label"
-hlmap["operator"] = "gruvbox_bright_red"
-hlmap["keyword"] = "gruvbox_bright_red"
-hlmap["exception"] = "GruvboxPurple"
-hlmap["include"] = "gruvbox_bright_blue"
+hlmap["operator"] = "Operator"
+hlmap["keyword"] = "Repeat"
+hlmap["exception"] = "Exception"
+hlmap["include"] = "Include"
 hlmap["type"] = "Type"
 hlmap["type.builtin"] = "Type"
 hlmap["structure"] = "Structure"
@@ -378,27 +375,27 @@ hi gruvbox_light2      guifg=#d5c4a1
 hi gruvbox_light3      guifg=#bdae93
 hi gruvbox_light4      guifg=#a89984
 hi gruvbox_light4_256  guifg=#a89984
-hi gruvbox_bright_red     guifg=#fb4934
-hi gruvbox_bright_green   guifg=#b8bb26
-hi gruvbox_bright_yellow  guifg=#fabd2f
-hi gruvbox_bright_blue    guifg=#83a598
-hi gruvbox_bright_purple  guifg=#d3869b
-hi gruvbox_bright_aqua    guifg=#8ec07c
-hi gruvbox_bright_orange  guifg=#fe8019
-hi gruvbox_neutral_red    guifg=#cc241d
-hi gruvbox_neutral_green  guifg=#98971a
-hi gruvbox_neutral_yellow guifg=#d79921
-hi gruvbox_neutral_blue   guifg=#458588
-hi gruvbox_neutral_purple guifg=#b16286
-hi gruvbox_neutral_aqua   guifg=#689d6a
-hi gruvbox_neutral_orange guifg=#d65d0e
-hi gruvbox_faded_red      guifg=#9d0006
-hi gruvbox_faded_green    guifg=#79740e
-hi gruvbox_faded_yellow   guifg=#b57614
-hi gruvbox_faded_blue     guifg=#076678
-hi gruvbox_faded_purple   guifg=#8f3f71
-hi gruvbox_faded_aqua     guifg=#427b58
-hi gruvbox_faded_orange   guifg=#af3a03
+hi gruvbox_bright_red     gui=NONE guifg=#fb4934
+hi gruvbox_bright_green   gui=NONE guifg=#b8bb26
+hi gruvbox_bright_yellow  gui=NONE guifg=#fabd2f
+hi gruvbox_bright_blue    gui=NONE guifg=#83a598
+hi gruvbox_bright_purple  gui=NONE guifg=#d3869b
+hi gruvbox_bright_aqua    gui=NONE guifg=#8ec07c
+hi gruvbox_bright_orange  gui=NONE guifg=#fe8019
+hi gruvbox_neutral_red    gui=NONE guifg=#cc241d
+hi gruvbox_neutral_green  gui=NONE guifg=#98971a
+hi gruvbox_neutral_yellow gui=NONE guifg=#d79921
+hi gruvbox_neutral_blue   gui=NONE guifg=#458588
+hi gruvbox_neutral_purple gui=NONE guifg=#b16286
+hi gruvbox_neutral_aqua   gui=NONE guifg=#689d6a
+hi gruvbox_neutral_orange gui=NONE guifg=#d65d0e
+hi gruvbox_faded_red      gui=NONE guifg=#9d0006
+hi gruvbox_faded_green    gui=NONE guifg=#79740e
+hi gruvbox_faded_yellow   gui=NONE guifg=#b57614
+hi gruvbox_faded_blue     gui=NONE guifg=#076678
+hi gruvbox_faded_purple   gui=NONE guifg=#8f3f71
+hi gruvbox_faded_aqua     gui=NONE guifg=#427b58
+hi gruvbox_faded_orange   gui=NONE guifg=#af3a03
 
 hi gruvbox_bright_red_bold     gui=bold guifg=#fb4934 
 hi gruvbox_bright_green_bold   gui=bold guifg=#b8bb26 
@@ -422,59 +419,5 @@ hi gruvbox_faded_purple_bold   gui=bold guifg=#8f3f71
 hi gruvbox_faded_aqua_bold     gui=bold guifg=#427b58 
 hi gruvbox_faded_orange_bold   gui=bold guifg=#af3a03 
 
-"# [4.9] nvim-tree.lua
-let g:lua_tree_side = 'right'
-let g:lua_tree_size = 30 "30 by default
-let g:lua_tree_ignore = [ '.git', 'node_modules', '.cache' ] "empty by default
-let g:lua_tree_auto_open = 1 "0 by default, opens the tree when typing `vim $DIR` or `vim`
-let g:lua_tree_auto_close = 1 "0 by default, closes the tree when it's the last window
-let g:lua_tree_follow = 1 "0 by default, this option allows the cursor to be updated when entering a buffer
-let g:lua_tree_indent_markers = 1 "0 by default, this option shows indent markers when folders are open
-let g:lua_tree_show_icons = {
-    \ 'git': 1,
-    \ 'folders': 0,
-    \ 'files': 0,
-    \}
-"
-let g:lua_tree_show_icons = {
-    \ 'git': 1,
-    \ 'folders': 1,
-    \ 'files': 1,
-    \}
-"If 0, do not show the icons for one of 'git' 'folder' and 'files'
-"1 by default, notice that if 'files' is 1, it will only display
-"if nvim-web-devicons is installed and on your runtimepath
-
-" You can edit keybindings be defining this variable
-" You don't have to define all keys.
-" NOTE: the 'edit' key will wrap/unwrap a folder and open a file
-
-
-" default will show icon by default if no icon is provided
-" default shows no icon by default
-let g:lua_tree_icons = {
-    \ 'default': '',
-    \ 'git': {
-    \   'unstaged': "✗",
-    \   'staged': "✓",
-    \   'unmerged': "═",
-    \   'renamed': "➜",
-    \   'untracked': "★"
-    \   },
-    \ 'folder': {
-    \   'default': "",
-    \   'open': ""
-    \   }
-    \ }
-
-nnoremap <C-n> :LuaTreeToggle<CR>
-nnoremap <leader>r :LuaTreeRefresh<CR>
-nnoremap <leader>n :LuaTreeFindFile<CR>
-
-" a list of groups can be found at `:help lua_tree_highlight`
-" highlight LuaTreeFolderIcon guibg=blue
-
 " vim:fdm=expr:fdl=0
 " vim:fde=getline(v\:lnum)=~'^"#'?'>'.(matchend(getline(v\:lnum),'"#*')-1)\:'='
-"
-"

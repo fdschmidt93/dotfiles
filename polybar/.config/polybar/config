@@ -34,7 +34,7 @@ monitor = ${env:MONITOR:}
 bottom = false
 ; wm-restack = i3
 width = 100%
-height = 25
+height = 40
 offset-x = 0
 offset-y = 0
 
@@ -48,8 +48,9 @@ padding-right = 0
 module-margin-right = 0
 module-margin-left = 0
 
-modules-right = rofi-usb-mount separator keyboard separator network separator volume separator backlight separator battery separator date
+modules-right = rofi-usb-mount separator network separator volume separator backlight separator battery separator keyboard separator
 modules-left = i3
+modules-center = date
 
 background = ${colors.background}
 foreground = ${colors.foreground}
@@ -66,11 +67,11 @@ tray-padding = 0
 tray-transparent = true
 tray-scale = 1.0
 
-font-0 = "monospace:size=8;2"
+font-0 = "monospace:size=10;2"
 ; font-0 = "Fira Code Nerd Font:size=10;2"
-font-1 = "DejaVuSans:size=8;2"
-font-2 = "FontAwesome:size=8;2"
-font-3 = "Siji:size=8;2"
+font-1 = "DejaVuSans:size=10;2"
+font-2 = "FontAwesome:size=10;2"
+font-3 = "Siji:size=10;2"
 
 [module/rofi-usb-mount]
 type = custom/script
@@ -201,13 +202,23 @@ animation-charging-framerate = 750
 [module/date]
 type = internal/date
 #date-alt =   %A %H:%M 
-date = %{F#928374}%{F-} %H:%M
+; date = %Y-%m-%d (wk%V) %{F#928374}%{F-} %H:%M
 interval = 5
+date = %A, %d %B %Y%
+; Optional time format
+time = %{F#928374}%{F-} %H:%M
+
+; if `date-alt` or `time-alt` is defined, clicking
+; the module will toggle between formats
+; date-alt = %Y-%m-%d%
+; time-alt = %H:%M:%S
+
 format-underline = ${colors.white}
 ;format-background = ${colors.black}
 format-foreground = ${colors.foreground}
 format-padding = 2
-
+label = %date% | %time%
+format = %{A1:./launch_calendar.sh:} <label> %{A}
 label-separator = |
 
 [module/volume]

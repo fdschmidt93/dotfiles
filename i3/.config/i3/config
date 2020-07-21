@@ -5,13 +5,16 @@
 # Should you change your keyboard layout some time, delete
 # this file and re-run i3-config-wizard(1).
 
-# set background
-exec --no-startup-id sh ~/.fehbg &
-# keyboard settings
-exec --no-startup-id xset r rate 500 60
+gaps inner 3
+# Activate smart borders (always)
+smart_borders on
+# Activate smart borders (only when there are effectively no gaps)
+smart_borders no_gaps
+
 # status bar
 exec_always --no-startup-id ~/.config/polybar/launch.sh &
-# exec_always --no-startup-id optimus-manager-qt
+# nm-applet
+exec --no-startup-id nm-applet &
 
 # i3 config file (v4)
 #
@@ -30,18 +33,9 @@ font pango:monospace 8
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
 # they are included here as an example. Modify as you see fit.
 
-# nm-applet
-exec --no-startup-id nm-applet &
 
 # remove titlebars
 for_window [class="^.*"] border pixel 0
-
-# default_orientation horizontal #start in opposite orientation from your monitor
-# for_window [class=.*] exec command
-# for_window [class="^.*"] split toggle #toggles split at each new window
-# bindsym $mod+Shift+q exec i3-msg kill && exec i3-msg toggle split
-# # bindsym $mod+Shift+q split toggle, i3-msg kill #kill command resets the split
-# bindsym $mod+e layout toggle split # should already exist but use if split orientation  messes up
 
 # xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
 # screen before suspend. Use loginctl lock-session to lock your screen.

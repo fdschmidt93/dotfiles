@@ -1,7 +1,7 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
-SETUVAR --export SSH_AGENT_PID:518
-SETUVAR --export SSH_AUTH_SOCK:/tmp/ssh\x2dkNXvYewJFaj4/agent\x2e517
+SETUVAR --export SSH_AGENT_PID:506
+SETUVAR --export SSH_AUTH_SOCK:/tmp/ssh\x2dIwdfVTuVrAA8/agent\x2e505
 SETUVAR __fish_init_2_39_8:\x1d
 SETUVAR __fish_init_2_3_0:\x1d
 SETUVAR __fish_init_3_x:\x1d
@@ -15,6 +15,7 @@ SETUVAR _fish_abbr_intel:optimus\x2dmanager\x20\x2d\x2dswitch\x20intel
 SETUVAR _fish_abbr_kchain:keychain\x20/home/fdschmidt/\x2essh/id_rsa
 SETUVAR _fish_abbr_kpxc:keepassxc\x2dcli\x20open\x20/home/fdschmidt/media/Stick/NewDatabase\x2ekdbx
 SETUVAR _fish_abbr_ncfg:nvim\x20/home/fdschmidt/\x2econfig/nvim/init\x2evim
+SETUVAR _fish_abbr_nv:NVIM_LISTEN_ADDRESS\x3d/tmp/nvimsocket\x20nvim
 SETUVAR _fish_abbr_nvidia:optimus\x2dmanager\x20\x2d\x2dswitch\x20nvidia
 SETUVAR _fish_abbr_om:optimus\x2dmanager
 SETUVAR _fish_abbr_pkg__backup:sudo\x20pacman\x20\x2dQqe

@@ -13,10 +13,10 @@ bashmount
 bbswitch
 binutils
 bison
+boost
 chili-sddm-theme
 chromium
 cmocka
-code
 copyq
 cpupower
 cpupower-gui
@@ -47,7 +47,7 @@ gtk2
 gtk3
 gzip
 htop
-i3-wm
+i3-gaps
 i3lock
 i3lock-fancy-rapid-git
 i7z
@@ -107,6 +107,7 @@ pandoc-bin
 parted
 patch
 pdf2svg
+picom
 pkgconf
 polybar
 python-cairo
@@ -127,6 +128,7 @@ spirv-cross
 sshfs
 stow
 sudo
+sway
 texinfo
 texlive-bibtexextra
 texlive-core
@@ -151,6 +153,7 @@ vapoursynth-git
 vdpauinfo
 vulkan-intel
 which
+xaw3d
 xclip
 xdotool
 xf86-video-intel
@@ -159,6 +162,7 @@ xorg-font-util
 xorg-iceauth
 xorg-luit
 xorg-server
+xorg-server-xwayland
 xorg-sessreg
 xorg-smproxy
 xorg-x11perf
