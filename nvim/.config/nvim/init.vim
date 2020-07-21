@@ -64,8 +64,12 @@ colorscheme gruvbox
 syntax on
 syntax enable
 lua require'colorizer'.setup()
-highlight EndOfBuffer guifg=bg
+" neovide font setting
 set guifont=Fira\ Code\ Nerd\ Font:h14
+" use opacity of alacritty
+"highlight Normal ctermbg=NONE guibg=NONE
+" hide end of buffer line markers
+let &fcs='eob: '
 
 "# [3] Mappings
 " Go to normal mode with jk

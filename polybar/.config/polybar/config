@@ -218,7 +218,7 @@ format-underline = ${colors.white}
 format-foreground = ${colors.foreground}
 format-padding = 2
 label = %date% | %time%
-format = %{A1:./launch_calendar.sh:} <label> %{A}
+format = %{A1:~/.config/polybar/launch_calendar.sh:} <label> %{A}
 label-separator = |
 
 [module/volume]

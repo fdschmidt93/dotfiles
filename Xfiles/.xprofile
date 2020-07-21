@@ -5,3 +5,4 @@ pacman -Qqe > ~/dotfiles/yay/pkglist.txt
 xrandr --output eDP1 --mode 1920x1080 --refresh 59.93
 xset r rate 500 60
 /usr/bin/feh --no-fehbg --bg-scale '/home/fdschmidt/.gruvbox_background.png' 
+picom -b --backend glx
