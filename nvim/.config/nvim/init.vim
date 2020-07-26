@@ -1,34 +1,37 @@
 "# [0] vim-plug
 call plug#begin('~/.config/nvim/plugged')
 " Extend Vim 
-Plug 'romainl/vim-cool'
-Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-surround'
-Plug 'justinmk/vim-sneak'
-Plug 'easymotion/vim-easymotion'
+Plug 'romainl/vim-cool' " disable search highlight when done
+Plug 'tpope/vim-commentary' " gc mapping to comment stuff out
+Plug 'tpope/vim-fugitive' " git integration for vim
+Plug 'tpope/vim-repeat' " enable repeating supported plugin maps with dot
+Plug 'tpope/vim-surround' " quoting/parenthesizing made simple
+Plug 'justinmk/vim-sneak' " 2 character F
 " Coding
-Plug 'jpalardy/vim-slime'
-Plug 'kkoomen/vim-doge'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'jpalardy/vim-slime' " REPL for vim
+Plug 'kkoomen/vim-doge' " Documentation
+Plug 'neoclide/coc.nvim', {'branch': 'release'} " Intellisense
+Plug 'antoinemadec/coc-fzf' " fzf integration into coc
 " Python
-Plug 'nvim-treesitter/nvim-treesitter'"
+Plug 'nvim-treesitter/nvim-treesitter' " fast incremental syntax highlighting and more
 " Themes
-Plug 'joshdick/onedark.vim'
 Plug 'morhetz/gruvbox'
+Plug 'joshdick/onedark.vim' " alternatives
 Plug 'crusoexia/vim-monokai'
 Plug 'iCyMind/NeoSolarized'
 " fzf
-Plug '~/.fzf'
-Plug 'junegunn/fzf.vim'
+Plug '~/.fzf' " fast fuzzy finding (paired with ripgrep)
+Plug 'junegunn/fzf.vim' " vim integration
 " Other
-Plug 'lervag/vimtex'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vimwiki/vimwiki'
 Plug 'norcalli/nvim-colorizer.lua'
 Plug 'chrisbra/csv.vim'
+" Writing
+Plug 'lervag/vimtex' " Latex integration (+ coc-texlab)
+Plug 'KeitaNakamura/tex-conceal.vim', {'for': 'tex'} " prettify latex syntax
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  } " live markdown
 call plug#end()
 
 "# [1] General
@@ -52,8 +55,10 @@ set modelineexpr
 " Preview substitution
 set inccommand=nosplit
 " Neovide font
-set guifont="Fira Code": 10
-" colorizer
+set guifont=Fira\ Code\ Nerd\ Font:h16
+" clipboard
+set clipboard^=unnamed,unnamedplus
+
 
 "# [2] Theme & Syntax Highlighting
 " Theme
@@ -67,9 +72,16 @@ lua require'colorizer'.setup()
 " neovide font setting
 set guifont=Fira\ Code\ Nerd\ Font:h14
 " use opacity of alacritty
-"highlight Normal ctermbg=NONE guibg=NONE
+
+if exists('g:neovide')
+else
+    highlight Normal ctermbg=NONE guibg=NONE
+endif
 " hide end of buffer line markers
 let &fcs='eob: '
+" hide background of VertSplit
+highlight VertSplit ctermbg=NONE guibg=NONE guifg=NONE ctermfg=NONE
+
 
 "# [3] Mappings
 " Go to normal mode with jk
@@ -82,6 +94,12 @@ nmap OO m`O<Esc>``|
 nmap <Leader>y "+y|
 " Paste from global clipboard with leader prefix
 nmap <Leader>p "+p|
+" Resize splits with arrow keys
+noremap <silent> <C-S-Left> :vertical resize +2<CR>
+noremap <silent> <C-S-Right> :vertical resize -2<CR>
+noremap <silent> <C-S-Up> :resize +2<CR>
+noremap <silent> <C-S-Down> :resize -2<CR>
+"
 " Open right-sided terminal with <leader>t
 nmap <Leader>t :vs+te<CR>|
 " Open (smaller) terminal below
@@ -109,10 +127,6 @@ map f <Plug>Sneak_f
 map F <Plug>Sneak_F
 map t <Plug>Sneak_t
 map T <Plug>Sneak_T
-" vim.easymotion
-map  gs <Plug>(easymotion-bd-f)
-map  gS <Plug>(easymotion-bd-w)
-
 
 "# [4] Plugins
 
@@ -129,17 +143,20 @@ nnoremap <Leader>b :Buffers<cr>
 nnoremap <Leader>rg :Rg<cr>
 nnoremap <Leader>co :Colors<cr>
 
-"# [4.4] vimtex 
+"# [4.4] latex 
+" vimtex
 let g:tex_flavor  = 'latex'
 let g:vimtex_fold_manual = 1
 let g:vimtex_latexmk_continuous = 1
 let g:vimtex_compiler_progname = 'nvr'
 let g:vimtex_view_method = 'zathura'
 let g:vimtex_quickfix_mode=0
-set conceallevel=1
-let g:tex_conceal='abdmg'"
+" inkscape
 inoremap <C-f> <Esc>: silent exec '.!inkscape-figures create "'.getline('.').'" "'.b:vimtex.root.'/figures/"'<CR><CR>:w<CR>
 nnoremap <C-f> : silent exec '!inkscape-figures edit "'.b:vimtex.root.'/figures/" > /dev/null 2>&1 &'<CR><CR>:redraw!<CR>
+" tex conceal
+set conceallevel=2
+let g:tex_conceal="abdgm"
 
 
 "# [4.5] vim-airline
@@ -211,22 +228,35 @@ command! -nargs=0 Format :call CocAction('format')
 " Use `:Fold` for fold current buffer
 command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 
-" Using CocList
-nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>" Show all diagnostics
-" Manage extensions
-nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
-" Show commands
-nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
-" Find symbol of current document
-nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
-" Search workspace symbols
-nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
-" Do default action for next item.
-nnoremap <silent> <space>j  :<C-u>CocNext<CR>
-" Do default action for previous item.
-nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
-" Resume latest coc list
-nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+let g:coc_fzf_preview = ''
+let g:coc_fzf_opts = []
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
+nnoremap <silent> <space><space> :<C-u>CocFzfList<CR>
+nnoremap <silent> <space>a       :<C-u>CocFzfList diagnostics<CR>
+nnoremap <silent> <space>b       :<C-u>CocFzfList diagnostics --current-buf<CR>
+nnoremap <silent> <space>c       :<C-u>CocFzfList commands<CR>
+nnoremap <silent> <space>e       :<C-u>CocFzfList extensions<CR>
+nnoremap <silent> <space>l       :<C-u>CocFzfList location<CR>
+nnoremap <silent> <space>o       :<C-u>CocFzfList outline<CR>
+nnoremap <silent> <space>s       :<C-u>CocFzfList symbols<CR>
+nnoremap <silent> <space>S       :<C-u>CocFzfList services<CR>
+nnoremap <silent> <space>p       :<C-u>CocFzfListResume<CR>"
+" " Using CocList
+" nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>" Show all diagnostics
+" " Manage extensions
+" nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
+" " Show commands
+" nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
+" " Find symbol of current document
+" nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+" " Search workspace symbols
+" nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
+" " Do default action for next item.
+" nnoremap <silent> <space>j  :<C-u>CocNext<CR>
+" " Do default action for previous item.
+" nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
+" " Resume latest coc list
+" nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 
 " coc-snippets
 " Use <C-l> for trigger snippet expand.
@@ -337,14 +367,15 @@ hlmap["boolean"] = "Boolean"
 hlmap["float"] = "Float"
 
 -- Functions
-hlmap["function"] = "Function"
 hlmap["function.builtin"] = "Special"
 hlmap["function.macro"] = "Macro"
 hlmap["parameter"] = "Identifier"
-hlmap["method"] = "Function"
-hlmap["field"] = "Identifier"
 hlmap["property"] = "Identifier"
 hlmap["constructor"] = "Type"
+
+hlmap["function"] = "Function"
+hlmap["field"] = "Identifier"
+hlmap["method"] = "Function"
 
 -- Keywords
 hlmap["conditional"] = "Conditional"
@@ -360,6 +391,10 @@ hlmap["structure"] = "Structure"
 EOF
 highlight link TSError Normal
 autocmd FileType python autocmd CursorHold * silent :TSBufEnable highlight
+
+" highlight SneakScope guifg=#1d2021 guibg=#b57614
+" highlight Sneak guifg=#1d2021 guibg=#fe8019
+" highlight SneakLabel guifg=#1d2021 guibg=#fe8019
 
 hi gruvbox_dark0_hard  guifg=#1d2021
 hi gruvbox_dark0       guifg=#282828

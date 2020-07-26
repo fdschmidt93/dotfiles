@@ -2,7 +2,7 @@ rofi.theme: ~/.config/rofi/gruvbox-dark-config.rasi
 rofi.kb-row-up:                      Up,Control+k,Shift+Tab,Shift+ISO_Left_Tab
 rofi.kb-row-down:                    Down,Control+j
 rofi.kb-accept-entry:                Control+m,Return,KP_Enter
-rofi.terminal:                       mate-terminal
+rofi.terminal:                       /usr/bin/alacritty
 rofi.kb-remove-to-eol:               Control+Shift+e
 rofi.kb-mode-next:                   Shift+Right,Control+Tab,Control+l
 rofi.kb-mode-previous:               Shift+Left,Control+Shift+Tab,Control+h

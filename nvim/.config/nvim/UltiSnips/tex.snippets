@@ -57,6 +57,35 @@ snippet 'template' "Basic template" b
 \end{document}
 endsnippet
 
+context "math()"
+snippet 'iff' "iff" eAi
+\iff
+endsnippet
+
+snippet ';b' "textbf" A
+\textbf{$0}
+endsnippet
+
+snippet ';s' "textsc" A
+\textsc{$0}
+endsnippet
+
+snippet ';t' "texttt" A
+\texttt{$0}
+endsnippet
+
+snippet ';i' "textit" A
+\textit{$0}
+endsnippet
+
+snippet ';c' "textit" A
+\cite{$0}
+endsnippet
+
+snippet ';t' "textit" A
+\citet{$0}
+endsnippet
+
 snippet 'beg' "begin{} / end{}" bA
 \\begin{$1}
 	$0
@@ -662,5 +691,6 @@ endsnippet
 snippet 'letw' "let omega" iA
 Let $\Omega \subset \C$ be open.
 endsnippet
+
 
 # vim:ft=snippets

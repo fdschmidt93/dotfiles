@@ -17,11 +17,11 @@ boost
 chili-sddm-theme
 chromium
 cmocka
+code
 copyq
 cpupower
 cpupower-gui
 crda
-cuda
 cups
 dotnet-runtime
 efibootmgr
@@ -38,7 +38,6 @@ gcc
 gettext
 git
 gnome-icon-theme
-gnome-screenshot
 gparted
 grep
 groff
@@ -85,7 +84,6 @@ nerd-fonts-fira-code
 nerd-fonts-hack
 nerd-fonts-iosevka
 network-manager-applet
-networkmanager
 networkmanager-dmenu-git
 networkmanager-openconnect
 nodejs
@@ -95,6 +93,7 @@ ntfs-3g
 nvidia
 nvidia-prime
 nvidia-settings
+opencl-nvidia
 openssh
 optimus-manager
 optimus-manager-qt
@@ -128,7 +127,6 @@ spirv-cross
 sshfs
 stow
 sudo
-sway
 texinfo
 texlive-bibtexextra
 texlive-core
@@ -143,12 +141,14 @@ texlive-pictures
 texlive-pstricks
 texlive-publishers
 texlive-science
+thermald
 thunderbird
 tmux
 ttf-dejavu
 ttf-hanazono
 udisks2
 unzip
+upower
 vapoursynth-git
 vdpauinfo
 vulkan-intel
@@ -190,6 +190,7 @@ xorg-xwd
 xorg-xwininfo
 xorg-xwud
 xss-lock
+yarn
 yay
 zathura
 zathura-djvu
