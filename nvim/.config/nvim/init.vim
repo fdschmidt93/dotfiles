@@ -6,7 +6,7 @@ Plug 'tpope/vim-commentary' " gc mapping to comment stuff out
 Plug 'tpope/vim-fugitive' " git integration for vim
 Plug 'tpope/vim-repeat' " enable repeating supported plugin maps with dot
 Plug 'tpope/vim-surround' " quoting/parenthesizing made simple
-Plug 'justinmk/vim-sneak' " 2 character F
+Plug 'justinmk/vim-sneak' " 2 character motions
 " Coding
 Plug 'jpalardy/vim-slime' " REPL for vim
 Plug 'kkoomen/vim-doge' " Documentation
@@ -15,9 +15,8 @@ Plug 'antoinemadec/coc-fzf' " fzf integration into coc
 " Python
 Plug 'nvim-treesitter/nvim-treesitter' " fast incremental syntax highlighting and more
 " Themes
-Plug 'morhetz/gruvbox'
-Plug 'joshdick/onedark.vim' " alternatives
-Plug 'crusoexia/vim-monokai'
+Plug 'morhetz/gruvbox' " main theme
+Plug 'crusoexia/vim-monokai' " alternatives
 Plug 'iCyMind/NeoSolarized'
 " fzf
 Plug '~/.fzf' " fast fuzzy finding (paired with ripgrep)
@@ -26,7 +25,7 @@ Plug 'junegunn/fzf.vim' " vim integration
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vimwiki/vimwiki'
-Plug 'norcalli/nvim-colorizer.lua'
+Plug 'norcalli/nvim-colorizer.lua' " show hex rgb colors
 Plug 'chrisbra/csv.vim'
 " Writing
 Plug 'lervag/vimtex' " Latex integration (+ coc-texlab)
@@ -36,29 +35,21 @@ call plug#end()
 
 "# [1] General
 filetype plugin indent on
-" On pressing tab, insert spaces
-set expandtab
-" Number of spaces that a <Tab> in the file counts for
-set tabstop=4
-" Search config
-set ignorecase
+set expandtab " On pressing tab, insert spaces
+set tabstop=4 " Number of spaces that a <Tab> in the file counts for
+set shiftwidth=4 " when indenting with '>', use 4 spaces width
+set ignorecase " Search config
 set smartcase
-" (Relative) Line Numbering
-set number relativenumber
-" when indenting with '>', use 4 spaces width
-set shiftwidth=4
-" Set split window right
-set splitright
-" Fold by syntax
-set foldmethod=syntax
+set number relativenumber " (Relative) Line Numbering
+set splitbelow " New horizontal splits window below
+set splitright " New vertical splits window right
+set foldmethod=syntax " Fold by syntax
 set modelineexpr
-" Preview substitution
-set inccommand=nosplit
-" Neovide font
-set guifont=Fira\ Code\ Nerd\ Font:h16
-" clipboard
-set clipboard^=unnamed,unnamedplus
-
+set inccommand=nosplit " Preview substitution
+set guifont=Fira\ Code\ Nerd\ Font:h16 " Neovide font
+set clipboard^=unnamed,unnamedplus " clipboard
+set noshowmode " mode show by airline
+lua require('repl')
 
 "# [2] Theme & Syntax Highlighting
 " Theme
@@ -68,48 +59,34 @@ let g:gruvbox_contrast_dark = 'hard'
 colorscheme gruvbox
 syntax on
 syntax enable
-lua require'colorizer'.setup()
-" neovide font setting
-set guifont=Fira\ Code\ Nerd\ Font:h14
-" use opacity of alacritty
-
-if exists('g:neovide')
+set cursorline " highlight current line
+lua require'colorizer'.setup() -- rgb hex color codes in nvim
+let &fcs='eob: ' " hide end of buffer line markers
+highlight VertSplit ctermbg=NONE guibg=NONE guifg=NONE ctermfg=NONE " hide background of VertSplit
+set guifont=Fira\ Code\ Nerd\ Font:h14 " neovide font setting
+if exists('g:neovide') " use opacity for alacritty
 else
     highlight Normal ctermbg=NONE guibg=NONE
 endif
-" hide end of buffer line markers
-let &fcs='eob: '
-" hide background of VertSplit
-highlight VertSplit ctermbg=NONE guibg=NONE guifg=NONE ctermfg=NONE
-
 
 "# [3] Mappings
-" Go to normal mode with jk
-imap jk <Esc>|
-" Insert empty line below with oo
-nmap oo m`o<Esc>``|
-" Insert empty line above with OO
-nmap OO m`O<Esc>``|
-" Copy to global clipboard with leader prefix
-nmap <Leader>y "+y|
-" Paste from global clipboard with leader prefix
-nmap <Leader>p "+p|
-" Resize splits with arrow keys
-noremap <silent> <C-S-Left> :vertical resize +2<CR>
+imap jk <Esc>| " Go to normal mode with jk
+nmap oo m`o<Esc>``| " Insert empty line below with oo
+nmap OO m`O<Esc>``| " Insert empty line above with OO
+nmap <Leader>y "+y| " Copy to global clipboard with leader prefix
+nmap <Leader>p "+p| " Paste from global clipboard with leader prefix
+noremap <silent> <C-S-Left> :vertical resize +2<CR> " Resize splits with arrow keys
 noremap <silent> <C-S-Right> :vertical resize -2<CR>
 noremap <silent> <C-S-Up> :resize +2<CR>
 noremap <silent> <C-S-Down> :resize -2<CR>
-"
-" Open right-sided terminal with <leader>t
-nmap <Leader>t :vs+te<CR>|
-" Open (smaller) terminal below
-nmap <Leader><C-t> :new+te<CR>:resize 15<CR><C-w>r|
-" Save buffer with <leader>w
-nmap <Leader>w :w<CR>|
-" Close buffer with <leader>q
-nmap <Leader>q :q!<CR>|
-" Move with M from any mode
-tnoremap <A-h> <C-\><C-N><C-w>h|
+" nmap <Leader>t :vs+te<CR>| " Open right-sided terminal with <leader>t
+nmap <Leader>t :lua shell("right", nil)<CR>" Open right-sided terminal with <leader>t
+nmap <Leader>ti :lua shell("right", "ipy") <CR>" Open right-sided terminal with <leader>t
+nmap <Leader><C-t> :lua shell("below", nil)<CR> " Open (smaller) terminal below
+nmap <Leader><C-t>i :lua shell("below", "ipy")<CR> " Open (smaller) terminal below
+nmap <Leader>w :w<CR>| " Save buffer with <leader>w
+nmap <Leader>q :q!<CR>| " Close buffer with <leader>q
+tnoremap <A-h> <C-\><C-N><C-w>h| " Move with M from any mode
 tnoremap <A-j> <C-\><C-N><C-w>j|
 tnoremap <A-k> <C-\><C-N><C-w>k|
 tnoremap <A-l> <C-\><C-N><C-w>l|
@@ -142,6 +119,7 @@ nnoremap <Leader>f :Files<cr>
 nnoremap <Leader>b :Buffers<cr>
 nnoremap <Leader>rg :Rg<cr>
 nnoremap <Leader>co :Colors<cr>
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
 
 "# [4.4] latex 
 " vimtex
@@ -152,8 +130,12 @@ let g:vimtex_compiler_progname = 'nvr'
 let g:vimtex_view_method = 'zathura'
 let g:vimtex_quickfix_mode=0
 " inkscape
-inoremap <C-f> <Esc>: silent exec '.!inkscape-figures create "'.getline('.').'" "'.b:vimtex.root.'/figures/"'<CR><CR>:w<CR>
-nnoremap <C-f> : silent exec '!inkscape-figures edit "'.b:vimtex.root.'/figures/" > /dev/null 2>&1 &'<CR><CR>:redraw!<CR>
+autocmd FileType tex inoremap <C-f> <Esc>: silent exec '.!inkscape-figures create "'.getline('.').'" "'.b:vimtex.root.'/figures/"'<CR><CR>:w<CR>
+autocmd FileType tex nnoremap <C-f> : silent exec '!inkscape-figures edit "'.b:vimtex.root.'/figures/" > /dev/null 2>&1 &'<CR><CR>:redraw!<CR>
+autocmd FileType tex nnoremap <buffer> <localleader>lt :call vimtex#fzf#run('clti', g:fzf_layout)<cr>
+autocmd FileType tex nnoremap <buffer> <localleader><localleader>lc :call vimtex#fzf#run('c', g:fzf_layout)<cr>
+autocmd FileType tex nnoremap <buffer> <localleader><localleader>lt :call vimtex#fzf#run('t', g:fzf_layout)<cr>
+autocmd FileType tex nnoremap <buffer> <localleader><localleader>ll :call vimtex#fzf#run('l', g:fzf_layout)<cr>
 " tex conceal
 set conceallevel=2
 let g:tex_conceal="abdgm"
@@ -172,22 +154,17 @@ let g:coc_global_extensions = ['coc-json', 'coc-vimtex', 'coc-snippets', 'coc-py
 
 set updatetime=300
 
-" Use <c-space> for trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()|
-" <cr> to confirm
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"|
+inoremap <silent><expr> <c-space> coc#refresh()| " Use <c-space> for trigger completion.
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"| " <cr> to confirm
 
-" Use `[c` and `]c` for navigate diagnostics
-nmap <silent> [c <Plug>(coc-diagnostic-prev)|
+nmap <silent> [c <Plug>(coc-diagnostic-prev)| " Use `[c` and `]c` for navigate diagnostics
 nmap <silent> ]c <Plug>(coc-diagnostic-next)
-" Remap keys for gotos
-nmap <silent> gd <Plug>(coc-definition)|
+nmap <silent> gd <Plug>(coc-definition)| " Remap keys for gotos
 nmap <silent> gD <Plug>(coc-declaration)|
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
-" Remap for rename current word
-nmap <leader>rn <Plug>(coc-rename)|
+nmap <leader>rn <Plug>(coc-rename)| " Remap for rename current word
 
 function! s:show_documentation()
   if &filetype == 'vim'
@@ -197,10 +174,8 @@ function! s:show_documentation()
   endif
 endfunction
 
-" K to show docs in preview window
-nnoremap <silent> K :call <SID>show_documentation()<CR>|
-" Highlight symbol under cursor on CursorHold
-autocmd CursorHold * silent call CocActionAsync('highlight')
+nnoremap <silent> K :call <SID>show_documentation()<CR>| " K to show docs in preview window
+autocmd CursorHold * silent call CocActionAsync('highlight') " Highlight symbol under cursor on CursorHold
 
 augroup mygroup autocmd!
   " Setup formatexpr specified filetype(s).
@@ -209,29 +184,21 @@ augroup mygroup autocmd!
   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
 augroup end
 
-" Remap for format selected region
-vmap <leader>cf  <Plug>(coc-format-selected)|
+vmap <leader>cf  <Plug>(coc-format-selected)| " Remap for format selected region
 nmap <leader>cf  <Plug>(coc-format-selected)
 
-" Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
-vmap <leader>a  <Plug>(coc-codeaction-selected)
+vmap <leader>a  <Plug>(coc-codeaction-selected) " Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
 nmap <leader>a  <Plug>(coc-codeaction-selected)
 
-" Remap for do codeAction of current line
-nmap <leader>ac  <Plug>(coc-codeaction)
-" Fix autofix problem of current line
-nmap <leader>qf  <Plug>(coc-fix-current)
+nmap <leader>ac  <Plug>(coc-codeaction) " Remap for do codeAction of current line
+nmap <leader>qf  <Plug>(coc-fix-current) " Fix autofix problem of current line
 
-" Use `:Format` for format current buffer
-command! -nargs=0 Format :call CocAction('format')
-
-" Use `:Fold` for fold current buffer
-command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+command! -nargs=0 Format :call CocAction('format') " Use `:Format` for format current buffer
+command! -nargs=? Fold :call     CocAction('fold', <f-args>) " Use `:Fold` for fold current buffer
 
 let g:coc_fzf_preview = ''
 let g:coc_fzf_opts = []
-let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
-nnoremap <silent> <space><space> :<C-u>CocFzfList<CR>
+nnoremap <silent> <space>L :<C-u>CocFzfList<CR>
 nnoremap <silent> <space>a       :<C-u>CocFzfList diagnostics<CR>
 nnoremap <silent> <space>b       :<C-u>CocFzfList diagnostics --current-buf<CR>
 nnoremap <silent> <space>c       :<C-u>CocFzfList commands<CR>
@@ -241,46 +208,23 @@ nnoremap <silent> <space>o       :<C-u>CocFzfList outline<CR>
 nnoremap <silent> <space>s       :<C-u>CocFzfList symbols<CR>
 nnoremap <silent> <space>S       :<C-u>CocFzfList services<CR>
 nnoremap <silent> <space>p       :<C-u>CocFzfListResume<CR>"
-" " Using CocList
-" nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>" Show all diagnostics
-" " Manage extensions
-" nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
-" " Show commands
-" nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
-" " Find symbol of current document
-" nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
-" " Search workspace symbols
-" nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
-" " Do default action for next item.
-" nnoremap <silent> <space>j  :<C-u>CocNext<CR>
-" " Do default action for previous item.
-" nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
-" " Resume latest coc list
-" nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+
+nnoremap <silent> <space><space>m :<C-u>CocFzfList symbols --kind Method<CR>
+nnoremap <silent> <space><space>c :<C-u>CocFzfList symbols --kind Class<CR>
+nnoremap <silent> <space><space>f :<C-u>CocFzfList symbols --kind Function<CR>
 
 " coc-snippets
-" Use <C-l> for trigger snippet expand.
-imap <C-l> <Plug>(coc-snippets-expand)
+imap <C-l> <Plug>(coc-snippets-expand) " Use <C-l> for trigger snippet expand.
+vmap <C-j> <Plug>(coc-snippets-select) " Use <C-j> for select text for visual placeholder of snippet.
+let g:coc_snippet_next = '<c-j>' " Use <C-j> for jump to next placeholder, it's default of coc.nvim
+let g:coc_snippet_prev = '<c-k>' " Use <C-k> for jump to previous placeholder, it's default of coc.nvim
+imap <C-j> <Plug>(coc-snippets-expand-jump)" " Use <C-j> for both expand and jump (make expand higher priority.)
 
-" Use <C-j> for select text for visual placeholder of snippet.
-vmap <C-j> <Plug>(coc-snippets-select)
+autocmd FileType python let b:coc_root_patterns = ['.git', '.env'] " python workspace
 
-" Use <C-j> for jump to next placeholder, it's default of coc.nvim
-let g:coc_snippet_next = '<c-j>'
-
-" Use <C-k> for jump to previous placeholder, it's default of coc.nvim
-let g:coc_snippet_prev = '<c-k>'
-
-" Use <C-j> for both expand and jump (make expand higher priority.)
-imap <C-j> <Plug>(coc-snippets-expand-jump)"
-
-"
 "# [4.8] nvim-treesitter
 lua <<EOF
-require'nvim-treesitter.configs'.setup {
-    highlight = {
-        enable = true,                    -- false will disable the whole extension
-        disable = {},                     -- list of language that will be disabled
+require'nvim-treesitter.configs'.setup { highlight = { enable = true,                    -- false will disable the whole extension disable = {},                     -- list of language that will be disabled
         custom_captures = {               -- mapping of user defined captures to highlight groups
           -- ["foo.bar"] = "Identifier"   -- highlight own capture @foo.bar with highlight group "Identifier", see :h nvim-treesitter-query-extensions
         },            

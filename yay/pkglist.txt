@@ -16,6 +16,7 @@ bison
 boost
 chili-sddm-theme
 chromium
+clamtk
 cmocka
 code
 copyq
@@ -31,6 +32,7 @@ fd
 feh
 file
 findutils
+firefox
 fish
 flex
 gawk
@@ -38,6 +40,7 @@ gcc
 gettext
 git
 gnome-icon-theme
+gnome-screenshot
 gparted
 grep
 groff
@@ -45,6 +48,8 @@ grub
 gtk2
 gtk3
 gzip
+haskell-pandoc-citeproc-bin
+haskell-pandoc-crossref-bin
 htop
 i3-gaps
 i3lock
@@ -71,6 +76,8 @@ light
 linux
 linux-firmware
 linux-lts
+lua51
+luarocks
 m4
 make
 man-db
