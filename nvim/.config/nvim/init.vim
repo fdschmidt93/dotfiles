@@ -6,12 +6,13 @@ Plug 'tpope/vim-commentary' " gc mapping to comment stuff out
 Plug 'tpope/vim-fugitive' " git integration for vim
 Plug 'tpope/vim-repeat' " enable repeating supported plugin maps with dot
 Plug 'tpope/vim-surround' " quoting/parenthesizing made simple
-Plug 'justinmk/vim-sneak' " 2 character motions
-" Coding
+Plug 'tpope/vim-unimpaired' " 
+Plug 'justinmk/vim-sneak' " 2 character motions Coding
 Plug 'jpalardy/vim-slime' " REPL for vim
 Plug 'kkoomen/vim-doge' " Documentation
 Plug 'neoclide/coc.nvim', {'branch': 'release'} " Intellisense
 Plug 'antoinemadec/coc-fzf' " fzf integration into coc
+Plug 'rafcamlet/coc-nvim-lua'
 " Python
 Plug 'nvim-treesitter/nvim-treesitter' " fast incremental syntax highlighting and more
 " Themes
@@ -27,11 +28,18 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'vimwiki/vimwiki'
 Plug 'norcalli/nvim-colorizer.lua' " show hex rgb colors
 Plug 'chrisbra/csv.vim'
+Plug 'itchyny/calendar.vim'
 " Writing
 Plug 'lervag/vimtex' " Latex integration (+ coc-texlab)
 Plug 'KeitaNakamura/tex-conceal.vim', {'for': 'tex'} " prettify latex syntax
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  } " live markdown
+
+" Plug 'neovim/nvim-lsp'
+" Plug 'nvim-lua/diagnostic-nvim'
+" Plug 'nvim-lua/completion-nvim'
+" Plug 'steelsojka/completion-buffers'
 call plug#end()
+
 
 "# [1] General
 filetype plugin indent on
@@ -40,6 +48,7 @@ set tabstop=4 " Number of spaces that a <Tab> in the file counts for
 set shiftwidth=4 " when indenting with '>', use 4 spaces width
 set ignorecase " Search config
 set smartcase
+set incsearch
 set number relativenumber " (Relative) Line Numbering
 set splitbelow " New horizontal splits window below
 set splitright " New vertical splits window right
@@ -49,18 +58,17 @@ set inccommand=nosplit " Preview substitution
 set guifont=Fira\ Code\ Nerd\ Font:h16 " Neovide font
 set clipboard^=unnamed,unnamedplus " clipboard
 set noshowmode " mode show by airline
-lua require('repl')
+set hidden
+set scrolloff=10  "always 10 lines below/above cursor 
 
 "# [2] Theme & Syntax Highlighting
 " Theme
+set cursorline " highlight current line
 set termguicolors
 set background=dark
 let g:gruvbox_contrast_dark = 'hard'
 colorscheme gruvbox
-syntax on
 syntax enable
-set cursorline " highlight current line
-lua require'colorizer'.setup() -- rgb hex color codes in nvim
 let &fcs='eob: ' " hide end of buffer line markers
 highlight VertSplit ctermbg=NONE guibg=NONE guifg=NONE ctermfg=NONE " hide background of VertSplit
 set guifont=Fira\ Code\ Nerd\ Font:h14 " neovide font setting
@@ -68,6 +76,13 @@ if exists('g:neovide') " use opacity for alacritty
 else
     highlight Normal ctermbg=NONE guibg=NONE
 endif
+
+augroup LuaHighlight " highlight yanking with Gruvbox Aqua
+  autocmd!
+  autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank({higroup="gruvbox_yank", timeout=250})
+augroup END
+
+lua require'colorizer'.setup() -- rgb hex color codes in nvim
 
 "# [3] Mappings
 imap jk <Esc>| " Go to normal mode with jk
@@ -80,10 +95,10 @@ noremap <silent> <C-S-Right> :vertical resize -2<CR>
 noremap <silent> <C-S-Up> :resize +2<CR>
 noremap <silent> <C-S-Down> :resize -2<CR>
 " nmap <Leader>t :vs+te<CR>| " Open right-sided terminal with <leader>t
-nmap <Leader>t :lua shell("right", nil)<CR>" Open right-sided terminal with <leader>t
-nmap <Leader>ti :lua shell("right", "ipy") <CR>" Open right-sided terminal with <leader>t
-nmap <Leader><C-t> :lua shell("below", nil)<CR> " Open (smaller) terminal below
-nmap <Leader><C-t>i :lua shell("below", "ipy")<CR> " Open (smaller) terminal below
+nmap <Leader>t :lua repl.shell("right", nil)<CR>" Open right-sided terminal with <leader>t
+nmap <Leader>ti :lua repl.shell("right", "ipy") <CR>" Open right-sided terminal with <leader>t
+nmap <Leader><C-t> :lua repl.shell("below", nil)<CR> " Open (smaller) terminal below
+nmap <Leader><C-t>i :lua repl.shell("below", "ipy")<CR> " Open (smaller) terminal below
 nmap <Leader>w :w<CR>| " Save buffer with <leader>w
 nmap <Leader>q :q!<CR>| " Close buffer with <leader>q
 tnoremap <A-h> <C-\><C-N><C-w>h| " Move with M from any mode
@@ -113,6 +128,7 @@ silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)
 "# [4.2] vim-slime
 let g:slime_target = "neovim"
 let g:slime_python_ipython = 1"
+lua repl = require('repl') -- shortcuts for vim-slime
 
 "# [4.3] fzf
 nnoremap <Leader>f :Files<cr>
@@ -150,7 +166,7 @@ let g:airline_powerline_fonts = 1"
 let g:doge_enable_mappings = 1 "
 
 "# [4.7] coc.nvim
-let g:coc_global_extensions = ['coc-json', 'coc-vimtex', 'coc-snippets', 'coc-python', 'coc-pyright']
+let g:coc_global_extensions = ['coc-json', 'coc-vimtex', 'coc-texlab', 'coc-snippets', 'coc-pyright', 'coc-lua']
 
 set updatetime=300
 
@@ -199,19 +215,20 @@ command! -nargs=? Fold :call     CocAction('fold', <f-args>) " Use `:Fold` for f
 let g:coc_fzf_preview = ''
 let g:coc_fzf_opts = []
 nnoremap <silent> <space>L :<C-u>CocFzfList<CR>
-nnoremap <silent> <space>a       :<C-u>CocFzfList diagnostics<CR>
-nnoremap <silent> <space>b       :<C-u>CocFzfList diagnostics --current-buf<CR>
-nnoremap <silent> <space>c       :<C-u>CocFzfList commands<CR>
-nnoremap <silent> <space>e       :<C-u>CocFzfList extensions<CR>
-nnoremap <silent> <space>l       :<C-u>CocFzfList location<CR>
-nnoremap <silent> <space>o       :<C-u>CocFzfList outline<CR>
-nnoremap <silent> <space>s       :<C-u>CocFzfList symbols<CR>
-nnoremap <silent> <space>S       :<C-u>CocFzfList services<CR>
-nnoremap <silent> <space>p       :<C-u>CocFzfListResume<CR>"
+nnoremap <silent> <space>a :<C-u>CocFzfList diagnostics<CR>
+nnoremap <silent> <space>b :<C-u>CocFzfList diagnostics --current-buf<CR>
+nnoremap <silent> <space>c :<C-u>CocFzfList commands<CR>
+nnoremap <silent> <space>e :<C-u>CocFzfList extensions<CR>
+nnoremap <silent> <space>l :<C-u>CocFzfList location<CR>
+nnoremap <silent> <space>o :<C-u>CocFzfList outline<CR>
+nnoremap <silent> <space>s :<C-u>CocFzfList symbols<CR>
+nnoremap <silent> <space>S :<C-u>CocFzfList services<CR>
+nnoremap <silent> <space>p :<C-u>CocFzfListResume<CR>"
 
 nnoremap <silent> <space><space>m :<C-u>CocFzfList symbols --kind Method<CR>
 nnoremap <silent> <space><space>c :<C-u>CocFzfList symbols --kind Class<CR>
 nnoremap <silent> <space><space>f :<C-u>CocFzfList symbols --kind Function<CR>
+nnoremap <silent> <space><space>s :<C-u>CocList symbols<CR>
 
 " coc-snippets
 imap <C-l> <Plug>(coc-snippets-expand) " Use <C-l> for trigger snippet expand.
@@ -334,12 +351,30 @@ hlmap["type.builtin"] = "Type"
 hlmap["structure"] = "Structure"
 EOF
 highlight link TSError Normal
-autocmd FileType python autocmd CursorHold * silent :TSBufEnable highlight
 
 " highlight SneakScope guifg=#1d2021 guibg=#b57614
 " highlight Sneak guifg=#1d2021 guibg=#fe8019
 " highlight SneakLabel guifg=#1d2021 guibg=#fe8019
 
+"# [4.9] vimwiki / calendar.vim
+" set markdown syntax
+" let g:vimwiki_list = [{'path': '~/vimwiki/',
+"                       \ 'syntax': 'markdown', 'ext': '.md'}]
+
+hi link VimwikiHeader1 gruvbox_bright_green_bold
+hi link VimwikiHeader2 gruvbox_bright_aqua_bold
+hi link VimwikiHeader3 gruvbox_bright_yellow_bold
+hi link VimwikiHeader4 gruvbox_bright_orange_bold
+hi link VimwikiHeader5 gruvbox_bright_red_bold
+hi link VimwikiHeader6 gruvbox_bright_purple_bold
+let g:vimwiki_listsyms = '✗○◐●✓'
+
+let g:calendar_google_calendar = 1
+
+
+"# [4.10] gruvbox colors
+
+" fg
 hi gruvbox_dark0_hard  guifg=#1d2021
 hi gruvbox_dark0       guifg=#282828
 hi gruvbox_dark0_soft  guifg=#32302f
@@ -380,6 +415,7 @@ hi gruvbox_faded_purple   gui=NONE guifg=#8f3f71
 hi gruvbox_faded_aqua     gui=NONE guifg=#427b58
 hi gruvbox_faded_orange   gui=NONE guifg=#af3a03
 
+" fg-bold
 hi gruvbox_bright_red_bold     gui=bold guifg=#fb4934 
 hi gruvbox_bright_green_bold   gui=bold guifg=#b8bb26 
 hi gruvbox_bright_yellow_bold  gui=bold guifg=#fabd2f 
@@ -401,6 +437,49 @@ hi gruvbox_faded_blue_bold     gui=bold guifg=#076678
 hi gruvbox_faded_purple_bold   gui=bold guifg=#8f3f71 
 hi gruvbox_faded_aqua_bold     gui=bold guifg=#427b58 
 hi gruvbox_faded_orange_bold   gui=bold guifg=#af3a03 
+
+" bg
+hi gruvbox_dark0_hard_bg  guibg=#1d2021
+hi gruvbox_dark0_bg       guibg=#282828
+hi gruvbox_dark0_soft_bg  guibg=#32302f
+hi gruvbox_dark1_bg       guibg=#3c3836
+hi gruvbox_dark2_bg       guibg=#504945
+hi gruvbox_dark3_bg       guibg=#665c54
+hi gruvbox_dark4_bg       guibg=#7c6f64
+hi gruvbox_dark4_256_bg   guibg=#7c6f64
+hi gruvbox_gray_245_bg    guibg=#928374
+hi gruvbox_gray_244_bg    guibg=#928374
+hi gruvbox_light0_hard_bg guibg=#f9f5d7
+hi gruvbox_light0_bg      guibg=#fbf1c7
+hi gruvbox_light0_soft_bg guibg=#f2e5bc
+hi gruvbox_light1_bg      guibg=#ebdbb2
+hi gruvbox_light2_bg      guibg=#d5c4a1
+hi gruvbox_light3_bg      guibg=#bdae93
+hi gruvbox_light4_bg      guibg=#a89984
+hi gruvbox_light4_256_bg  guibg=#a89984
+hi gruvbox_bright_red_bg     gui=NONE guibg=#fb4934
+hi gruvbox_bright_green_bg   gui=NONE guibg=#b8bb26
+hi gruvbox_bright_yellow_bg  gui=NONE guibg=#fabd2f
+hi gruvbox_bright_blue_bg    gui=NONE guibg=#83a598
+hi gruvbox_bright_purple_bg  gui=NONE guibg=#d3869b
+hi gruvbox_bright_aqua_bg    gui=NONE guibg=#8ec07c
+hi gruvbox_bright_orange_bg  gui=NONE guibg=#fe8019
+hi gruvbox_neutral_red_bg    gui=NONE guibg=#cc241d
+hi gruvbox_neutral_green_bg  gui=NONE guibg=#98971a
+hi gruvbox_neutral_yellow_bg gui=NONE guibg=#d79921
+hi gruvbox_neutral_blue_bg   gui=NONE guibg=#458588
+hi gruvbox_neutral_purple_bg gui=NONE guibg=#b16286
+hi gruvbox_neutral_aqua_bg   gui=NONE guibg=#689d6a
+hi gruvbox_neutral_orange_bg gui=NONE guibg=#d65d0e
+hi gruvbox_faded_red_bg      gui=NONE guibg=#9d0006
+hi gruvbox_faded_green_bg    gui=NONE guibg=#79740e
+hi gruvbox_faded_yellow_bg   gui=NONE guibg=#b57614
+hi gruvbox_faded_blue_bg     gui=NONE guibg=#076678
+hi gruvbox_faded_purple_bg   gui=NONE guibg=#8f3f71
+hi gruvbox_faded_aqua_bg     gui=NONE guibg=#427b58
+hi gruvbox_faded_orange_bg   gui=NONE guibg=#af3a03
+
+hi gruvbox_yank guibg=#8ec07c guifg=#f9f5d7
 
 " vim:fdm=expr:fdl=0
 " vim:fde=getline(v\:lnum)=~'^"#'?'>'.(matchend(getline(v\:lnum),'"#*')-1)\:'='

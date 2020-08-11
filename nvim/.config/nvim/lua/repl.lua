@@ -1,6 +1,8 @@
 
-function shell(side, command)
-    side = side or "right"
+local M = {}
+
+function M.shell(side, command)
+    side = side or "right" -- default to "right"
 
     local api = vim.api
     if side == "below" then
@@ -25,3 +27,5 @@ function shell(side, command)
     cfg["jobid"] = term_id
     vim.b.slime_config = cfg
 end
+
+return M

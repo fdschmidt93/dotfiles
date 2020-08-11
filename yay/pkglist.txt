@@ -23,16 +23,15 @@ copyq
 cpupower
 cpupower-gui
 crda
+ctags
 cups
 dotnet-runtime
 efibootmgr
-emacs-git
 fakeroot
 fd
 feh
 file
 findutils
-firefox
 fish
 flex
 gawk
@@ -63,6 +62,7 @@ intel-media-sdk
 intel-ucode
 keepassxc
 keychain
+kitty
 kodi
 kodi-addon-inputstream-adaptive-git
 libcdio-paranoia
@@ -84,6 +84,7 @@ man-db
 mons
 mpv-full
 neofetch
+neomutt
 neovide-git
 neovim-nightly
 neovim-remote

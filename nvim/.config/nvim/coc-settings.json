@@ -5,6 +5,6 @@
 	"suggest.enablePreview": true,
     "diagnostic.virtualText": true,
     "diagnostic.virtualTextCurrentLineOnly": false,
-    "pyright.disableLanguageServices": true,
-    "coc.source.vimtex.enable": false
+    "pyright.disableLanguageServices": false,
+    "coc.source.vimtex.enable": true
 }
