@@ -8,6 +8,11 @@
 
 # status bar
 exec_always --no-startup-id ~/.config/polybar/launch.sh &
+exec_always picom -b --experimental-backends --vsync
+exec_always mons -e right
+exec_always /usr/bin/feh --no-fehbg --bg-scale '/home/fdschmidt/.gruvbox_background.png' 
+
+#
 # nm-applet
 exec --no-startup-id nm-applet &
 
@@ -30,7 +35,7 @@ font pango:monospace 8
 bindsym $mod+p move workspace to output right
 
 # i3 gaps
-gaps inner 15
+gaps inner 12
 # Activate smart borders (always)
 smart_borders on
 # Activate smart borders (only when there are effectively no gaps)
@@ -75,8 +80,8 @@ bindsym $mod+Shift+t exec thunderbird
 bindsym $mod+Shift+q kill
 
 # start rofi (app launcher)
-bindsym $mod+d exec --no-startup-id rofi -show drun -show-icons -theme gruvbox-dark-config -width 50 -location 2 -lines 5 -bw 2 -yoffset 30
-bindsym $mod+Shift+d exec --no-startup-id rofi -show window -show-icons -theme gruvbox-dark-config -width 50 -location 2 -lines 5 -bw 2 -yoffset 30
+bindsym $mod+d exec --no-startup-id rofi -show drun -show-icons -theme gruvbox-dark-config -width 50 -location 2 -lines 5 -bw 2 -yoffset 28
+bindsym $mod+Shift+d exec --no-startup-id rofi -show window -show-icons -theme gruvbox-dark-config -width 50 -location 2 -lines 5 -bw 2 -yoffset 28
 
 # change focus
 bindsym $mod+h focus left

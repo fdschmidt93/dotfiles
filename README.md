@@ -4,12 +4,15 @@ My dotfiles are synchronized with stow. To link a single configuration or the en
 
 ## Notable packages:
 * **OS:** Arch Linux
-* **Tiling Window Manager:** i3-gaps
-* **Editor:** Neovim
-* **Terminal Emulator:** Alacritty-ligatures
-* **Shell** fish
 * **Colorscheme:** Gruvbox
 * **Compositor:** Picom
+* **Editor:** Neovim
+* **Shell** fish
+* **Status Bar:** Polybar
+* **Terminal Emulator:** Alacritty-ligatures
+* **Tiling Window Manager:** i3-gaps
+* **Font:** Fira Code Nerd Font
+* **Application Launcher:** Rofi
 
 ## Sample Screenshots
 

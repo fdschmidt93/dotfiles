@@ -12,7 +12,9 @@ Plug 'jpalardy/vim-slime' " REPL for vim
 Plug 'kkoomen/vim-doge' " Documentation
 Plug 'neoclide/coc.nvim', {'branch': 'release'} " Intellisense
 Plug 'antoinemadec/coc-fzf' " fzf integration into coc
-Plug 'rafcamlet/coc-nvim-lua'
+" Plug 'rafcamlet/coc-nvim-lua'
+Plug 'kdheepak/lazygit.nvim'
+
 " Python
 Plug 'nvim-treesitter/nvim-treesitter' " fast incremental syntax highlighting and more
 " Themes
@@ -20,7 +22,7 @@ Plug 'morhetz/gruvbox' " main theme
 Plug 'crusoexia/vim-monokai' " alternatives
 Plug 'iCyMind/NeoSolarized'
 " fzf
-Plug '~/.fzf' " fast fuzzy finding (paired with ripgrep)
+Plug '~/.fzf'
 Plug 'junegunn/fzf.vim' " vim integration
 " Other
 Plug 'vim-airline/vim-airline'
@@ -33,11 +35,13 @@ Plug 'itchyny/calendar.vim'
 Plug 'lervag/vimtex' " Latex integration (+ coc-texlab)
 Plug 'KeitaNakamura/tex-conceal.vim', {'for': 'tex'} " prettify latex syntax
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  } " live markdown
-
 " Plug 'neovim/nvim-lsp'
 " Plug 'nvim-lua/diagnostic-nvim'
 " Plug 'nvim-lua/completion-nvim'
 " Plug 'steelsojka/completion-buffers'
+Plug 'kyazdani42/nvim-web-devicons' " Recommended (for coloured icons)
+Plug 'Akin909/nvim-bufferline.lua' " beautiful tabline
+Plug 'kyazdani42/nvim-tree.lua'
 call plug#end()
 
 
@@ -70,37 +74,67 @@ let g:gruvbox_contrast_dark = 'hard'
 colorscheme gruvbox
 syntax enable
 let &fcs='eob: ' " hide end of buffer line markers
-highlight VertSplit ctermbg=NONE guibg=NONE guifg=NONE ctermfg=NONE " hide background of VertSplit
+" highlight VertSplit ctermbg=NONE guibg=NONE guifg=NONE ctermfg=NONE 
+highlight VertSplit ctermbg=NONE guibg=NONE guifg=#3c3836 ctermfg=NONE " hide background of VertSplit
 set guifont=Fira\ Code\ Nerd\ Font:h14 " neovide font setting
+highlight Comment gui=italic
 if exists('g:neovide') " use opacity for alacritty
 else
     highlight Normal ctermbg=NONE guibg=NONE
 endif
-
+set fillchars+=vert:\|
+" set fillchars=vert:│
 augroup LuaHighlight " highlight yanking with Gruvbox Aqua
   autocmd!
   autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank({higroup="gruvbox_yank", timeout=250})
 augroup END
-
+set fillchars+=vert:\▏
 lua require'colorizer'.setup() -- rgb hex color codes in nvim
-
+hi Pmenu ctermbg=NONE guibg=#3c3836 " merge with cursorline style
+" beautiful tabline
+:lua << EOF
+require'bufferline'.setup{
+    options = {
+        view = "multiwindow",
+        numbers = "ordinal",
+        number_style = "superscript",
+        mappings = true,
+        -- close_icon = "",
+        -- max_name_length = 18,
+        tab_size = 18,
+        show_buffer_close_icons = false,
+        separator_style = "thin",
+        enforce_regular_tabs = true
+    },
+    highlights = {
+        bufferline_selected = {
+          guifg = normal_fg,
+          guibg = normal_bg,
+          gui = "bold",
+        }
+    }
+}
+EOF
 "# [3] Mappings
 imap jk <Esc>| " Go to normal mode with jk
 nmap oo m`o<Esc>``| " Insert empty line below with oo
 nmap OO m`O<Esc>``| " Insert empty line above with OO
 nmap <Leader>y "+y| " Copy to global clipboard with leader prefix
 nmap <Leader>p "+p| " Paste from global clipboard with leader prefix
+nnoremap Y y$ " consistent capitalized letter
+" resize splits with arrow keys
 noremap <silent> <C-S-Left> :vertical resize +2<CR> " Resize splits with arrow keys
 noremap <silent> <C-S-Right> :vertical resize -2<CR>
 noremap <silent> <C-S-Up> :resize +2<CR>
 noremap <silent> <C-S-Down> :resize -2<CR>
-" nmap <Leader>t :vs+te<CR>| " Open right-sided terminal with <leader>t
+" enhance vim-slime with lua
 nmap <Leader>t :lua repl.shell("right", nil)<CR>" Open right-sided terminal with <leader>t
 nmap <Leader>ti :lua repl.shell("right", "ipy") <CR>" Open right-sided terminal with <leader>t
 nmap <Leader><C-t> :lua repl.shell("below", nil)<CR> " Open (smaller) terminal below
 nmap <Leader><C-t>i :lua repl.shell("below", "ipy")<CR> " Open (smaller) terminal below
 nmap <Leader>w :w<CR>| " Save buffer with <leader>w
 nmap <Leader>q :q!<CR>| " Close buffer with <leader>q
+" move around splits with alt
 tnoremap <A-h> <C-\><C-N><C-w>h| " Move with M from any mode
 tnoremap <A-j> <C-\><C-N><C-w>j|
 tnoremap <A-k> <C-\><C-N><C-w>k|
@@ -119,6 +153,9 @@ map f <Plug>Sneak_f
 map F <Plug>Sneak_F
 map t <Plug>Sneak_t
 map T <Plug>Sneak_T
+" tree lua
+nnoremap <Leader>nt :LuaTreeToggle<CR>
+nnoremap <Leader>nf :LuaTreeFindFile<cr>:LuaTreeShow<CR>
 
 "# [4] Plugins
 
@@ -158,7 +195,7 @@ let g:tex_conceal="abdgm"
 
 
 "# [4.5] vim-airline
-let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#enabled = 0
 let g:airline#extensions#coc#enabled = 1
 let g:airline_powerline_fonts = 1"
 
@@ -240,75 +277,97 @@ imap <C-j> <Plug>(coc-snippets-expand-jump)" " Use <C-j> for both expand and jum
 autocmd FileType python let b:coc_root_patterns = ['.git', '.env'] " python workspace
 
 "# [4.8] nvim-treesitter
-lua <<EOF
-require'nvim-treesitter.configs'.setup { highlight = { enable = true,                    -- false will disable the whole extension disable = {},                     -- list of language that will be disabled
-        custom_captures = {               -- mapping of user defined captures to highlight groups
-          -- ["foo.bar"] = "Identifier"   -- highlight own capture @foo.bar with highlight group "Identifier", see :h nvim-treesitter-query-extensions
-        },            
-    },
-    incremental_selection = {
-        enable = true,
-        disable = {},
-        keymaps = {                       -- mappings for incremental selection (visual mappings)
-          init_selection = 'gnn',         -- maps in normal mode to init the node/scope selection
-          node_incremental = "grn",       -- increment to the upper named parent
-          scope_incremental = "grc",      -- increment to the upper scope (as defined in locals.scm)
-          node_decremental = "grm",       -- decrement to the previous node
-        }
-    },
-    refactor = {
-      highlight_definitions = {
-        enable = true
-      },
-      highlight_current_scope = {
-        enable = false
-      },
-      smart_rename = {
-        enable = true,
-        keymaps = {
-          smart_rename = "grr"            -- mapping to rename reference under cursor
-        }
-      },
-      navigation = {
-        enable = true,
-        keymaps = {
-          goto_definition = "gnd",        -- mapping to go to definition of symbol under cursor
-          list_definitions = "gnD"        -- mapping to list all definitions in current file
-        }
-      }
-    },
-    textobjects = { -- syntax-aware textobjects
-	enable = true,
-	disable = {},
-	keymaps = {
-	    ["iL"] = { -- you can define your own textobjects directly here
-		python = "(function_definition) @function",
-		cpp = "(function_definition) @function",
-		c = "(function_definition) @function",
-		java = "(method_declaration) @function"
-	    },
-	    -- or you use the queries from supported languages with textobjects.scm
-	    ["af"] = "@function.outer",
-	    ["if"] = "@function.inner",
-	    ["aC"] = "@class.outer",
-	    ["iC"] = "@class.inner",
-	    ["ac"] = "@conditional.outer",
-	    ["ic"] = "@conditional.inner",
-	    ["ae"] = "@block.outer",
-	    ["ie"] = "@block.inner",
-	    ["al"] = "@loop.outer",
-	    ["il"] = "@loop.inner",
-	    ["is"] = "@statement.inner",
-	    ["as"] = "@statement.outer",
-	    ["ad"] = "@comment.outer",
-	    ["am"] = "@call.outer",
-	    ["im"] = "@call.inner"
-	}
-    },
-    ensure_installed = 'all' -- one of 'all', 'language', or a list of languages
-}
+lua << EOF
+require "nvim-treesitter.configs"
+require "nvim-treesitter.configs".setup(
+    {
+        highlight = {
+            enable = true -- false will disable the whole extension
+        },
+        incremental_selection = {
+            -- this enables incremental selection
+            enable = true,
+            disable = {},
+            keymaps = {
+                init_selection = "<enter>", -- maps in normal mode to init the node/scope selection
+                node_incremental = "<enter>", -- increment to the upper named parent
+                scope_incremental = "Ts", -- increment to the upper scope 
+                node_decremental = "grm"
+            }
+        },
+        node_movement = {
+            -- this enables incremental selection
+            enable = true,
+            highlight_current_node = true,
+            disable = {},
+            keymaps = {
+                move_up = "<a-k>",
+                move_down = "<a-j>",
+                move_left = "<a-h>",
+                move_right = "<a-l>",
+                swap_up = "<s-a-k>",
+                swap_down = "<s-a-j>",
+                swap_left = "<s-a-h>",
+                swap_right = "<s-a-l>",
+                select_current_node = "<leader>ff"
+            }
+        },
+        textobjects = {
+            enable = true,
+            disable = {},
+            keymaps = {
+                ["af"] = "@function.outer",
+                ["if"] = "@function.inner",
+                ["aC"] = "@class.outer",
+                ["iC"] = "@class.inner",
+                ["ac"] = "@conditional.outer",
+                ["ic"] = "@conditional.inner",
+                ["ae"] = "@block.outer",
+                ["ie"] = "@block.inner",
+                ["al"] = "@loop.outer",
+                ["il"] = "@loop.inner",
+                ["is"] = "@statement.inner",
+                ["as"] = "@statement.outer",
+                ["ad"] = "@comment.outer",
+                ["id"] = "@comment.inner",
+                ["am"] = "@call.outer",
+                ["im"] = "@call.inner"
+            },
+        },
+        fold = {
+            enable = true
+        },
+        refactor = {
+            highlight_current_scope = {
+                enable = false,
+                inverse_highlighting = true,
+                disable = {"python"}
+            },
+            highlight_definitions = {
+                enable = true,
+            },
+            smart_rename = {
+                enable = true,
+                disable = {},
+                keymaps = {
+                    smart_rename = "grr"
+                }
+            },
+            navigation = {
+                enable = true,
+                disable = {},
+                keymaps = {
+                    goto_definition = "gnd",
+                    list_definitions = "gnD"
+                }
+            }
+        },
+        ensure_installed = "all"
+    }
+)
+
 require "nvim-treesitter.highlight"
-local hlmap = vim.treesitter.TSHighlighter.hl_map
+local hlmap = vim.treesitter.highlighter.hl_map
 
 --Misc
 hlmap.error = nil
@@ -351,6 +410,7 @@ hlmap["type.builtin"] = "Type"
 hlmap["structure"] = "Structure"
 EOF
 highlight link TSError Normal
+" autocmd FileType python autocmd InsertLeave * silent :TSBufEnable highlight
 
 " highlight SneakScope guifg=#1d2021 guibg=#b57614
 " highlight Sneak guifg=#1d2021 guibg=#fe8019

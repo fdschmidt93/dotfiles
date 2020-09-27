@@ -1,7 +1,7 @@
 acpi
 acpid
-adobe-source-han-sans-jp-fonts
 adwaita-qt
+aerc-git
 alacritty-ligatures
 alsa-oss
 alsa-utils
@@ -27,6 +27,7 @@ ctags
 cups
 dotnet-runtime
 efibootmgr
+emacs-git
 fakeroot
 fd
 feh
@@ -37,6 +38,7 @@ flex
 gawk
 gcc
 gettext
+gimp
 git
 gnome-icon-theme
 gnome-screenshot
@@ -62,9 +64,9 @@ intel-media-sdk
 intel-ucode
 keepassxc
 keychain
-kitty
 kodi
 kodi-addon-inputstream-adaptive-git
+lazygit-git
 libcdio-paranoia
 libcmrt
 libmpdclient
@@ -82,10 +84,9 @@ m4
 make
 man-db
 mons
-mpv-full
+mpv-git
+mutt-wizard-git
 neofetch
-neomutt
-neovide-git
 neovim-nightly
 neovim-remote
 nerd-fonts-fira-code
@@ -94,6 +95,7 @@ nerd-fonts-iosevka
 network-manager-applet
 networkmanager-dmenu-git
 networkmanager-openconnect
+nfs-utils
 nodejs
 nodejs-neovim
 npm
@@ -101,6 +103,7 @@ ntfs-3g
 nvidia
 nvidia-prime
 nvidia-settings
+ocl-icd
 opencl-nvidia
 openssh
 optimus-manager
@@ -125,9 +128,11 @@ python-ueberzug-git
 qt5-styleplugins
 qt5ct
 ranger-git
+reflector
 ripgrep
 rofi
 rsound
+rustup
 sddm
 sed
 siji-git
@@ -135,6 +140,7 @@ spirv-cross
 sshfs
 stow
 sudo
+svp
 texinfo
 texlive-bibtexextra
 texlive-core
@@ -155,6 +161,7 @@ tmux
 ttf-dejavu
 ttf-hanazono
 udisks2
+unrar
 unzip
 upower
 vapoursynth-git
