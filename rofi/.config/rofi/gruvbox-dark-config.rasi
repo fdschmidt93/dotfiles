@@ -1,6 +1,6 @@
 * {
 
-    default-background:                  rgba ( 40, 40, 40, 100 % );
+    default-background:                  rgba ( 40, 40, 40, 60 % );
     default-foreground:                  rgba ( 218, 185, 151, 100 % );
     default-border:                  rgba ( 29, 32, 33, 100 % );
     alternative-background:            rgba ( 28, 28, 28, 0 % );

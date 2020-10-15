@@ -17,6 +17,7 @@ Plug 'kdheepak/lazygit.nvim'
 
 " Python
 Plug 'nvim-treesitter/nvim-treesitter' " fast incremental syntax highlighting and more
+Plug 'nvim-treesitter/nvim-treesitter-textobjects' " fast incremental syntax highlighting and more
 " Themes
 Plug 'morhetz/gruvbox' " main theme
 Plug 'crusoexia/vim-monokai' " alternatives
@@ -31,6 +32,7 @@ Plug 'vimwiki/vimwiki'
 Plug 'norcalli/nvim-colorizer.lua' " show hex rgb colors
 Plug 'chrisbra/csv.vim'
 Plug 'itchyny/calendar.vim'
+Plug 'mattn/emmet-vim'
 " Writing
 Plug 'lervag/vimtex' " Latex integration (+ coc-texlab)
 Plug 'KeitaNakamura/tex-conceal.vim', {'for': 'tex'} " prettify latex syntax
@@ -41,7 +43,7 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  } " live m
 " Plug 'steelsojka/completion-buffers'
 Plug 'kyazdani42/nvim-web-devicons' " Recommended (for coloured icons)
 Plug 'Akin909/nvim-bufferline.lua' " beautiful tabline
-Plug 'kyazdani42/nvim-tree.lua'
+" Plug 'kyazdani42/nvim-tree.lua'
 call plug#end()
 
 
@@ -64,6 +66,7 @@ set clipboard^=unnamed,unnamedplus " clipboard
 set noshowmode " mode show by airline
 set hidden
 set scrolloff=10  "always 10 lines below/above cursor 
+
 
 "# [2] Theme & Syntax Highlighting
 " Theme
@@ -156,6 +159,9 @@ map T <Plug>Sneak_T
 " tree lua
 nnoremap <Leader>nt :LuaTreeToggle<CR>
 nnoremap <Leader>nf :LuaTreeFindFile<cr>:LuaTreeShow<CR>
+" html for neomutt
+nnoremap <Leader>ht :set filetype=html<CR>
+
 
 "# [4] Plugins
 
@@ -203,7 +209,7 @@ let g:airline_powerline_fonts = 1"
 let g:doge_enable_mappings = 1 "
 
 "# [4.7] coc.nvim
-let g:coc_global_extensions = ['coc-json', 'coc-vimtex', 'coc-texlab', 'coc-snippets', 'coc-pyright', 'coc-lua']
+let g:coc_global_extensions = ['coc-json', 'coc-vimtex', 'coc-texlab', 'coc-snippets', 'coc-pyright', 'coc-lua', 'coc-emmet']
 
 set updatetime=300
 
@@ -313,25 +319,27 @@ require "nvim-treesitter.configs".setup(
             }
         },
         textobjects = {
-            enable = true,
-            disable = {},
-            keymaps = {
-                ["af"] = "@function.outer",
-                ["if"] = "@function.inner",
-                ["aC"] = "@class.outer",
-                ["iC"] = "@class.inner",
-                ["ac"] = "@conditional.outer",
-                ["ic"] = "@conditional.inner",
-                ["ae"] = "@block.outer",
-                ["ie"] = "@block.inner",
-                ["al"] = "@loop.outer",
-                ["il"] = "@loop.inner",
-                ["is"] = "@statement.inner",
-                ["as"] = "@statement.outer",
-                ["ad"] = "@comment.outer",
-                ["id"] = "@comment.inner",
-                ["am"] = "@call.outer",
-                ["im"] = "@call.inner"
+            select = {
+                enable = true,
+                disable = {},
+                keymaps = {
+                    ["af"] = "@function.outer",
+                    ["if"] = "@function.inner",
+                    ["aC"] = "@class.outer",
+                    ["iC"] = "@class.inner",
+                    ["ac"] = "@conditional.outer",
+                    ["ic"] = "@conditional.inner",
+                    ["ae"] = "@block.outer",
+                    ["ie"] = "@block.inner",
+                    ["al"] = "@loop.outer",
+                    ["il"] = "@loop.inner",
+                    ["is"] = "@statement.inner",
+                    ["as"] = "@statement.outer",
+                    ["ad"] = "@comment.outer",
+                    ["id"] = "@comment.inner",
+                    ["am"] = "@call.outer",
+                    ["im"] = "@call.inner"
+                },
             },
         },
         fold = {
@@ -417,10 +425,10 @@ highlight link TSError Normal
 " highlight SneakLabel guifg=#1d2021 guibg=#fe8019
 
 "# [4.9] vimwiki / calendar.vim
-" set markdown syntax
-" let g:vimwiki_list = [{'path': '~/vimwiki/',
-"                       \ 'syntax': 'markdown', 'ext': '.md'}]
+" let g:vimwiki_list = [{'path': '~/vimwiki/',  'syntax': 'markdown', 'ext': '.md'}]
 
+  " let g:vimwiki_ext2syntax = {'': 'markdown'}
+let g:vimwiki_filetypes = ['markdown', 'pandoc']
 hi link VimwikiHeader1 gruvbox_bright_green_bold
 hi link VimwikiHeader2 gruvbox_bright_aqua_bold
 hi link VimwikiHeader3 gruvbox_bright_yellow_bold
@@ -428,9 +436,8 @@ hi link VimwikiHeader4 gruvbox_bright_orange_bold
 hi link VimwikiHeader5 gruvbox_bright_red_bold
 hi link VimwikiHeader6 gruvbox_bright_purple_bold
 let g:vimwiki_listsyms = '✗○◐●✓'
-
+let g:vimwiki_global_ext = 1
 let g:calendar_google_calendar = 1
-
 
 "# [4.10] gruvbox colors
 
