@@ -1,10 +1,10 @@
 {
 	"python.pythonPath": "/home/fdschmidt/miniconda3/bin/python",
-    "python.jediEnabled": false,
-    "python.linting.enabled": false,
 	"suggest.enablePreview": true,
     "diagnostic.virtualText": true,
     "diagnostic.virtualTextCurrentLineOnly": false,
     "pyright.disableLanguageServices": false,
+    "python.formatting.provider": "black",
+    "python.formatting.blackPath": "/home/fdschmidt/miniconda3/bin/black",
     "coc.source.vimtex.enable": true
 }

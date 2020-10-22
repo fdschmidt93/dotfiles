@@ -9,7 +9,7 @@ Plug 'tpope/vim-surround' " quoting/parenthesizing made simple
 Plug 'tpope/vim-unimpaired' " 
 Plug 'justinmk/vim-sneak' " 2 character motions Coding
 Plug 'jpalardy/vim-slime' " REPL for vim
-Plug 'kkoomen/vim-doge' " Documentation
+Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
 Plug 'neoclide/coc.nvim', {'branch': 'release'} " Intellisense
 Plug 'antoinemadec/coc-fzf' " fzf integration into coc
 " Plug 'rafcamlet/coc-nvim-lua'
@@ -262,6 +262,7 @@ nnoremap <silent> <space>a :<C-u>CocFzfList diagnostics<CR>
 nnoremap <silent> <space>b :<C-u>CocFzfList diagnostics --current-buf<CR>
 nnoremap <silent> <space>c :<C-u>CocFzfList commands<CR>
 nnoremap <silent> <space>e :<C-u>CocFzfList extensions<CR>
+nnoremap <silent> <space>f :call CocActionAsync('format')<CR>
 nnoremap <silent> <space>l :<C-u>CocFzfList location<CR>
 nnoremap <silent> <space>o :<C-u>CocFzfList outline<CR>
 nnoremap <silent> <space>s :<C-u>CocFzfList symbols<CR>
@@ -289,6 +290,9 @@ require "nvim-treesitter.configs".setup(
     {
         highlight = {
             enable = true -- false will disable the whole extension
+        },
+        indent = {
+            enable = true
         },
         incremental_selection = {
             -- this enables incremental selection
@@ -428,7 +432,7 @@ highlight link TSError Normal
 " let g:vimwiki_list = [{'path': '~/vimwiki/',  'syntax': 'markdown', 'ext': '.md'}]
 
   " let g:vimwiki_ext2syntax = {'': 'markdown'}
-let g:vimwiki_filetypes = ['markdown', 'pandoc']
+" let g:vimwiki_filetypes = ['markdown', 'pandoc']
 hi link VimwikiHeader1 gruvbox_bright_green_bold
 hi link VimwikiHeader2 gruvbox_bright_aqua_bold
 hi link VimwikiHeader3 gruvbox_bright_yellow_bold

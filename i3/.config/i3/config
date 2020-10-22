@@ -9,7 +9,7 @@
 # status bar
 exec_always --no-startup-id ~/.config/polybar/launch.sh &
 exec_always --no-startup-id /usr/bin/dunst &
-exec --no-startup-id picom -b --experimental-backends --backend glx --vsync
+exec_always --no-startup-id picom -b --experimental-backends --backend glx --vsync
 exec_always mons -e right
 exec_always xset r rate 500 60
 exec_always /usr/bin/feh --no-fehbg --bg-scale '/home/fdschmidt/.gruvbox_background.png' 
@@ -61,8 +61,12 @@ bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT
 bindsym XF86AudioMute exec --no-startup-id amixer set-sink-mute @DEFAULT_SINK@ toggle
 # bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
 
-# Bind monitor cycling
-bindsym Shift+F5 exec --no-startup-id mons -n right && ~/.config/polybar/launch.sh
+# Monitor settings
+bindsym Shift+F5 exec --no-startup-id mons -n right && sleep 1 && ~/.config/polybar/launch.sh
+bindsym Shift+F7 exec --no-startup-id mons -o && sleep 1 && ~/.config/polybar/launch.sh 
+bindsym Shift+F8 exec --no-startup-id mons -s && sleep 1 && ~/.config/polybar/launch.sh 
+bindsym Shift+F9 exec --no-startup-id mons -e right && sleep 1 && ~/.config/polybar/launch.sh 
+
 
 # Screen brightness controls
 bindsym XF86MonBrightnessUp exec light -A 5 # increase screen brightness
@@ -71,11 +75,9 @@ bindsym XF86MonBrightnessDown exec light -U 5 # decrease screen brightness
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
-# start a terminal
+# start applications
 bindsym $mod+Return exec alacritty
-# start chromium
 bindsym $mod+t exec chromium
-# start chromium
 bindsym $mod+Shift+t exec thunderbird
 
 # kill focused window

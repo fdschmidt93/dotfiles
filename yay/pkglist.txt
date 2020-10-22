@@ -12,7 +12,7 @@ automake
 avahi
 base
 bashmount
-bbswitch
+bbswitch-dkms-git
 binutils
 bison
 blueman
@@ -29,6 +29,8 @@ cpupower
 cpupower-gui
 crda
 ctags
+cuda
+cudnn
 cups
 dotnet-runtime
 dunst-git
@@ -80,6 +82,7 @@ lazygit-git
 libcdio-paranoia
 libcmrt
 libmpdclient
+libreoffice-fresh
 libtool
 libva-utils
 libva-vdpau-driver-vp9-git
@@ -87,6 +90,7 @@ libvdpau-va-gl
 light
 linux
 linux-firmware
+linux-lts
 lua51
 luarocks
 luit
@@ -157,8 +161,10 @@ ripgrep
 rofi
 rsound
 rustup
+screenkey
 sddm
 sed
+sentencepiece-git
 siji-git
 slack-desktop
 spirv-cross
@@ -237,3 +243,4 @@ youtube-dl
 zathura
 zathura-djvu
 zathura-pdf-mupdf
+zoom-system-qt
