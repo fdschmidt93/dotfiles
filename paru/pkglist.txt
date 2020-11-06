@@ -103,7 +103,7 @@ mpv-git
 mtpfs
 mutt-wizard-git
 neofetch
-neovim-nightly-git
+neovim-git
 neovim-remote
 nerd-fonts-fira-code
 nerd-fonts-hack
@@ -198,6 +198,7 @@ upower
 urlview-git
 vapoursynth-git
 vdpauinfo
+vlc
 vulkan-intel
 wget
 which

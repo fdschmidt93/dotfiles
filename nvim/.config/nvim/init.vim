@@ -12,12 +12,13 @@ Plug 'jpalardy/vim-slime' " REPL for vim
 Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
 Plug 'neoclide/coc.nvim', {'branch': 'release'} " Intellisense
 Plug 'antoinemadec/coc-fzf' " fzf integration into coc
-" Plug 'rafcamlet/coc-nvim-lua'
 Plug 'kdheepak/lazygit.nvim'
 
 " Python
 Plug 'nvim-treesitter/nvim-treesitter' " fast incremental syntax highlighting and more
 Plug 'nvim-treesitter/nvim-treesitter-textobjects' " fast incremental syntax highlighting and more
+Plug 'romgrk/nvim-treesitter-context'
+
 " Themes
 Plug 'morhetz/gruvbox' " main theme
 Plug 'crusoexia/vim-monokai' " alternatives

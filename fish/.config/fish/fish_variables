@@ -1,7 +1,7 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
-SETUVAR --export SSH_AGENT_PID:1816
-SETUVAR --export SSH_AUTH_SOCK:/tmp/ssh\x2dmB69b26KiWl6/agent\x2e1815
+SETUVAR --export SSH_AGENT_PID:558
+SETUVAR --export SSH_AUTH_SOCK:/tmp/ssh\x2dZi090joPfst0/agent\x2e557
 SETUVAR __fish_init_2_39_8:\x1d
 SETUVAR __fish_init_2_3_0:\x1d
 SETUVAR __fish_init_3_x:\x1d
@@ -10,6 +10,7 @@ SETUVAR _fish_abbr_acfg:nvim\x20/home/fdschmidt/\x2econfig/alacritty/alacritty\x
 SETUVAR _fish_abbr_battery:upower\x20\x2di\x20/org/freedesktop/UPower/devices/battery_BAT0
 SETUVAR _fish_abbr_bm:bashmount
 SETUVAR _fish_abbr_ca:conda\x20activate
+SETUVAR _fish_abbr_fcfg:nvim\x20/home/fdschmidt/\x2econfig/fish/config\x2efish
 SETUVAR _fish_abbr_hybrid:optimus\x2dmanager\x20\x2d\x2dswitch\x20hybrid
 SETUVAR _fish_abbr_intel:optimus\x2dmanager\x20\x2d\x2dswitch\x20intel
 SETUVAR _fish_abbr_kchain:keychain\x20/home/fdschmidt/\x2essh/id_rsa
@@ -21,6 +22,7 @@ SETUVAR _fish_abbr_om:optimus\x2dmanager
 SETUVAR _fish_abbr_pbar:bash\x20/home/fdschmidt/\x2econfig/polybar/launch\x2esh
 SETUVAR _fish_abbr_pkg__backup:sudo\x20pacman\x20\x2dQqe
 SETUVAR _fish_abbr_rr:ranger
+SETUVAR _fish_abbr_z:zathura
 SETUVAR bookmarks:/home/fdschmidt
 SETUVAR budspencer_colors:000000\x1e083743\x1e445659\x1efdf6e3\x1eb58900\x1ecb4b16\x1edc121f\x1eaf005f\x1e6c71c4\x1e268bd2\x1e2aa198\x1e859900
 SETUVAR budspencer_cursors:\x5c033\x5d12\x3b\x23268bd2\x5c007\x1e\x5c033\x5d12\x3b\x23b58900\x5c007\x1e\x5c033\x5d12\x3b\x23af005f\x5c007\x1e\x5c033\x5d12\x3b\x236c71c4\x5c007

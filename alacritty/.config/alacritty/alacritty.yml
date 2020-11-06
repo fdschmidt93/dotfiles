@@ -1,4 +1,4 @@
-# Any items in the `env` entry below will be added as
+#Retina Any items in the `env` entry below will be added as
 # environment variables. Some entries may override variables
 # set by alacritty itself.
 env:
@@ -77,7 +77,7 @@ font:
   normal:
     family: Fira Code Nerd Font
     # family: JetBrains Mono Nerd Font
-    style: Regular
+    style: Retina
 
   # Bold font face
   bold:
@@ -135,8 +135,9 @@ colors:
   primary:
     # hard contrast: background = '0x1d2021'
     # medium background: '0x282828'
-    # background: '0x1d2021'
-    background: '0x282828'
+    background: '0x1d2021'
+    # background: '0x282828'
+    # background: '0x242424'
     # soft contrast: background = '0x32302f'
     foreground: '0xebdbb2'
 
@@ -216,7 +217,7 @@ colors:
 #
 # Window opacity as a floating point number from `0.0` to `1.0`.
 # The value `0.0` is completely transparent and `1.0` is opaque.
-background_opacity: 0.66
+background_opacity: 0.7
 
 # Mouse bindings
 #
