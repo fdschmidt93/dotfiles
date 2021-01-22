@@ -21,6 +21,8 @@ Plug 'romgrk/nvim-treesitter-context'
 
 " Themes
 Plug 'morhetz/gruvbox' " main theme
+" Plug 'sainnhe/gruvbox-material'
+
 Plug 'crusoexia/vim-monokai' " alternatives
 Plug 'iCyMind/NeoSolarized'
 " fzf
@@ -35,18 +37,14 @@ Plug 'chrisbra/csv.vim'
 Plug 'itchyny/calendar.vim'
 Plug 'mattn/emmet-vim'
 " Writing
-Plug 'lervag/vimtex' " Latex integration (+ coc-texlab)
+Plug 'lervag/vimtex'
 Plug 'KeitaNakamura/tex-conceal.vim', {'for': 'tex'} " prettify latex syntax
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  } " live markdown
-" Plug 'neovim/nvim-lsp'
-" Plug 'nvim-lua/diagnostic-nvim'
-" Plug 'nvim-lua/completion-nvim'
-" Plug 'steelsojka/completion-buffers'
+Plug 'neovim/nvim-lsp'
 Plug 'kyazdani42/nvim-web-devicons' " Recommended (for coloured icons)
 Plug 'Akin909/nvim-bufferline.lua' " beautiful tabline
 " Plug 'kyazdani42/nvim-tree.lua'
 call plug#end()
-
 
 "# [1] General
 filetype plugin indent on
@@ -74,8 +72,13 @@ set scrolloff=10  "always 10 lines below/above cursor
 set cursorline " highlight current line
 set termguicolors
 set background=dark
-let g:gruvbox_contrast_dark = 'hard'
+" let g:gruvbox_contrast_dark = 'hard'
 colorscheme gruvbox
+" let g:gruvbox_material_palette = 'mix'
+" let g:gruvbox_material_enable_bold = 1
+" let g:gruvbox_material_enable_italic = 1
+" colorscheme gruvbox-material
+
 syntax enable
 let &fcs='eob: ' " hide end of buffer line markers
 " highlight VertSplit ctermbg=NONE guibg=NONE guifg=NONE ctermfg=NONE 
@@ -110,13 +113,6 @@ require'bufferline'.setup{
         separator_style = "thin",
         enforce_regular_tabs = true
     },
-    highlights = {
-        bufferline_selected = {
-          guifg = normal_fg,
-          guibg = normal_bg,
-          gui = "bold",
-        }
-    }
 }
 EOF
 "# [3] Mappings
@@ -210,6 +206,7 @@ let g:airline_powerline_fonts = 1"
 let g:doge_enable_mappings = 1 "
 
 "# [4.7] coc.nvim
+
 let g:coc_global_extensions = ['coc-json', 'coc-vimtex', 'coc-texlab', 'coc-snippets', 'coc-pyright', 'coc-lua', 'coc-emmet']
 
 set updatetime=300

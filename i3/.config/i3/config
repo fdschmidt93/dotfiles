@@ -40,13 +40,14 @@ bindsym $mod+p move workspace to output right
 
 # i3 gaps
 gaps inner 12
-# Activate smart borders (always)
+# # Activate smart borders (always)
 smart_borders on
 # Activate smart borders (only when there are effectively no gaps)
 smart_borders no_gaps
 
 # remove titlebars
 for_window [class="^.*"] border pixel 2
+
 client.focused          #4c7899 #285577 #ffffff #504945 #504945
 client.focused_inactive #333333 #5f676a #ffffff #3c3836 #3c3836
 client.unfocused        #333333 #222222 #888888 #282828 #282828
@@ -87,7 +88,7 @@ bindsym $mod+Shift+q kill
 
 # start rofi (app launcher)
 bindsym $mod+d exec --no-startup-id rofi -show drun -show-icons -theme gruvbox-dark-config -width 50 -location 2 -lines 5 -bw 2 -yoffset 28
-bindsym $mod+Shift+d exec --no-startup-id rofi -show window -show-icons -theme gruvbox-dark-config -width 50 -location 2 -lines 5 -bw 2 -yoffset 28
+bindsym $mod+Shift+d exec --no-startup-id rofi -show window -show-icons -theme gruvbox-dark-config -width 50 -location 2 -lines 7 -bw 2 -yoffset 28
 
 # change focus
 bindsym $mod+h focus left

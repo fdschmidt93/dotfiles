@@ -23,7 +23,6 @@ chili-sddm-theme
 chromium
 clamtk
 cmocka
-code
 copyq
 cpupower
 cpupower-gui
@@ -35,7 +34,6 @@ cups
 dotnet-runtime
 dunst-git
 efibootmgr
-emacs-git
 fakeroot
 fd
 feh
@@ -73,6 +71,7 @@ intel-hybrid-codec-driver-gcc10
 intel-media-driver
 intel-media-sdk
 intel-ucode
+jdownloader2
 jmtpfs
 keepassxc
 keychain
@@ -99,9 +98,10 @@ m4
 make
 man-db
 mons
-mpv-git
+mpv-full
 mtpfs
 mutt-wizard-git
+nautilus
 neofetch
 neovim-git
 neovim-remote
@@ -124,7 +124,7 @@ nvidia-settings
 ocl-icd
 opencl-nvidia
 openssh
-optimus-manager
+optimus-manager-git
 optimus-manager-qt
 os-prober
 otf-font-awesome-4
@@ -133,15 +133,18 @@ otf-ipafont
 pacman
 pandoc-bin
 parted
+paru-bin
 patch
 pavucontrol
 pdf2svg
+peek
 picom-git
 pkgconf
 polybar
 pulseaudio
 pulseaudio-alsa
 pulseaudio-modules-bt-git
+pychess
 python-aiohttp
 python-cairo
 python-hjson
@@ -158,7 +161,7 @@ ranger-git
 redshift
 reflector
 ripgrep
-rofi
+rofi-git
 rsound
 rustup
 screenkey
@@ -172,6 +175,7 @@ sshfs
 stow
 sudo
 svp
+teams
 texinfo
 texlive-bibtexextra
 texlive-core
@@ -196,8 +200,9 @@ unrar
 unzip
 upower
 urlview-git
-vapoursynth-git
+vapoursynth
 vdpauinfo
+visual-studio-code-bin
 vlc
 vulkan-intel
 wget
@@ -210,7 +215,6 @@ xorg-bdftopcf
 xorg-font-util
 xorg-iceauth
 xorg-server
-xorg-server-xwayland
 xorg-sessreg
 xorg-smproxy
 xorg-x11perf
@@ -234,14 +238,14 @@ xorg-xrandr
 xorg-xrefresh
 xorg-xsetroot
 xorg-xvinfo
+xorg-xwayland
 xorg-xwd
 xorg-xwininfo
 xorg-xwud
 xss-lock
 yarn
-yay
 youtube-dl
 zathura
 zathura-djvu
 zathura-pdf-mupdf
-zoom-system-qt
+zoom
