@@ -17,7 +17,7 @@ exec_always /usr/bin/feh --no-fehbg --bg-scale '/home/fdschmidt/.gruvbox_backgro
 #
 # nm-applet
 exec --no-startup-id nm-applet &
-bindsym Shift+F12 exec --no-startup-id nm-applet &
+bindsym Shift+F6 exec --no-startup-id nm-applet &
 
 
 # i3 config file (v4)

@@ -1,4 +1,4 @@
-set -gx PATH ~/.fzf/bin/ /opt/cuda/bin/ ~/.emacs.d/bin $PATH
+set -gx PATH ~/.fzf/bin/ /opt/cuda/bin/ ~/.emacs.d/bin /home/fdschmidt/.cargo/bin $PATH
 set -x LD_LIBRARY_PATH /usr/local/lib/ /home/fdschmidt/intel/mkl/lib/intel64/ /opt/cuda/lib64/ $LD_LIBRARY_PATH
 set -gx ALPHAVANTAGE_API_KEY "ZT0B722UX6NBPZME"
 set -gx EDITOR /usr/bin/nvim

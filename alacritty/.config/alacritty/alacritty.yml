@@ -75,13 +75,13 @@ scrolling:
 font:
   # Normal (roman) font face
   normal:
-    family: Fira Code Nerd Font
+    family: Fira Code Nerd Font Mono
     # family: JetBrains Mono Nerd Font
-    style: Retina
+    style: Regular
 
   # Bold font face
   bold:
-    family: Fira Code Nerd Font
+    family: Fira Code Nerd Font Mono
     # family: Hack Nerd Font
     style: Bold
 
@@ -89,11 +89,11 @@ font:
   italic:
     # family: Fira Code Nerd Font
     # family: JetBrains Mono Nerd Font
-    family: Hack Nerd Font
+    family: Hack Nerd Font Mono
     style: Italic
 
   # Point size
-  size: 12
+  size: 14
 
   # Offset is the extra space around each character. `offset.y` can be thought of
   # as modifying the line spacing, and `offset.x` as modifying the letter spacing.

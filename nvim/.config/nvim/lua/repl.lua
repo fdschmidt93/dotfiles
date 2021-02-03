@@ -1,8 +1,20 @@
-
 local M = {}
+
+local function launch_conda_env()
+    conda_env = os.getenv('CONDA_PROMPT_MODIFIER')
+    if conda_env ~= nil then
+        conda_env = 'conda activate ' .. string.sub(conda_env, 2, -3) .. ' && '
+        return conda_env
+    end
+    return ''
+end
 
 function M.shell(side, command)
     side = side or "right" -- default to "right"
+    
+    if command ~= nil and string.find(command, "python") then
+        command = launch_conda_env() .. command
+    end
 
     local api = vim.api
     if side == "below" then
@@ -17,7 +29,7 @@ function M.shell(side, command)
     if command == nil then
         api.nvim_call_function("termopen", {"$SHELL"})
     else
-        command = "$SHELL -C " .. command
+        command = "$SHELL -C '" .. command .. "'"
         api.nvim_call_function("termopen", {command})
     end 
     -- jobID = api.nvim_command("terminal")
