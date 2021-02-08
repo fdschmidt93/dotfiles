@@ -47,9 +47,10 @@ Plug 'glepnir/galaxyline.nvim' , {'branch': 'main'}
 Plug 'nvim-lua/lsp-status.nvim'
 Plug 'antoinemadec/FixCursorHold.nvim'
 Plug 'ms-jpq/chadtree', {'branch': 'chad', 'do': 'python3 -m chadtree deps'}
-Plug 'rafcamlet/nvim-luapad'
+" Plug 'rafcamlet/nvim-luapad'
 Plug 'bfredl/nvim-luadev'
-" Plug 'TimUntersberger/neogit'
+Plug 'akinsho/nvim-toggleterm.lua'
+Plug 'TimUntersberger/neogit'
 call plug#end()
 " see lua for lua configs
 :lua << EOF
@@ -57,6 +58,7 @@ require('status_line').load_galaxyline() -- load galaxyline nvim
 require('treesitter')
 require('scope')
 require('lsp_config')
+require('term')
 repl = require('repl') -- shortcuts for vim-slime
 EOF
 
@@ -183,7 +185,8 @@ silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)
 
 "# [4.2] vim-slime
 let g:slime_target = "neovim"
-let g:slime_python_ipython = 1"
+let g:slime_python_ipython = 1
+" let g:slime_dont_ask_default = 1
 
 "# [4.3] telescope
 highlight! link TelescopeBorder         gruvbox_neutral_aqua
