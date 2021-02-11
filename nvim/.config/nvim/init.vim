@@ -46,11 +46,12 @@ Plug 'lukas-reineke/format.nvim'
 Plug 'glepnir/galaxyline.nvim' , {'branch': 'main'}
 Plug 'nvim-lua/lsp-status.nvim'
 Plug 'antoinemadec/FixCursorHold.nvim'
-Plug 'ms-jpq/chadtree', {'branch': 'chad', 'do': 'python3 -m chadtree deps'}
+" Plug 'ms-jpq/chadtree', {'branch': 'chad', 'do': 'python3 -m chadtree deps'}
+Plug 'kyazdani42/nvim-tree.lua'
 " Plug 'rafcamlet/nvim-luapad'
 Plug 'bfredl/nvim-luadev'
 Plug 'akinsho/nvim-toggleterm.lua'
-Plug 'TimUntersberger/neogit'
+ Plug 'TimUntersberger/neogit'
 call plug#end()
 " see lua for lua configs
 :lua << EOF
@@ -175,7 +176,7 @@ nnoremap <Leader>nt :LuaTreeToggle<CR>
 nnoremap <Leader>nf :LuaTreeFindFile<cr>:LuaTreeShow<CR>
 " html for neomutt
 nnoremap <Leader>ht :set filetype=html<CR>
-nnoremap <space>co :CHADopen<CR>
+" nnoremap <space>co :CHADopen<CR>
 
 "
 "# [4] Plugins
@@ -377,7 +378,14 @@ require("format").setup{
 }
 EOF
 
-
+"# [4.12] devicons
+" must be loaded last
+:lua << EOF
+require('nvim-web-devicons').setup{default=true}
+require'nvim-web-devicons'.setup {
+ default = true;
+}
+EOF
 " augroup Format
 "     autocmd!
 "     autocmd BufWritePost * FormatWrite
