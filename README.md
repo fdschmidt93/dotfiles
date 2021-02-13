@@ -13,15 +13,3 @@ My dotfiles are synchronized with stow. To link a single configuration or the en
 * **Tiling Window Manager:** i3-gaps
 * **Font:** Fira Code Nerd Font
 * **Application Launcher:** Rofi
-
-## Sample Screenshots
-
-### Home Screen
-![System](./img/home.png)
-
-### Neovim 
-![Neovim](./img/nvim-python.png)
-
-### Latex Setup
-![Latex](./img/latex.png)
-

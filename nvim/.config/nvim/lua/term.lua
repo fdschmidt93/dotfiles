@@ -1,8 +1,0 @@
--- require"toggleterm".setup{
---  size = 40,
---   open_mapping = [[M]],
---   shade_filetypes = {},
---   shade_terminals = true,
---   persist_size = true,
---   direction = 'vertical'
--- }

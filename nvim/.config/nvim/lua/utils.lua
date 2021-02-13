@@ -78,16 +78,19 @@ function M.print_mode()
     return mode
 end
 
--- function M.get_visual_region()
---     local line_start, column_start, line_end, column_end = M.visual_selection_range()
---     line_start = line_start - 1
---     line_end = line_end - 1
---     column_start = column_start - 1
---     column_end = column_end - 1
---     mode = vim.api.nvim_get_mode().mode
---     local region = vim.region(0, {line_start, column_start}, {line_end, column_end}, true)
+M.set_hl = function(group, options)
+  local bg = options.bg == nil and '' or 'guibg=' .. options.bg
+  local fg = options.fg == nil and '' or 'guifg=' .. options.fg
+  local gui = options.gui == nil and '' or 'gui=' .. options.gui
+  local link = options.link or false
+  local target = options.target
 
-
+  if not link then
+    vim.cmd(string.format('hi %s %s %s %s', group, bg, fg, gui))
+  else
+    vim.cmd(string.format('hi! link', group, target))
+  end
+end
 
 return M
 

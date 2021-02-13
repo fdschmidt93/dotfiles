@@ -28,14 +28,17 @@ cpupower-gui
 crda
 ctags
 cups
+downgrade
 dunst-git
 efibootmgr
+efm-langserver
 exercism-bin
 fakeroot
 fd
 feh
 file
 findutils
+firefox
 fish
 flex
 gawk
@@ -71,6 +74,7 @@ jdownloader2
 jmtpfs
 keepassxc
 keychain
+kitty
 kodi
 kodi-addon-inputstream-adaptive-git
 lazygit-git
@@ -86,7 +90,7 @@ light
 linux
 linux-firmware
 linux-lts
-lua-language-server-git
+lua-language-server
 lua51
 luarocks
 luit
@@ -186,6 +190,7 @@ texlive-science
 thermald
 thunderbird
 tmux
+tree
 ttf-dejavu
 ttf-hanazono
 udisks2
