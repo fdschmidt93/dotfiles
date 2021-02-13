@@ -161,7 +161,7 @@ require'lspconfig'.sumneko_lua.setup {
     },
 }
 
-vim.o.completeopt = "menu,menuone,noselect"
+vim.o.completeopt = "menuone,noselect"
 require'compe'.setup {
 enabled = true;
 autocomplete = true;
@@ -179,6 +179,7 @@ buffer = true;
 vsnip = false;
 nvim_lsp = true;
 treesitter = true;
+-- tabnine = true;
 };
 }
 -- vim.g.indicator_errors = ''

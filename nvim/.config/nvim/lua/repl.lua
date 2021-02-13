@@ -9,6 +9,15 @@ local function launch_conda_env()
     return ''
 end
 
+function M.restart_ipython()
+    -- find open shell
+    -- enter shell
+    -- exit ipython
+    -- reopen ipython
+    --
+    --
+end
+
 function M.shell(side, command)
     side = side or "right" -- default to "right"
     

@@ -186,6 +186,7 @@ texlive-science
 thermald
 thunderbird
 tmux
+tree
 ttf-dejavu
 ttf-hanazono
 udisks2

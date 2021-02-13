@@ -23,16 +23,13 @@ Plug 'nvim-treesitter/nvim-treesitter-refactor'
 " Themes
 Plug 'morhetz/gruvbox' " main theme
 " Other
-Plug 'vimwiki/vimwiki'
 Plug 'norcalli/nvim-colorizer.lua' " show hex rgb colors
 Plug 'chrisbra/csv.vim'
 Plug 'itchyny/calendar.vim'
-Plug 'mattn/emmet-vim'
 " Writing
+Plug 'vimwiki/vimwiki'
 Plug 'lervag/vimtex'
-Plug 'KeitaNakamura/tex-conceal.vim', {'for': 'tex'} " prettify latex syntax
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  } " live markdown
-Plug 'kyazdani42/nvim-web-devicons' " Recommended (for coloured icons)
 Plug 'Akin909/nvim-bufferline.lua' " beautiful tabline
 
 Plug 'neovim/nvim-lspconfig'
@@ -46,16 +43,18 @@ Plug 'lukas-reineke/format.nvim'
 Plug 'glepnir/galaxyline.nvim' , {'branch': 'main'}
 Plug 'nvim-lua/lsp-status.nvim'
 Plug 'antoinemadec/FixCursorHold.nvim'
-" Plug 'ms-jpq/chadtree', {'branch': 'chad', 'do': 'python3 -m chadtree deps'}
-Plug 'kyazdani42/nvim-tree.lua'
+Plug 'tzachar/compe-tabnine', { 'do': './install.sh' }
 " Plug 'rafcamlet/nvim-luapad'
-Plug 'bfredl/nvim-luadev'
-Plug 'akinsho/nvim-toggleterm.lua'
- Plug 'TimUntersberger/neogit'
+" Plug 'bfredl/nvim-luadev'
+" Plug 'akinsho/nvim-toggleterm.lua'
+" Plug 'TimUntersberger/neogit'
+Plug 'kyazdani42/nvim-web-devicons' " Recommended (for coloured icons)
+Plug 'lewis6991/gitsigns.nvim'
 call plug#end()
 " see lua for lua configs
 :lua << EOF
-require('status_line').load_galaxyline() -- load galaxyline nvim
+require('gitsigns').setup()
+require('statusline') -- load galaxyline nvim
 require('treesitter')
 require('scope')
 require('lsp_config')
@@ -86,15 +85,15 @@ let g:cursorhold_updatetime = 500
 
 "# [2] Theme & Syntax Highlighting
 " Theme
+" let g:gruvbox_material_palette = 'mix'
+" let g:gruvbox_material_enable_bold = 1
+" let g:gruvbox_material_enable_italic = 1
+" colorscheme gruvbox-material
 set cursorline " highlight current line
 set termguicolors
 set background=dark
 " let g:gruvbox_contrast_dark = 'hard'
 colorscheme gruvbox
-" let g:gruvbox_material_palette = 'mix'
-" let g:gruvbox_material_enable_bold = 1
-" let g:gruvbox_material_enable_italic = 1
-" colorscheme gruvbox-material
 
 syntax enable
 let &fcs='eob: ' " hide end of buffer line markers
@@ -343,7 +342,11 @@ hi gruvbox_faded_purple_bg   guibg=#8f3f71
 hi gruvbox_faded_aqua_bg     guibg=#427b58
 hi gruvbox_faded_orange_bg   guibg=#af3a03
 
+" define highlight groups
 hi gruvbox_yank guibg=#8ec07c guifg=#f9f5d7
+hi DiffAdd gui=NONE guifg=#b8bb26 guibg=#3c3836
+hi DiffChange gui=NONE guifg=#83a598 guibg=#3c3836
+hi DiffDelete gui=NONE guifg=#fb4934 guibg=#3c3836
 
 
 "# [4.10] LSP
@@ -381,15 +384,17 @@ EOF
 "# [4.12] devicons
 " must be loaded last
 :lua << EOF
-require('nvim-web-devicons').setup{default=true}
-require'nvim-web-devicons'.setup {
- default = true;
-}
+require('nvim-web-devicons').setup{default = true}
 EOF
-" augroup Format
-"     autocmd!
-"     autocmd BufWritePost * FormatWrite
-" augroup END
+
+"# [4.13] gitsigns
+
+
+
+" " augroup Format
+" "     autocmd!
+" "     autocmd BufWritePost * FormatWrite
+" " augroup END
 
 " vim:fdm=expr:fdl=0
 " vim:fde=getline(v\:lnum)=~'^"#'?'>'.(matchend(getline(v\:lnum),'"#*')-1)\:'='
