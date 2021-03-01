@@ -84,7 +84,7 @@ require('packer').startup(function()
     'kyazdani42/nvim-web-devicons', -- Recommended (for coloured icons)
     config = function() require('nvim-web-devicons').setup {default = true} end
   }
-  use {'TimUntersberger/neogit', cmd = 'Neogit'}
+  use {'TimUntersberger/neogit'}
   use {
     'kkoomen/vim-doge',
     run = function() vim.fn['doge#install()'](0) end,

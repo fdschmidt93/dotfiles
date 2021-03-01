@@ -158,4 +158,24 @@ require"lspconfig".efm.setup {
     }
   }
 }
+vim.o.completeopt = "menuone,noselect"
+require'compe'.setup {
+  enabled = true,
+  autocomplete = true,
+  debug = false,
+  min_length = 1,
+  preselect = 'disable',
+  throttle_time = 0,
+  source_timeout = 200,
+  incomplete_delay = 400,
+  allow_prefix_unmatch = false,
+
+  source = {
+    path = true,
+    buffer = true,
+    vsnip = false,
+    nvim_lsp = true,
+    treesitter = true
+  }
+}
 
