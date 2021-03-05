@@ -1,4 +1,10 @@
-local gl = require('galaxyline')
+local status, gl = pcall(require, 'galaxyline')
+
+-- only load settings if module is available to avoid packer issues
+if not status then
+  return
+end
+
 local vcs = require('galaxyline.provider_vcs')
 local condition = require('galaxyline.condition')
 local fileinfo = require('galaxyline.provider_fileinfo')
@@ -12,7 +18,7 @@ local color = {}
 gl.separate = false
 if gl.separate == false then
   for k, v in pairs(colors) do
-    if k:match("dark") then
+    if k:match('dark') then
       color[k] = '#282828'
     else
       color[k] = v
@@ -24,7 +30,7 @@ end
 
 local function line_column()
   local line, column = unpack(vim.api.nvim_win_get_cursor(0))
-  return string.format("%2d:%2d", line, column + 1)
+  return string.format('%2d:%2d', line, column + 1)
 end
 
 local function has_file_type()
@@ -60,7 +66,7 @@ end
 
 -- treesitter
 local transform_line =
-    function(line) return line:gsub('%s*[%[%(%{]*%s*$', '') end
+  function(line) return line:gsub('%s*[%[%(%{]*%s*$', '') end
 
 local get_line_for_node = function(node, type_patterns)
   local node_type = node:type()
@@ -84,7 +90,7 @@ local function treesitter_status()
   local type_patterns = {'class', 'function', 'method'}
 
   local current_node = ts_utils.get_node_at_cursor()
-  if not current_node then return "" end
+  if not current_node then return '' end
 
   local lines = {}
   local expr = current_node
@@ -199,7 +205,7 @@ gls.left[5] = {
     provider = function() return '  ' end,
     condition = function()
       return condition.check_git_workspace() and buffer_not_empty() and
-                 has_file_type()
+               has_file_type()
     end,
     highlight = {color.bright_orange, color.dark1, 'bold'}
   }
@@ -210,7 +216,7 @@ gls.left[6] = {
     provider = 'GitBranch',
     condition = function()
       return condition.check_git_workspace() and buffer_not_empty() and
-                 has_file_type()
+               has_file_type()
     end,
     highlight = {color.bright_orange, color.dark1, 'bold'}
   }
@@ -218,40 +224,40 @@ gls.left[6] = {
 
 gls.left[7] = {
   DiffAdd = {
-    provider = function() return checkwidth(40) and vcs.diff_add() or "" end,
+    provider = function() return checkwidth(40) and vcs.diff_add() or '' end,
     -- separator = ' ',
     -- separator_highlight = {color.purple,color.bg},
     condition = function()
       return condition.check_git_workspace() and buffer_not_empty() and
-                 has_file_type()
+               has_file_type()
     end,
-    icon = checkwidth(40) and "  " or "",
+    icon = checkwidth(40) and '  ' or '',
     highlight = {color.bright_green, color.dark1}
   }
 }
 gls.left[8] = {
   DiffModified = {
-    provider = function() return checkwidth(40) and vcs.diff_modified() or "" end,
+    provider = function() return checkwidth(40) and vcs.diff_modified() or '' end,
     -- separator = ' ',
     -- separator_highlight = {color.purple,color.bg},
     condition = function()
       return condition.check_git_workspace() and buffer_not_empty() and
-                 has_file_type()
+               has_file_type()
     end,
-    icon = checkwidth(40) and "  " or "",
+    icon = checkwidth(40) and '  ' or '',
     highlight = {color.bright_blue, color.dark1}
   }
 }
 gls.left[9] = {
   DiffRemove = {
-    provider = function() return checkwidth(40) and vcs.diff_remove() or "" end,
+    provider = function() return checkwidth(40) and vcs.diff_remove() or '' end,
     separator = separators['right'],
     separator_highlight = {color.dark1, color.dark0},
     condition = function()
       return condition.check_git_workspace() and buffer_not_empty() and
-                 has_file_type()
+               has_file_type()
     end,
-    icon = checkwidth(40) and "  " or "",
+    icon = checkwidth(40) and '  ' or '',
     highlight = {color.bright_red, color.dark1}
   }
 }
@@ -341,10 +347,8 @@ gls.right[4] = {
     provider = 'ScrollBar',
     separator = ' ',
     separator_highlight = {color.dark0_soft, color.dark0_soft},
-    highlight = {color.light1, "#32302f"}
+    highlight = {color.light1, '#32302f'}
   }
 }
 
 gl.load_galaxyline()
-
-return gl

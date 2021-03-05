@@ -8,8 +8,8 @@ inoremap {'jk', [[<Esc>]]} -- Go to normal mode with jk
 nnoremap {'oo', [[m`o<Esc>``]]}
 nnoremap {'OO', [[m`O<Esc>``]]}
 
-nnoremap {[[<Leader>y]], [["+y"]]} -- Copy to global clipboard with leader prefix
-nnoremap {[[<Leader>p]], [["+p"]]} -- Copp to global clipboard with leader prefix
+nnoremap {[[<Leader>y]], [['+y']]} -- Copy to global clipboard with leader prefix
+nnoremap {[[<Leader>p]], [['+p']]} -- Copp to global clipboard with leader prefix
 nnoremap {'Y', 'y$'}
 
 local repl = require 'repl'
@@ -18,10 +18,10 @@ nnoremap {[[<C-S-Left>]], ':vertical resize +2<CR>'}
 nnoremap {[[<C-S-Right>]], ':vertical resize -2<CR>'}
 nnoremap {[[<C-S-Up>]], ':resize +2<CR>'}
 nnoremap {[[<C-S-Down>]], ':resize -2<CR>'}
-nnoremap {[[<Leader>t]], function() repl.shell("right", nil) end}
-nnoremap {[[<Leader>ti]], function() repl.shell("right", "ipython") end}
-nnoremap {[[<Leader><C-t>]], function() repl.shell("below", nil) end}
-nnoremap {[[<Leader><C-t>i]], function() repl.shell("below", "ipython") end}
+nnoremap {[[<Leader>t]], function() repl.shell('right', nil) end}
+nnoremap {[[<Leader>ti]], function() repl.shell('right', 'ipython') end}
+nnoremap {[[<Leader><C-t>]], function() repl.shell('below', nil) end}
+nnoremap {[[<Leader><C-t>i]], function() repl.shell('below', 'ipython') end}
 nnoremap {[[<Leader>q]], ':q!<CR>'}
 
 tnoremap {'<A-h>', [[<C-\><C-N><C-w>h]]} -- Move with M from any mode
