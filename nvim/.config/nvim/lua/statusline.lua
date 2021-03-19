@@ -1,10 +1,6 @@
-local status, gl = pcall(require, 'galaxyline')
-
 -- only load settings if module is available to avoid packer issues
-if not status then
-  return
-end
-
+-- if not loaded('galaxyline.nvim') then return end
+local gl = require 'galaxyline'
 local vcs = require('galaxyline.provider_vcs')
 local condition = require('galaxyline.condition')
 local fileinfo = require('galaxyline.provider_fileinfo')
@@ -19,7 +15,7 @@ gl.separate = false
 if gl.separate == false then
   for k, v in pairs(colors) do
     if k:match('dark') then
-      color[k] = '#282828'
+      color[k] = '#3c3836'
     else
       color[k] = v
     end
@@ -160,7 +156,7 @@ gls.left[1] = {
       local vim_mode = vim.api.nvim_get_mode().mode
       if mode_color[vim_mode] ~= nil then
         vim.api.nvim_command('hi GalaxyViMode guifg=' .. mode_color[vim_mode])
-        return ' ▌' .. alias[vim_mode] .. '  '
+        return ' ▌' .. alias[vim_mode] -- ..  '  '
       else
         return ''
       end
@@ -274,7 +270,6 @@ gls.left[11] = {
     provider = function()
       return not vim.tbl_isempty(vim.lsp.buf_get_clients()) and '  ' or ''
     end,
-    -- condition = function() return not vim.tbl_isempty(vim.lsp.buf_get_clients()) end,
     highlight = {color.bright_blue, color.dark0}
   }
 }
@@ -308,7 +303,7 @@ gls.right[0] = {
   TreeSitter = {
     provider = function() return checkwidth(60) and treesitter_status() or '' end,
     separator = '',
-    condition = buffer_not_empty,
+    condition = buffer_not_empty and loaded('nvim-treesitter'),
     separator_highlight = {color.dark0, color.dark0},
     highlight = {color.bright_yellow, color.dark0, 'bold'}
   }

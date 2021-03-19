@@ -1,8 +1,9 @@
 local M = {}
 
 local function launch_conda_env()
-    local conda_env = vim.F.if_nil(os.getenv('CONDA_PROMPT_MODIFIER'), 'base')
-    return 'conda activate ' .. string.sub(conda_env, 2, -3) .. ' && '
+    local conda_env = os.getenv('CONDA_PROMPT_MODIFIER')
+    conda_env = conda_env and conda_env:sub(2, -3) or 'base'
+    return 'conda activate ' .. conda_env .. ' && '
 end
 
 function M.restart_ipython()

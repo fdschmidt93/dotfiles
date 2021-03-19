@@ -46,7 +46,7 @@ smart_borders on
 smart_borders no_gaps
 
 # remove titlebars
-for_window [class="^.*"] border pixel 2
+for_window [class="^.*"] border pixel 0
 
 client.focused          #4c7899 #285577 #ffffff #504945 #504945
 client.focused_inactive #333333 #5f676a #ffffff #3c3836 #3c3836
@@ -79,7 +79,8 @@ bindsym XF86MonBrightnessDown exec light -U 5 # decrease screen brightness
 floating_modifier $mod
 
 # start applications
-bindsym $mod+Return exec alacritty
+# bindsym $mod+Return exec alacritty
+bindsym $mod+Return exec kitty
 bindsym $mod+t exec chromium
 bindsym $mod+Shift+t exec thunderbird
 

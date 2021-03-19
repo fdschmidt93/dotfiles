@@ -133,11 +133,11 @@ draw_bold_text_with_bright_colors: true
 colors:
   # Default colors
   primary:
-    # hard contrast: background = '0x1d2021'
-    # medium background: '0x282828'
-    background: '0x1d2021'
-    # background: '0x282828'
+    # background: '0x1d2021'
+    background: '0x282828'
+    # background: '0x32302f'
     # background: '0x242424'
+    # background: '0x232323'
     # soft contrast: background = '0x32302f'
     foreground: '0xebdbb2'
 
@@ -217,7 +217,7 @@ colors:
 #
 # Window opacity as a floating point number from `0.0` to `1.0`.
 # The value `0.0` is completely transparent and `1.0` is opaque.
-background_opacity: 0.85
+background_opacity: 0.90
 
 # Mouse bindings
 #
@@ -410,8 +410,8 @@ key_bindings:
   # (Windows/Linux only)
   - { key: V,        mods: Control|Shift, action: Paste            }
   - { key: C,        mods: Control|Shift, action: Copy             }
-  #- { key: Insert,   mods: Shift,         action: PasteSelection   }
-  #- { key: Key0,     mods: Control,       action: ResetFontSize    }
+  - { key: Insert,   mods: Shift,         action: PasteSelection   }
+  - { key: Key0,     mods: Control,       action: ResetFontSize    }
   - { key: Equals,   mods: Control,       action: IncreaseFontSize }
   - { key: NumpadSubtract, mods: Control, action: DecreaseFontSize }
 

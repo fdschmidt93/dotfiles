@@ -1,8 +1,11 @@
-local k = require "astronauta.keymap"
+local utils = require 'utils'
+
+local k = require 'astronauta.keymap'
 
 local nnoremap = k.nnoremap
 local inoremap = k.inoremap
 local tnoremap = k.tnoremap
+local vnoremap = k.vnoremap
 
 inoremap {'jk', [[<Esc>]]} -- Go to normal mode with jk
 nnoremap {'oo', [[m`o<Esc>``]]}
@@ -11,6 +14,8 @@ nnoremap {'OO', [[m`O<Esc>``]]}
 nnoremap {[[<Leader>y]], [['+y']]} -- Copy to global clipboard with leader prefix
 nnoremap {[[<Leader>p]], [['+p']]} -- Copp to global clipboard with leader prefix
 nnoremap {'Y', 'y$'}
+-- toggle qf window
+nnoremap {'<C-q>', utils.toggle_qf, {silent = true}}
 
 local repl = require 'repl'
 -- resize splits with arrow keys
@@ -36,6 +41,13 @@ nnoremap {'<A-h>', [[<C-w>h]]}
 nnoremap {'<A-j>', [[<C-w>j]]}
 nnoremap {'<A-k>', [[<C-w>k]]}
 nnoremap {'<A-l>', [[<C-w>l]]}
+
+nnoremap {'<Leader><Leader>p', [[<cmd>PackerCompile<CR><cmd>PackerSync<CR>]]}
+nnoremap {'<Leader><Leader>l', [[<cmd>luafile %<CR>]]}
+
+
+vim.api.nvim_set_keymap('v', [[<Leader>vv]], [[<cmd>lua R('utils').visual_selection()<CR>]], {noremap = true})
+
 
 -- TODO replace when keymaps support expr
 vim.api.nvim_set_keymap('i', [[<C-Space>]], [[compe#complete()]],
