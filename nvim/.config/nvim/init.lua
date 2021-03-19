@@ -9,7 +9,8 @@ if fn.empty(fn.glob(install_path)) > 0 then
               install_path)
 end
 
--- Only required if you have packer in your `opt` pack vim.cmd [[packadd packer.nvim]]
+-- Only required if you have packer in your `opt` pack
+vim.cmd [[packadd packer.nvim]]
 vim.api.nvim_exec([[
   augroup Packer
     autocmd!
@@ -17,9 +18,8 @@ vim.api.nvim_exec([[
   augroup end
 ]], false)
 
--- Only required if you have packer in your `opt` pack
-vim.cmd [[packadd packer.nvim]]
-
+-- configuration
+require 'globals'
 require 'plugins'
 require 'mappings'
 require 'settings'

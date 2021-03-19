@@ -1,9 +1,6 @@
-local status, telescope = pcall(require, 'telescope')
+if not loaded('telescope.nvim') then return end
 
--- only load settings if module is available to avoid packer issues
-if not status then
-  return
-end
+local telescope = require 'telescope'
 
 telescope.setup {
   defaults = {
@@ -45,26 +42,28 @@ telescope.setup {
     fzy_native = {override_generic_sorter = true, override_file_sorter = true}
   }
 }
-require('telescope').load_extension('fzy_native')
+telescope.load_extension('fzy_native')
+
+local k = require 'astronauta.keymap'
+local nnoremap = k.nnoremap
+local builtin = require 'telescope.builtin'
 
 local find_nvim = function()
   -- agnostic to local or ssh
   local user = os.getenv('USER')
-  require 'telescope.builtin'.find_files{
+  builtin.find_files {
     prompt = 'Neovim',
     cwd = string.format('/home/%s/.config/nvim/', user)
   }
 end
 
-local k = require 'astronauta.keymap'
-local nnoremap = k.nnoremap
-
-nnoremap{'<leader>f', require'telescope.builtin'.find_files, {silent = true}}
-nnoremap{'<leader>rs', require'telescope.builtin'.grep_string, {silent = true}}
-nnoremap{'<leader>rg', require'telescope.builtin'.live_grep, {silent = true}}
-nnoremap{'<leader>nvim', find_nvim, {silent = true}}
-nnoremap{'<leader>b', require'telescope.builtin'.buffers, {silent = true}}
-nnoremap{'<leader>man', require'telescope.builtin'.man_pages, {silent = true}}
-nnoremap{'<leader>help', require'telescope.builtin'.help_tags, {silent = true}}
-nnoremap{'<space>db', require'telescope.builtin'.lsp_document_diagnostics, {silent = true}}
-nnoremap{'<space>dw', require'telescope.builtin'.lsp_workspace_diagnostics, {silent = true}}
+local opt = {silent = true}
+nnoremap {'<leader>f', builtin.find_files, opt}
+nnoremap {'<leader>rs', builtin.grep_string, opt}
+nnoremap {'<leader>rg', builtin.live_grep, opt}
+nnoremap {'<leader>b', builtin.buffers, opt}
+nnoremap {'<leader>nvim', find_nvim, opt}
+nnoremap {'<leader>man', builtin.man_pages, opt}
+nnoremap {'<leader>help', builtin.help_tags, opt}
+nnoremap {'<leader>help', builtin.help_tags, opt}
+nnoremap {'<leader><leader>t', builtin.builtin, opt}

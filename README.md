@@ -9,7 +9,7 @@ My dotfiles are synchronized with stow. To link a single configuration or the en
 * **Editor:** Neovim
 * **Shell** fish
 * **Status Bar:** Polybar
-* **Terminal Emulator:** Alacritty-ligatures
+* **Terminal Emulator:** Kitty
 * **Tiling Window Manager:** i3-gaps
 * **Font:** Fira Code Nerd Font
 * **Application Launcher:** Rofi

@@ -25,7 +25,8 @@ opt.wrap = true
 opt.tabstop = 4
 opt.softtabstop = 4
 opt.shiftwidth = 4
-opt.textwidth = 80
+opt.textwidth = 100
+opt.showbreak = [[↪ ]]
 opt.expandtab = true
 opt.autoindent = true
 
@@ -37,7 +38,6 @@ opt.hlsearch = true
 opt.incsearch = true
 opt.smartcase = true
 opt.ignorecase = true
-opt.showbreak = [[↪ ]]
 
 -- Do not save when switching buffers
 opt.hidden = true
@@ -61,5 +61,14 @@ opt.pumheight = 10
 opt.cursorline = true
 opt.termguicolors = true
 
+-- python providers
+vim.g['python3_host_prog'] = string.format('/home/%s/miniconda3/bin/python', os.getenv('USER'))
+-- vim.g['python_host_prog'] = '/usr/bin/python2'
+
 vim.cmd [[let &fcs='eob: ']] -- hide end of buffer line markers
 vim.cmd [[set fillchars+=vert:\|]]
+vim.cmd [[let g:slime_target ='neovim']]
+vim.cmd [[let g:slime_python_ipython = 1]]
+
+-- autocommands
+vim.cmd [[autocmd FileType markdown setlocal textwidth=0]]

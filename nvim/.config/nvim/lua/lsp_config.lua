@@ -1,29 +1,16 @@
-local has_lsp, nvim_lsp = pcall(require, 'lspconfig')
-local has_telescope, _ = pcall(require, 'telescope')
-
--- only load settings if main modules are available to avoid packer issues
-if not has_lsp or not has_telescope then return end
+-- check that packages are properly loaded, see globals.lua
+loaded({'nvim-lspconfig', 'lspsaga.nvim', 'telescope.nvim'})
 
 local saga = require 'lspsaga'
+local builtin = require 'telescope.builtin'
+local nvim_lsp = require 'lspconfig'
 local nnoremap = require'astronauta.keymap'.nnoremap
 local colors = require 'colors.gruvbox'
 local utils = require 'utils'
 
-local lsp_workspace_symbols = function()
-  local input = vim.fn.input('Query: ')
-  vim.cmd [[normal :esc<CR>]]
-  if not input or #input == 0 then return end
-  require('telescope.builtin').lsp_workspace_symbols {query = input}
-end
-
 local on_attach = function(client, bufnr)
 
-  saga.init_lsp_saga({
-    error_sign = '',
-    warn_sign = '',
-    hint_sign = '',
-    infor_sign = ''
-  })
+  saga.init_lsp_saga({error_sign = '', warn_sign = '', hint_sign = '', infor_sign = ''})
 
   local lsp_highlights = {
     {'LspDiagnosticsDefaultError', {fg = colors.bright_red}},
@@ -36,11 +23,11 @@ local on_attach = function(client, bufnr)
   vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
   vim.lsp.handlers['textDocument/publishDiagnostics'] =
     vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+      underline = false,
       -- disable virtual text
       virtual_text = false,
-
       -- show signs
-      signs = false,
+      signs = true,
       -- delay update diagnostics
       update_in_insert = false
     })
@@ -79,9 +66,7 @@ local on_attach = function(client, bufnr)
 
   -- Mappings
   local opts = {silent = true}
-  nnoremap {
-    '<space>ld', require'lspsaga.diagnostic'.show_line_diagnostics, opts
-  }
+  nnoremap {'<space>ld', require'lspsaga.diagnostic'.show_line_diagnostics, opts}
   nnoremap {'[d', require'lspsaga.diagnostic'.lsp_jump_diagnostic_prev, opts}
   nnoremap {']d', require'lspsaga.diagnostic'.lsp_jump_diagnostic_next, opts}
   nnoremap {'<space>ca', require'lspsaga.codeaction'.code_action, opts}
@@ -90,20 +75,22 @@ local on_attach = function(client, bufnr)
   nnoremap {'gh', require'lspsaga.provider'.lsp_finder, opts}
   nnoremap {'gs', require'lspsaga.signaturehelp'.signature_help, opts}
   nnoremap {
-    '<space>wl',
-    function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end,
-    opts
+    '<space>wl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, opts
   }
   nnoremap {'<space>D', vim.lsp.buf.type_definition, opts}
-  nnoremap {'<space>ds', require'telescope.builtin'.lsp_document_symbols, opts}
   nnoremap {'<space>wa', vim.lsp.buf.add_workspace_folder, opts}
   nnoremap {'<space>wr', vim.lsp.buf.remove_workspace_folder, opts}
-  nnoremap {'<space>ws', lsp_workspace_symbols, opts}
-  nnoremap {'<space>f', vim.lsp.buf.formatting, {silent = true}}
+  nnoremap {'<space>f', vim.lsp.buf.formatting, opts}
   nnoremap {'gD', vim.lsp.buf.declaration, opts}
-  nnoremap {'gd', vim.lsp.buf.definition, opts}
   nnoremap {'gi', vim.lsp.buf.implementation, opts}
-  nnoremap {'gr', require'telescope.builtin'.lsp_references, opts}
+  nnoremap {'gd', builtin.lsp_definitions, opts}
+  nnoremap {'gr', builtin.lsp_references, opts}
+  nnoremap {'<space>ds', builtin.lsp_document_symbols, opts}
+  nnoremap {'<space>db', builtin.lsp_document_diagnostics, opts}
+  nnoremap {'<space>dw', builtin.lsp_workspace_diagnostics, opts}
+  nnoremap {
+    '<space>ws', function() builtin.lsp_workspace_symbols {query = vim.fn.input("> ")} end, opts
+  }
 end
 
 local servers = {'rust_analyzer', 'jsonls', 'pyright'}
@@ -157,7 +144,6 @@ nvim_lsp.efm.setup {
         {formatCommand = 'black -', formatStdin = true},
         {formatCommand = 'isort --stdout --profile black -', formatStdin = true}
       }
-
     }
   }
 }
