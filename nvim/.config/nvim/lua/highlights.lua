@@ -9,7 +9,6 @@ local highlights = {
   {'Normal', {bg = 'NONE'}}, {'Comment', {gui = 'italic'}},
   {'CursorLineNR', {fg = colors.bright_yellow, gui = 'bold'}},
   {'CursorLine', {bg = colors.dark1}},
-  -- {'SignColumn', {bg = colors.dark1}},
   {'SignColumn', {bg = 'NONE'}},
   {'VertSplit', {fg = colors.gruvbox_dark1, bg = 'NONE'}},
   {'Pmenu', {fg = 'NONE', bg = colors.dark1}},
@@ -19,24 +18,32 @@ local highlights = {
   {'TelescopeResultsBorder', {fg = colors.bright_aqua}},
   {'TelescopePreviewBorder', {fg = colors.bright_aqua}},
 
+  -- gitsigns
   {'GitSignsAdd', {fg = colors.bright_green, bg = 'NONE'}},
   {'GitSignsChange', {fg = colors.bright_blue, bg = 'NONE'}},
   {'GitSignsDelete', {fg = colors.bright_red, bg = 'NONE'}},
 
+  -- neogit
   {'DiffAdd', {bg = colors.bright_green, fg = colors.dark1}},
   {'DiffChange', {bg = colors.bright_blue, fg = colors.dark1}},
   {'DiffDelete', {bg = colors.bright_red, fg = colors.dark1}},
   {'NeogitDiffAddHighlight', {bg = colors.dark1, fg = colors.bright_green}},
   {'NeogitDiffDeleteHighlight', {bg = colors.dark1, fg = colors.bright_red}},
 
+  -- lspsaga.nvim
   {'LspSagaLightBulb', {fg = colors.bright_blue}},
   {'LspSagaDiagnosticBorder', {fg = colors.dark3}},
   {'LspSagaDiagnosticHeader', {fg = colors.light1, gui='bold'}},
   {'LspSagaDiagnosticTruncateLine', {fg = colors.dark3}},
   {'LspSagaRenameBorder', {fg = colors.neutral_blue}},
-  {'LspSagaHoverBorder', {fg = colors.dark3}}
+  {'LspSagaHoverBorder', {fg = colors.dark3}},
+
+  -- nvim-dap
+  {'Breakpoint', {fg = colors.bright_red}},
+  {'Stopped', {fg = colors.bright_green}}
 }
 for _, hl in pairs(highlights) do utils.set_hl(hl[1], hl[2]) end
+
 
 vim.api.nvim_exec([[
 augroup LuaHighlight

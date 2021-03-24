@@ -9,10 +9,7 @@ telescope.setup {
       '--column', '--smart-case'
     },
     prompt_position = 'bottom',
-    prompt_prefix = '>',
-    initial_mode = 'insert',
-    selection_strategy = 'reset',
-    sorting_strategy = 'descending',
+    prompt_prefix = '>', initial_mode = 'insert', selection_strategy = 'reset', sorting_strategy = 'descending',
     layout_strategy = 'horizontal',
     layout_defaults = {
       -- TODO add builtin options.
@@ -25,7 +22,7 @@ telescope.setup {
     width = 0.75,
     preview_cutoff = 120,
     results_height = 1,
-    results_width = 0.8,
+    results_width = 0.5,
     border = {},
     borderchars = {'─', '│', '─', '│', '╭', '╮', '╯', '╰'},
     color_devicons = true,

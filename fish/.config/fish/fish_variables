@@ -1,5 +1,7 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
+SETUVAR --export SSH_AGENT_PID:528
+SETUVAR --export SSH_AUTH_SOCK:/tmp/ssh\x2dXXXXXXoHKAaD/agent\x2e527
 SETUVAR __fish_init_2_39_8:\x1d
 SETUVAR __fish_init_2_3_0:\x1d
 SETUVAR __fish_init_3_x:\x1d
@@ -9,6 +11,7 @@ SETUVAR _fish_abbr_battery:upower\x20\x2di\x20/org/freedesktop/UPower/devices/ba
 SETUVAR _fish_abbr_bm:bashmount
 SETUVAR _fish_abbr_ca:conda\x20activate
 SETUVAR _fish_abbr_fcfg:nvim\x20/home/fdschmidt/\x2econfig/fish/config\x2efish
+SETUVAR _fish_abbr_gpu:python\x20/home/fdschmidt/python/gpu\x2dmonitor/gpu_monitor\x2epy\x20\x2dl
 SETUVAR _fish_abbr_hybrid:optimus\x2dmanager\x20\x2d\x2dswitch\x20hybrid
 SETUVAR _fish_abbr_intel:optimus\x2dmanager\x20\x2d\x2dswitch\x20intel
 SETUVAR _fish_abbr_kchain:keychain\x20/home/fdschmidt/\x2essh/id_rsa

@@ -2,7 +2,7 @@ acpi
 acpid
 adwaita-qt
 aerc-git
-alacritty-ligatures
+alacritty-git
 alsa-oss
 alsa-utils
 arandr
@@ -75,8 +75,6 @@ jmtpfs
 keepassxc
 keychain
 kitty
-kodi
-kodi-addon-inputstream-adaptive-git
 lazygit-git
 libcdio-paranoia
 libcmrt
@@ -99,6 +97,7 @@ m4
 make
 man-db
 mons
+mosh
 mpv-full
 mtpfs
 nautilus
@@ -121,6 +120,7 @@ ntfs-3g
 nvidia
 nvidia-prime
 nvidia-settings
+obs-studio
 ocl-icd
 opencl-nvidia
 openssh
@@ -167,6 +167,7 @@ sddm
 sed
 sentencepiece-git
 siji-git
+simplescreenrecorder
 slack-desktop
 spirv-cross
 sshfs
@@ -192,7 +193,9 @@ thunderbird
 tmux
 tree
 ttf-dejavu
+ttf-fira-code
 ttf-hanazono
+ttf-meslo
 udisks2
 unrar
 unzip

@@ -3,7 +3,7 @@ local prog_ft = {'lua', 'python'}
 
 require('packer').startup(function()
   -- Packer can manage itself as an optional plugin
-  use {'wbthomason/packer.nvim', opt = true}
+  use {'wbthomason/packer.nvim'}
 
   -- floating window preview for quickfix list
   use 'kevinhwang91/nvim-bqf'
@@ -33,7 +33,7 @@ require('packer').startup(function()
     requires = {
       'nvim-treesitter/nvim-treesitter-textobjects',
       'nvim-treesitter/nvim-treesitter-refactor',
-      'romgrk/nvim-treesitter-context'
+      -- 'romgrk/nvim-treesitter-context'
     },
     config = function() require 'treesitter' end
   }
@@ -79,14 +79,6 @@ require('packer').startup(function()
     after = 'gruvbox',
     ft = prog_ft,
     config = function()
-      vim.fn.sign_define("DapBreakpoint", {text = "🛑", texthl = "", linehl = "", numhl = ""})
-      vim.fn.sign_define("DapStopped", {
-        text = "→",
-        texthl = "",
-        linehl = "NvimDapStopped",
-        numhl = ""
-      })
-
       local nnoremap = require'astronauta.keymap'.nnoremap
       local opts = {silent = true}
       nnoremap {'<F5>', require'dap'.continue, opts}
@@ -94,7 +86,6 @@ require('packer').startup(function()
       nnoremap {'<F11>', require'dap'.step_into, opts}
       nnoremap {'<F12>', require'dap'.step_out, opts}
       nnoremap {'<space>b', require'dap'.toggle_breakpoint, opts}
-      nnoremap {'<space>B', require'dap'.set_breakpoint, opts}
       nnoremap {'<space>dr', require'dap'.repl.open, opts}
       nnoremap {'<space>dl', require'dap'.run_last, opts}
     end
@@ -112,7 +103,11 @@ require('packer').startup(function()
   use {
     'nvim-telescope/telescope-dap.nvim',
     requires = 'nvim-dap',
-    config = function() require('telescope').load_extension('dap') end,
+    config = function() 
+      require('telescope').load_extension('dap')
+      vim.fn.sign_define('DapBreakpoint', {text = '', texthl = 'Breakpoint'})
+      vim.fn.sign_define('DapStopped', { text = '', texthl = 'Stopped'})
+    end,
     ft = prog_ft
   }
   -- REPL for vim

@@ -127,23 +127,23 @@ nvim_lsp.sumneko_lua.setup {
   }
 }
 
-nvim_lsp.efm.setup {
-  init_options = {documentFormatting = true},
-  on_attach = on_attach,
-  filetypes = {'lua', 'python'},
-  settings = {
-    rootMarkers = {'.git/'},
-    languages = {
-      lua = {
-        {
-          formatCommand = 'lua-format -i --indent-width=2 --tab-width=2 --continuation-indent-width=2',
-          formatStdin = true
-        }
-      },
-      python = {
-        {formatCommand = 'black -', formatStdin = true},
-        {formatCommand = 'isort --stdout --profile black -', formatStdin = true}
-      }
-    }
-  }
-}
+-- nvim_lsp.efm.setup {
+--   init_options = {documentFormatting = true},
+--   on_attach = on_attach,
+--   filetypes = {'lua', 'python'},
+--   settings = {
+--     rootMarkers = {'.git/'},
+--     languages = {
+--       lua = {
+--         {
+--           formatCommand = 'lua-format -i --indent-width=2 --tab-width=2 --continuation-indent-width=2',
+--           formatStdin = true
+--         }
+--       },
+--       python = {
+--         {formatCommand = 'black -', formatStdin = true},
+--         {formatCommand = 'isort --stdout --profile black -', formatStdin = true}
+--       }
+--     }
+--   }
+-- }

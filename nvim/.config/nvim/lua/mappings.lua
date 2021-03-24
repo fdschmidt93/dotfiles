@@ -19,10 +19,14 @@ nnoremap {'<C-q>', utils.toggle_qf, {silent = true}}
 
 local repl = require 'repl'
 -- resize splits with arrow keys
-nnoremap {[[<C-S-Left>]], ':vertical resize +2<CR>'}
-nnoremap {[[<C-S-Right>]], ':vertical resize -2<CR>'}
-nnoremap {[[<C-S-Up>]], ':resize +2<CR>'}
-nnoremap {[[<C-S-Down>]], ':resize -2<CR>'}
+-- nnoremap {[[<A-Left>]], ':vertical resize -2<CR>'}
+-- nnoremap {[[<A-Right>]], ':vertical resize -2<CR>'}
+nnoremap {[[<A-Left>]], function() utils.resize(true, -2) end}
+nnoremap {[[<A-Right>]], function() utils.resize(true, 2) end}
+nnoremap {[[<A-Up>]], function() utils.resize(false, -2) end}
+nnoremap {[[<A-Down>]], function() utils.resize(false, 2) end}
+-- nnoremap {[[<A-Up>]], ':resize +2<CR>'}
+-- nnoremap {[[<C-S-Down>]], ':resize -2<CR>'}
 nnoremap {[[<Leader>t]], function() repl.shell('right', nil) end}
 nnoremap {[[<Leader>ti]], function() repl.shell('right', 'ipython') end}
 nnoremap {[[<Leader><C-t>]], function() repl.shell('below', nil) end}
