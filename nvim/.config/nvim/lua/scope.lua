@@ -9,7 +9,10 @@ telescope.setup {
       '--column', '--smart-case'
     },
     prompt_position = 'bottom',
-    prompt_prefix = '>', initial_mode = 'insert', selection_strategy = 'reset', sorting_strategy = 'descending',
+    prompt_prefix = '>',
+    initial_mode = 'insert',
+    selection_strategy = 'reset',
+    sorting_strategy = 'descending',
     layout_strategy = 'horizontal',
     layout_defaults = {
       -- TODO add builtin options.
@@ -43,24 +46,50 @@ telescope.load_extension('fzy_native')
 
 local k = require 'astronauta.keymap'
 local nnoremap = k.nnoremap
-local builtin = require 'telescope.builtin'
+
+local dropdown_opts = R('telescope.themes').get_dropdown {
+  border = true,
+  previewer = false,
+  shorten_path = false,
+  prompt_prefix = "> "
+}
 
 local find_nvim = function()
   -- agnostic to local or ssh
   local user = os.getenv('USER')
-  builtin.find_files {
+  opts = shallowcopy(dropdown_opts)
+  opts.prompt = 'Neovim'
+  opts.cwd = string.format('/home/%s/.config/nvim/', user)
+  R('telescope.builtin').find_files(opts)
+end
+
+local find_notes = function()
+  local user = os.getenv('USER')
+  R('telescope.builtin').find_files {
     prompt = 'Neovim',
-    cwd = string.format('/home/%s/.config/nvim/', user)
+    cwd = string.format('/home/%s/notes/', user)
   }
 end
 
+local find_meetings = function()
+  local user = os.getenv('USER')
+  R('telescope.builtin').find_files {
+    prompt = 'Neovim',
+    cwd = string.format('/home/%s/phd/meetings', user)
+  }
+end
+
+function curbuf() R('telescope.builtin').current_buffer_fuzzy_find(opts) end
+
+-- mappings
+local builtin = require 'telescope.builtin'
 local opt = {silent = true}
 nnoremap {'<leader>f', builtin.find_files, opt}
 nnoremap {'<leader>rs', builtin.grep_string, opt}
 nnoremap {'<leader>rg', builtin.live_grep, opt}
-nnoremap {'<leader>b', builtin.buffers, opt}
+nnoremap {'<leader>b', curbuf, opt}
 nnoremap {'<leader>nvim', find_nvim, opt}
 nnoremap {'<leader>man', builtin.man_pages, opt}
 nnoremap {'<leader>help', builtin.help_tags, opt}
-nnoremap {'<leader>help', builtin.help_tags, opt}
 nnoremap {'<leader><leader>t', builtin.builtin, opt}
+nnoremap {'<leader><leader>n', find_notes, opt}

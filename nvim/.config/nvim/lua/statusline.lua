@@ -299,15 +299,15 @@ gls.left[14] = {
   }
 }
 
--- gls.right[0] = {
---   TreeSitter = {
---     provider = function() return checkwidth(60) and treesitter_status() or '' end,
---     separator = '',
---     condition = buffer_not_empty and loaded('nvim-treesitter'),
---     separator_highlight = {color.dark0, color.dark0},
---     highlight = {color.bright_yellow, color.dark0, 'bold'}
---   }
--- }
+gls.right[0] = {
+  TreeSitter = {
+    provider = function() return checkwidth(60) and treesitter_status() or '' end,
+    separator = '',
+    condition = buffer_not_empty and loaded('nvim-treesitter'),
+    separator_highlight = {color.dark0, color.dark0},
+    highlight = {color.bright_yellow, color.dark0, 'bold'}
+  }
+}
 
 gls.right[1] = {
   CondaEnv = {

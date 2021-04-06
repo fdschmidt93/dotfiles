@@ -32,10 +32,10 @@ M.resize = function(vertical, margin)
 
   -- determine direction cond on increase and existing right-hand buffer
   local not_last = not (cur_win == new_win)
-  local sign = margin > 0 
+  local sign = margin > 0
   -- go to previous window if required otherwise flip sign
-  if not_last == true then 
-    vim.cmd[[wincmd p]]
+  if not_last == true then
+    vim.cmd [[wincmd p]]
   else
     sign = not sign
   end
@@ -45,7 +45,7 @@ M.resize = function(vertical, margin)
   local cmd = dir .. 'resize ' .. sign .. math.abs(margin) .. '<CR>'
   vim.cmd(cmd)
 end
-   
+
 -- use quickfix window in combination with telescope
 -- telescope: <C-q> sends items to quickfix list for later use
 M.toggle_qf = function()
@@ -54,7 +54,7 @@ M.toggle_qf = function()
   for _, win in pairs(windows) do
     if win['quickfix'] == 1 then qf_exists = true end
   end
-  local qf_toggle = not qf_exists and 'cwindow' or 'cclose'
+  local qf_toggle = not qf_exists and 'copen' or 'cclose'
   vim.cmd(qf_toggle)
 end
 
@@ -261,7 +261,7 @@ function M.region(bufnr, pos1, pos2, regtype, inclusive)
           if regtype == '' then
             -- Iterate from end of line to get maximum byte col for which wincol >= wincol_start
             start_bytecol = M.greedy_wincol_byte(wincol_pos[1],
-                                                 -- pass (1,0)-indexed pos
+            -- pass (1,0)-indexed pos
                                                  {line1 + row, col1 - 1},
                                                  #lines[row] - 1, false)
             -- wincol_start is beyond line
@@ -285,7 +285,7 @@ function M.region(bufnr, pos1, pos2, regtype, inclusive)
           if regtype == '' then
             -- Iterate from beginning of line to get maximum byte col for which wincol <= wincol_end
             end_bytecol = M.greedy_wincol_byte(wincol_pos[2],
-                                               -- pass (1,0)-indexed pos
+            -- pass (1,0)-indexed pos
                                                {line1 + row, col2 - 1},
                                                #lines[row] - 1, true) -- get difference in byte offset inclusive and add back zero indexing
             -- (difference here means absolute position after cutoff)
