@@ -28,9 +28,9 @@ nnoremap {[[<A-Down>]], function() utils.resize(false, 2) end}
 -- nnoremap {[[<A-Up>]], ':resize +2<CR>'}
 -- nnoremap {[[<C-S-Down>]], ':resize -2<CR>'}
 nnoremap {[[<Leader>t]], function() repl.shell('right', nil) end}
-nnoremap {[[<Leader>ti]], function() repl.shell('right', 'ipython') end}
+nnoremap {[[<Leader>ti]], function() repl.re_start_ipython('right', 'ipython') end}
 nnoremap {[[<Leader><C-t>]], function() repl.shell('below', nil) end}
-nnoremap {[[<Leader><C-t>i]], function() repl.shell('below', 'ipython') end}
+nnoremap {[[<Leader><C-t>i]], function() repl.re_start_ipython('below', 'ipython') end}
 nnoremap {[[<Leader>q]], ':q!<CR>'}
 
 tnoremap {'<A-h>', [[<C-\><C-N><C-w>h]]} -- Move with M from any mode
@@ -46,9 +46,11 @@ nnoremap {'<A-j>', [[<C-w>j]]}
 nnoremap {'<A-k>', [[<C-w>k]]}
 nnoremap {'<A-l>', [[<C-w>l]]}
 
+nnoremap {'<A-p>', R('utils').tabedit}
+nnoremap {'<A-o>', R('utils').tabclose}
+
 nnoremap {'<Leader><Leader>p', [[<cmd>PackerCompile<CR><cmd>PackerSync<CR>]]}
 nnoremap {'<Leader><Leader>l', [[<cmd>luafile %<CR>]]}
-
 
 vim.api.nvim_set_keymap('v', [[<Leader>vv]], [[<cmd>lua R('utils').visual_selection()<CR>]], {noremap = true})
 

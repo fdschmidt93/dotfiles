@@ -67,8 +67,6 @@ vim.g['python3_host_prog'] = string.format('/home/%s/miniconda3/bin/python', os.
 
 vim.cmd [[let &fcs='eob: ']] -- hide end of buffer line markers
 vim.cmd [[set fillchars+=vert:\|]]
-vim.cmd [[let g:slime_target ='neovim']]
-vim.cmd [[let g:slime_python_ipython = 1]]
 
 -- autocommands
 vim.cmd [[autocmd FileType markdown setlocal textwidth=0]]

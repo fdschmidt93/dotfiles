@@ -10,7 +10,12 @@ local utils = require 'utils'
 
 local on_attach = function(client, bufnr)
 
-  saga.init_lsp_saga({error_sign = '', warn_sign = '', hint_sign = '', infor_sign = ''})
+  saga.init_lsp_saga({
+    error_sign = '',
+    warn_sign = '',
+    hint_sign = '',
+    infor_sign = ''
+  })
 
   local lsp_highlights = {
     {'LspDiagnosticsDefaultError', {fg = colors.bright_red}},
@@ -20,7 +25,7 @@ local on_attach = function(client, bufnr)
   }
   for _, hl in pairs(lsp_highlights) do utils.set_hl(hl[1], hl[2]) end
 
-  vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+  -- vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
   vim.lsp.handlers['textDocument/publishDiagnostics'] =
     vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
       underline = false,
@@ -66,7 +71,9 @@ local on_attach = function(client, bufnr)
 
   -- Mappings
   local opts = {silent = true}
-  nnoremap {'<space>ld', require'lspsaga.diagnostic'.show_line_diagnostics, opts}
+  nnoremap {
+    '<space>ld', require'lspsaga.diagnostic'.show_line_diagnostics, opts
+  }
   nnoremap {'[d', require'lspsaga.diagnostic'.lsp_jump_diagnostic_prev, opts}
   nnoremap {']d', require'lspsaga.diagnostic'.lsp_jump_diagnostic_next, opts}
   nnoremap {'<space>ca', require'lspsaga.codeaction'.code_action, opts}
@@ -75,7 +82,9 @@ local on_attach = function(client, bufnr)
   nnoremap {'gh', require'lspsaga.provider'.lsp_finder, opts}
   nnoremap {'gs', require'lspsaga.signaturehelp'.signature_help, opts}
   nnoremap {
-    '<space>wl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, opts
+    '<space>wl',
+    function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end,
+    opts
   }
   nnoremap {'<space>D', vim.lsp.buf.type_definition, opts}
   nnoremap {'<space>wa', vim.lsp.buf.add_workspace_folder, opts}
@@ -89,15 +98,16 @@ local on_attach = function(client, bufnr)
   nnoremap {'<space>db', builtin.lsp_document_diagnostics, opts}
   nnoremap {'<space>dw', builtin.lsp_workspace_diagnostics, opts}
   nnoremap {
-    '<space>ws', function() builtin.lsp_workspace_symbols {query = vim.fn.input("> ")} end, opts
+    '<space>ws',
+    function() builtin.lsp_workspace_symbols {query = vim.fn.input("> ")} end,
+    opts
   }
 end
 
-local servers = {'rust_analyzer', 'jsonls', 'pyright'}
+local servers = {'rust_analyzer', 'jsonls'}
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {
     on_attach = on_attach
-    -- capabilities = lsp_status.capabilities
   }
 end
 
@@ -127,23 +137,36 @@ nvim_lsp.sumneko_lua.setup {
   }
 }
 
--- nvim_lsp.efm.setup {
---   init_options = {documentFormatting = true},
---   on_attach = on_attach,
---   filetypes = {'lua', 'python'},
---   settings = {
---     rootMarkers = {'.git/'},
---     languages = {
---       lua = {
---         {
---           formatCommand = 'lua-format -i --indent-width=2 --tab-width=2 --continuation-indent-width=2',
---           formatStdin = true
---         }
---       },
---       python = {
---         {formatCommand = 'black -', formatStdin = true},
---         {formatCommand = 'isort --stdout --profile black -', formatStdin = true}
---       }
---     }
---   }
--- }
+nvim_lsp.pyright.setup {
+  on_attach = on_attach,
+  settings = {
+    python = {
+      analysis = {
+        autoSearchPaths = true,
+        useLibraryCodeForTypes = false,
+        diagnosticMode = 'workspace'
+      }
+    }
+  }
+};
+
+nvim_lsp.efm.setup {
+  init_options = {documentFormatting = true},
+  on_attach = on_attach,
+  filetypes = {'lua', 'python'},
+  settings = {
+    rootMarkers = {'.git/'},
+    languages = {
+      lua = {
+        {
+          formatCommand = 'lua-format -i --indent-width=2 --tab-width=2 --continuation-indent-width=2',
+          formatStdin = true
+        }
+      },
+      python = {
+        {formatCommand = 'black -', formatStdin = true},
+        {formatCommand = 'isort --stdout --profile black -', formatStdin = true}
+      }
+    }
+  }
+}

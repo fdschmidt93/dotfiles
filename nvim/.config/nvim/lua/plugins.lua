@@ -32,7 +32,7 @@ require('packer').startup(function()
     run = ':TSUpdate',
     requires = {
       'nvim-treesitter/nvim-treesitter-textobjects',
-      'nvim-treesitter/nvim-treesitter-refactor',
+      'nvim-treesitter/nvim-treesitter-refactor'
       -- 'romgrk/nvim-treesitter-context'
     },
     config = function() require 'treesitter' end
@@ -88,6 +88,8 @@ require('packer').startup(function()
       nnoremap {'<space>b', require'dap'.toggle_breakpoint, opts}
       nnoremap {'<space>dr', require'dap'.repl.open, opts}
       nnoremap {'<space>dl', require'dap'.run_last, opts}
+      vim.fn.sign_define('DapBreakpoint', {text = '', texthl = 'Breakpoint'})
+      vim.fn.sign_define('DapStopped', {text = '', texthl = 'Stopped'})
     end
   }
   use {
@@ -103,10 +105,8 @@ require('packer').startup(function()
   use {
     'nvim-telescope/telescope-dap.nvim',
     requires = 'nvim-dap',
-    config = function() 
+    config = function()
       require('telescope').load_extension('dap')
-      vim.fn.sign_define('DapBreakpoint', {text = '', texthl = 'Breakpoint'})
-      vim.fn.sign_define('DapStopped', { text = '', texthl = 'Stopped'})
     end,
     ft = prog_ft
   }
@@ -174,11 +174,11 @@ require('packer').startup(function()
     },
     config = function() require 'scope' end
   }
+
   use {
     'neovim/nvim-lspconfig',
-    after = 'gruvbox',
     ft = prog_ft,
-    requires = {'glepnir/lspsaga.nvim', 'nvim-telescope/telescope.nvim'},
+    requires = {'glepnir/lspsaga.nvim'},
     config = function() require 'lsp_config' end
   }
   use {

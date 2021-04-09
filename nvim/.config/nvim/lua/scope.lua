@@ -9,7 +9,7 @@ telescope.setup {
       '--column', '--smart-case'
     },
     prompt_position = 'bottom',
-    prompt_prefix = '>',
+    prompt_prefix = '> ',
     initial_mode = 'insert',
     selection_strategy = 'reset',
     sorting_strategy = 'descending',
@@ -44,8 +44,7 @@ telescope.setup {
 }
 telescope.load_extension('fzy_native')
 
-local k = require 'astronauta.keymap'
-local nnoremap = k.nnoremap
+
 
 local dropdown_opts = R('telescope.themes').get_dropdown {
   border = true,
@@ -82,10 +81,15 @@ end
 function curbuf() R('telescope.builtin').current_buffer_fuzzy_find(opts) end
 
 -- mappings
+local k = require 'astronauta.keymap'
+local nnoremap = k.nnoremap
+local vnoremap = k.vnoremap
+
 local builtin = require 'telescope.builtin'
 local opt = {silent = true}
 nnoremap {'<leader>f', builtin.find_files, opt}
 nnoremap {'<leader>rs', builtin.grep_string, opt}
+vnoremap {'<leader>rs', function() builtin.grep_string{query=R('utils').visual_selection()} end, opt}
 nnoremap {'<leader>rg', builtin.live_grep, opt}
 nnoremap {'<leader>b', curbuf, opt}
 nnoremap {'<leader>nvim', find_nvim, opt}

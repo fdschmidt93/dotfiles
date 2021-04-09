@@ -53,6 +53,13 @@ require'nvim-treesitter.configs'.setup({
         ['am'] = '@call.outer',
         ['im'] = '@call.inner'
       }
+    },
+    lsp_interop = {
+      enable = true,
+      peek_definition_code = {
+        ["df"] = "@function.outer",
+        ["dF"] = "@class.outer",
+      }
     }
   },
   fold = {enable = true},
