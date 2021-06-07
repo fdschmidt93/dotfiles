@@ -10,8 +10,6 @@
 exec_always --no-startup-id ~/.config/polybar/launch.sh &
 exec_always --no-startup-id /usr/bin/dunst &
 exec_always --no-startup-id picom -b --experimental-backends --backend glx --vsync
-exec_always ~/.config/i3/i3scripts/autoname_workspaces.py &
-exec --no-startup-id clipit
 exec_always mons -e right
 exec_always xset r rate 500 60
 exec_always /usr/bin/feh --no-fehbg --bg-scale '/home/fdschmidt/.gruvbox_background.png' 
@@ -48,6 +46,7 @@ smart_borders on
 smart_borders no_gaps
 
 # remove titlebars
+default_border none
 for_window [class="^.*"] border pixel 0
 
 client.focused          #4c7899 #285577 #ffffff #504945 #504945

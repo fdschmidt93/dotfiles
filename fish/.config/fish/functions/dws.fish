@@ -1,3 +1,3 @@
 function dws
-    ssh fabiasch@dws-$argv.informatik.uni-mannheim.de
+    ssh -X fabiasch@dws-$argv.informatik.uni-mannheim.de
 end

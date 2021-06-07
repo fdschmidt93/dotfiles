@@ -1,11 +1,5 @@
 local utils = require 'utils'
 
-local k = require 'astronauta.keymap'
-
-local nnoremap = k.nnoremap
-local inoremap = k.inoremap
-local tnoremap = k.tnoremap
-local vnoremap = k.vnoremap
 
 inoremap {'jk', [[<Esc>]]} -- Go to normal mode with jk
 nnoremap {'oo', [[m`o<Esc>``]]}
@@ -52,7 +46,7 @@ nnoremap {'<A-o>', R('utils').tabclose}
 nnoremap {'<Leader><Leader>p', [[<cmd>PackerCompile<CR><cmd>PackerSync<CR>]]}
 nnoremap {'<Leader><Leader>l', [[<cmd>luafile %<CR>]]}
 
-vim.api.nvim_set_keymap('v', [[<Leader>vv]], [[<cmd>lua R('utils').visual_selection()<CR>]], {noremap = true})
+--vim.api.nvim_set_keymap('v', [[<Leader>vv]], [[<cmd>lua R('utils').visual_selection()<CR>]], {noremap = true})
 
 
 -- TODO replace when keymaps support expr

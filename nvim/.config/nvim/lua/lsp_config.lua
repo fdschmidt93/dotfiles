@@ -1,7 +1,11 @@
--- check that packages are properly loaded, see globals.lua
-loaded({'nvim-lspconfig', 'lspsaga.nvim', 'telescope.nvim'})
+-- for _, module in ipairs({'nvim-lspconfig', 'lspsaga.nvim', 'telescope.nvim'}) do
+--   if not pcall(require, module) then
+--     return
+--   end
+-- end
 
 local saga = require 'lspsaga'
+local lsp = vim.lsp
 local builtin = require 'telescope.builtin'
 local nvim_lsp = require 'lspconfig'
 local nnoremap = require'astronauta.keymap'.nnoremap
@@ -14,9 +18,10 @@ local on_attach = function(client, bufnr)
     error_sign = '',
     warn_sign = '',
     hint_sign = '',
-    infor_sign = ''
+    infor_sign = '',
+    border_style = "round"
   })
-
+  require "lsp_signature".on_attach{hint_enable = false}
   local lsp_highlights = {
     {'LspDiagnosticsDefaultError', {fg = colors.bright_red}},
     {'LspDiagnosticsDefaultWarning', {fg = colors.neutral_yellow}},
@@ -78,9 +83,9 @@ local on_attach = function(client, bufnr)
   nnoremap {']d', require'lspsaga.diagnostic'.lsp_jump_diagnostic_next, opts}
   nnoremap {'<space>ca', require'lspsaga.codeaction'.code_action, opts}
   nnoremap {'<space>rn', require'lspsaga.rename'.rename, opts}
-  nnoremap {'K', require'lspsaga.hover'.render_hover_doc, opts}
+  nnoremap {'K', require('lspsaga.hover').render_hover_doc, opts}
   nnoremap {'gh', require'lspsaga.provider'.lsp_finder, opts}
-  nnoremap {'gs', require'lspsaga.signaturehelp'.signature_help, opts}
+  nnoremap {'gs', require('lspsaga.signaturehelp').signature_help, opts}
   nnoremap {
     '<space>wl',
     function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end,
@@ -102,14 +107,11 @@ local on_attach = function(client, bufnr)
     function() builtin.lsp_workspace_symbols {query = vim.fn.input("> ")} end,
     opts
   }
+  nnoremap {'<space>wsd', builtin.lsp_dynamic_workspace_symbols, opts}
 end
 
 local servers = {'rust_analyzer', 'jsonls'}
-for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup {
-    on_attach = on_attach
-  }
-end
+for _, lsp in ipairs(servers) do nvim_lsp[lsp].setup {on_attach = on_attach} end
 
 nvim_lsp.sumneko_lua.setup {
   cmd = {'lua-language-server'},
@@ -141,14 +143,13 @@ nvim_lsp.pyright.setup {
   on_attach = on_attach,
   settings = {
     python = {
-      analysis = {
-        autoSearchPaths = true,
-        useLibraryCodeForTypes = false,
-        diagnosticMode = 'workspace'
-      }
+      analysis = {autoSearchPaths = true, useLibraryCodeForTypes = false}
     }
   }
 };
+
+local user = os.getenv('USER')
+local conda_bin = string.format('/home/%s/miniconda3/bin/', user)
 
 nvim_lsp.efm.setup {
   init_options = {documentFormatting = true},
@@ -164,8 +165,10 @@ nvim_lsp.efm.setup {
         }
       },
       python = {
-        {formatCommand = 'black -', formatStdin = true},
-        {formatCommand = 'isort --stdout --profile black -', formatStdin = true}
+        {formatCommand = conda_bin .. 'black -', formatStdin = true}, {
+          formatCommand = conda_bin .. 'isort --stdout --profile black -',
+          formatStdin = true
+        }
       }
     }
   }

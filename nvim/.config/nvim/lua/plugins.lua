@@ -6,19 +6,25 @@ require('packer').startup(function()
   use {'wbthomason/packer.nvim'}
 
   -- floating window preview for quickfix list
-  use 'kevinhwang91/nvim-bqf'
-  -- disable search highlight when done
+  -- use 'kevinhwang91/nvim-bqf'
+  -- -- disable search highlight when done
+
+  use 'nvim-lua/plenary.nvim'
+  use 'nvim-lua/popup.nvim'
+  use 'tjdevries/astronauta.nvim' 
+  use 'tpope/vim-commentary'
   use 'romainl/vim-cool'
+  
   use {
     'lukas-reineke/indent-blankline.nvim',
     -- TODO check why it cannot be linked to programming filetypes
-    config = function() vim.g.indent_blankline_filetype = {'python', 'lua'} end,
+    config = function()
+      vim.g.indent_blankline_filetype = {'python', 'lua'}
+      vim.g.indentLine_char = "│"
+    end,
     branch = "lua"
   }
-
-  use 'tjdevries/astronauta.nvim'
   -- gc mapping to comment stuff out
-  use 'tpope/vim-commentary'
   -- quoting/parenthesizing made simple
   use 'tpope/vim-surround'
   use {'chrisbra/csv.vim', ft = 'csv'}
@@ -33,7 +39,6 @@ require('packer').startup(function()
     requires = {
       'nvim-treesitter/nvim-treesitter-textobjects',
       'nvim-treesitter/nvim-treesitter-refactor'
-      -- 'romgrk/nvim-treesitter-context'
     },
     config = function() require 'treesitter' end
   }
@@ -47,39 +52,38 @@ require('packer').startup(function()
       vim.api.nvim_set_keymap('', 'T', '<Plug>Sneak_T', {})
     end
   }
-  use {
-    'phaazon/hop.nvim',
-    after = {'gruvbox', 'vim-sneak'},
-    config = function()
-      local k = require 'astronauta.keymap'
+  -- use {
+  --   'phaazon/hop.nvim',
+  --   after = {'gruvbox', 'vim-sneak'},
+  --   config = function()
+  --     local k = require 'astronauta.keymap'
 
-      local nnoremap = k.nnoremap
-      local vnoremap = k.vnoremap
+  --     local nnoremap = k.nnoremap
+  --     local vnoremap = k.vnoremap
 
-      for _, map in pairs({nnoremap, vnoremap}) do
-        map {'<C-s>', require'hop'.hint_char2}
-        map {'<C-f>', require'hop'.hint_char1}
-        map {'<C-l>', require'hop'.hint_lines}
-      end
-
-      -- hl groups
-      local colors = require 'colors.gruvbox'
-      local utils = require 'utils'
-      local highlights = {
-        {'HopNextKey', {fg = colors.bright_orange, gui = 'bold,underline'}},
-        {'HopNextKey1', {fg = colors.bright_green, gui = 'bold,underline'}},
-        {'HopNextKey2', {fg = colors.neutral_green}},
-        {'HopUnmatched', {fg = colors.light4}}
-      }
-      for _, hl in pairs(highlights) do utils.set_hl(hl[1], hl[2]) end
-    end
-  }
+  --     for _, map in pairs({nnoremap, vnoremap}) do
+  --       map {'<C-s>', require'hop'.hint_char2}
+  --       map {'<C-f>', require'hop'.hint_char1}
+  --       map {'<C-l>', require'hop'.hint_lines}
+  --     end
+ --     -- hl groups
+  --     local colors = require 'colors.gruvbox'
+  --     local utils = require 'utils'
+  --     local highlights = {
+  --       {'HopNextKey', {fg = colors.bright_orange, gui = 'bold,underline'}},
+  --       {'HopNextKey1', {fg = colors.bright_green, gui = 'bold,underline'}},
+  --       {'HopNextKey2', {fg = colors.neutral_green}},
+  --       {'HopUnmatched', {fg = colors.light4}}
+  --     }
+  --     for _, hl in pairs(highlights) do utils.set_hl(hl[1], hl[2]) end
+  --   end
+  -- }
   use {
     'mfussenegger/nvim-dap',
-    after = 'gruvbox',
+    after = {'gruvbox', 'telescope.nvim'},
     ft = prog_ft,
+    requires = {'nvim-telescope/telescope-dap.nvim', requires = 'telescope.nvim'},
     config = function()
-      local nnoremap = require'astronauta.keymap'.nnoremap
       local opts = {silent = true}
       nnoremap {'<F5>', require'dap'.continue, opts}
       nnoremap {'<F10>', require'dap'.step_over, opts}
@@ -90,6 +94,7 @@ require('packer').startup(function()
       nnoremap {'<space>dl', require'dap'.run_last, opts}
       vim.fn.sign_define('DapBreakpoint', {text = '', texthl = 'Breakpoint'})
       vim.fn.sign_define('DapStopped', {text = '', texthl = 'Stopped'})
+      require 'telescope'.load_extension('dap')
     end
   }
   use {
@@ -102,15 +107,7 @@ require('packer').startup(function()
       require('dap-python').setup(python_path)
     end
   }
-  use {
-    'nvim-telescope/telescope-dap.nvim',
-    requires = 'nvim-dap',
-    config = function()
-      require('telescope').load_extension('dap')
-    end,
-    ft = prog_ft
-  }
-  -- REPL for vim
+  -- -- REPL for vim
   use {
     'jpalardy/vim-slime',
     config = function()
@@ -118,7 +115,7 @@ require('packer').startup(function()
       vim.g.slime_python_ipython = 1
     end
   }
-  -- enable repeating supported plugin maps with dot
+  -- -- enable repeating supported plugin maps with dot
   use {
     'tpope/vim-repeat',
     config = function()
@@ -128,9 +125,10 @@ require('packer').startup(function()
   use {
     'glepnir/galaxyline.nvim',
     branch = 'main',
+    after = 'nvim-treesitter',
     config = function() require 'statusline' end,
-    after = 'nvim-treesitter'
   }
+
   use {
     'akinsho/nvim-bufferline.lua',
     after = 'gruvbox',
@@ -153,13 +151,22 @@ require('packer').startup(function()
     'antoinemadec/FixCursorHold.nvim',
     config = function() vim.g.cursorhold_updatetime = 500 end
   }
+  use {'junegunn/fzf.vim', cmd = 'Rg'}
   use {
     'norcalli/nvim-colorizer.lua',
     after = 'gruvbox',
     ft = 'lua',
     config = function() require'colorizer'.setup() end
   } -- show hex rgb colors
-  use {'TimUntersberger/neogit', cmd = 'Neogit'}
+  use {
+    'TimUntersberger/neogit',
+    cmd = 'Neogit',
+    config = function()
+      local neogit = require 'neogit'
+      neogit.setup {integrations = {diffview = true}}
+    end,
+    requires = 'sindrets/diffview.nvim'
+  }
   use {
     'kkoomen/vim-doge',
     ft = prog_ft,
@@ -169,8 +176,10 @@ require('packer').startup(function()
   use {
     'nvim-telescope/telescope.nvim',
     requires = {
-      'tjdevries/astronauta.nvim', 'nvim-lua/plenary.nvim',
-      'nvim-lua/popup.nvim', 'nvim-telescope/telescope-fzy-native.nvim'
+      'nvim-lua/plenary.nvim',
+      'nvim-lua/popup.nvim',
+      {'nvim-telescope/telescope-fzf-native.nvim', run = 'make'},
+      'nvim-telescope/telescope-project.nvim',
     },
     config = function() require 'scope' end
   }
@@ -178,7 +187,7 @@ require('packer').startup(function()
   use {
     'neovim/nvim-lspconfig',
     ft = prog_ft,
-    requires = {'glepnir/lspsaga.nvim'},
+    requires = {'glepnir/lspsaga.nvim', 'ray-x/lsp_signature.nvim'},
     config = function() require 'lsp_config' end
   }
   use {
@@ -202,31 +211,33 @@ require('packer').startup(function()
           buffer = true,
           vsnip = false,
           nvim_lsp = true,
-          treesitter = true
+          treesitter = true,
+          tabnine = true
         }
       }
     end
   }
-  use {
-    'lervag/vimtex',
-    ft = 'tex',
-    config = function()
-      vim.g.tex_flavor = 'latex'
-      vim.g.vimtex_fold_manual = 1
-      vim.g.vimtex_latexmk_continuous = 1
-      vim.g.vimtex_compiler_progname = 'nvr'
-      vim.g.vimtex_view_method = 'zathura'
-      vim.g.vimtex_quickfix_mode = 0
-      vim.wo.conceallevel = 2
-      vim.g.tex_conceal = 'abdgm'
-    end
-  }
-  use {
-    'iamcco/markdown-preview.nvim',
-    run = 'cd app && yarn install',
-    ft = 'markdown',
-    cmd = 'MarkdownPreview'
-  }
+
+  -- use {
+  --   'lervag/vimtex',
+  --   ft = 'tex',
+  --   config = function()
+  --     vim.g.tex_flavor = 'latex'
+  --     vim.g.vimtex_fold_manual = 1
+  --     vim.g.vimtex_latexmk_continuous = 1
+  --     vim.g.vimtex_compiler_progname = 'nvr'
+  --     vim.g.vimtex_view_method = 'zathura'
+  --     vim.g.vimtex_quickfix_mode = 0
+  --     vim.wo.conceallevel = 2
+  --     vim.g.tex_conceal = 'abdgm'
+  --   end
+  -- }
+  -- use {
+  --   'iamcco/markdown-preview.nvim',
+  --   run = 'cd app && yarn install',
+  --   ft = 'markdown',
+  --   cmd = 'MarkdownPreview'
+  -- }
   use {
     'vimwiki/vimwiki',
     ft = 'markdown',
@@ -235,6 +246,17 @@ require('packer').startup(function()
   use {
     'lewis6991/gitsigns.nvim',
     requires = {'nvim-lua/plenary.nvim'},
+    opt = true,
     config = function() require('gitsigns').setup() end
   }
+  use {
+    'kyazdani42/nvim-tree.lua',
+    requires = 'kyazdani42/nvim-web-devicons',
+    config = function()
+      local nnoremap = require'astronauta.keymap'.nnoremap
+      nnoremap {'<A-n>', [[<cmd>NvimTreeToggle<CR>]], {silent = true}}
+      vim.cmd [[let g:nvim_tree_indent_markers = 1]]
+    end
+  }
+
 end)

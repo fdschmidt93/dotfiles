@@ -8,320 +8,69 @@ local c = 'ä anda α'
 local b = '全角全角全角'
 local d = 'hallääääääääää'
 
--- put current window in new tab with cursor restored
-M.tabedit= function()
-    local buf = api.nvim_get_current_buf()
-    local view = vim.fn.winsaveview()
-    -- note: tabedit % does not properly work with terminal
-    vim.cmd[[tabedit]]
-    -- set buffer and remove old one
-    local tabedit_buf = api.nvim_get_current_buf()
-    api.nvim_win_set_buf(0, buf)
-    api.nvim_buf_delete(tabedit_buf, {force = true})
-    -- restore original view
-    vim.fn.winrestview(view)
-end 
+local function prepare_match(entry, kind)
+  local entries = {}
 
--- restore old view with cursor retained
-M.tabclose = function()
-    -- local cursor_pos = api.nvim_win_get_cursor(0)
-    local view = vim.fn.winsaveview()
-    vim.cmd[[tabclose]]
-    vim.fn.winrestview(view)
-    -- api.nvim_win_set_cursor(0, cursor_pos)
-end
-
-
-M.set_hl = function(group, options)
-  local bg = options.bg == nil and '' or 'guibg=' .. options.bg
-  local fg = options.fg == nil and '' or 'guifg=' .. options.fg
-  local gui = options.gui == nil and '' or 'gui=' .. options.gui
-  local link = options.link or false
-  local target = options.target
-
-  if not link then
-    vim.cmd(string.format('hi %s %s %s %s', group, bg, fg, gui))
+  if entry.node then
+    entry["kind"] = kind
+    table.insert(entries, entry)
   else
-    vim.cmd(string.format('hi! link', group, target))
-  end
-end
-
--- local get_entry_position(results_win, index)
---     local results_height = vim.api.nvim_win_get_height(results_win)
---     local results_width = vim.api.nvim_win_get_width(results_win)
---     -- local prompt_row, prompt_col = unpack(vim.api.nvim_win_get_position(0))
---     local row, col = unpack(vim.api.nvim_win_get_position(results_win))
---     local screen_row = results_height + row - index
---     return screen_row, col
--- end
-
--- properties
---  floating window can restricted to {width,height} - 2 of results
---  create window
---
-local action_state = require('telescope.actions.state')
-
--- M.previous = function()
---     actions.move_selection_previous()
---     pcall(vim.api.nvim_win_close, )
--- end
-
-function M.close_preview_autocmd(events, winnr)
-  api.nvim_command("autocmd "..table.concat(events, ',').." <buffer> ++once lua pcall(vim.api.nvim_win_close, "..winnr..", true)")
-end
-
--- TODO
---  Close window all the time
---  Position up- and downwards
---  Introduce options
---      reformatting
---
--- local actions = require('telescope.actions')
--- ["Up"] = actions.move_selection_next,
--- ["Down"] = actions.move_selection_previous,
-
-M.results_inline_float = function(float_winid)
-    
-  -- possibly fetch prompt_bufnr from state.get_existing_prompts()
-  local prompt_bufnr = vim.api.nvim_get_current_buf()
-  local picker = action_state.get_current_picker(prompt_bufnr)
-  local results_height = vim.api.nvim_win_get_height(picker.results_win)
-  local results_width = vim.api.nvim_win_get_width(picker.results_win)
-  local index = results_height - picker._selection_row
-
-  -- local index = action_state.get_selected_entry()['index']
-
-  local float_bufnr = vim.api.nvim_win_get_buf(float_winid)
-  local float_width = vim.api.nvim_win_get_width(float_winid)
-  -- workaround nvim_win_get_height wrongly returning 1 when called from prompt 
-  local float_height = vim.tbl_count(vim.api.nvim_buf_get_lines(float_bufnr, 0,
-                                                                -1, false))
-  local float_row, float_col = unpack(vim.api.nvim_win_get_position(
-                                    picker.results_win))
-
-  -- vim.api.nvim_buf_add_highlight(bufnr, -1,
-  -- each border 'adds' single row/col
-  local styled_borders = {}
-  local borders = {'╭', '─', '╮', '│', '╯', '─', '╰', '│'}
-  for _, border in pairs(borders) do
-    table.insert(styled_borders, {border, 'TelescopeResultsBorder'})
-  end
-  -- TODO check if above or below edge
-  local inline_row = float_row + results_height - float_height - index - 2
-  vim.api.nvim_win_set_config(float_winid, {
-    relative = 'editor',
-    row = inline_row,
-    col = float_col,
-    height = float_height,
-    width = results_width - 2,
-    border = styled_borders
-  })
-end
-
-M.line_diagnostics = function()
-  local selected_entry = action_state.get_selected_entry()
-  local value = selected_entry['value']
-  local prompt_row, prompt_col = unpack(vim.api.nvim_win_get_position(0))
-
-  local _, winid = vim.lsp.diagnostic.show_line_diagnostics({}, value.bufnr,
-                                                                value.lnum - 1,
-                                                                nil)
-  
-  M.results_inline_float(winid)
-end
-
-M.value_float = function()
-  local selected_entry = action_state.get_selected_entry()
-  local value = selected_entry['value'].text
-  -- P(value)
-  local bufnr, winid = vim.lsp.util.open_floating_preview({value}, 'markdown')
-  M.results_inline_float(winid)
-end
-
-M.make_position_param = function()
-  local row, col = unpack(api.nvim_win_get_cursor(0))
-  row = row - 1
-  local line = api.nvim_buf_get_lines(0, row, row+1, true)[1]
-  if not line then
-    return { line = 0; character = 0; }
-  end
-  col = vim.str_utfindex(line, col)
-  return { line = row; character = col; }
-end
-
-
-M.hover_handler = function(_, method, result)
-  local util = vim.lsp.util
-  -- local bufnr, winnr = util.focusable_float(method, function()
-  if not (result and result.contents) then
-    -- return { 'No information available' }
-    return
-  end
-  local markdown_lines = util.convert_input_to_markdown_lines(result.contents)
-  markdown_lines = util.trim_empty_lines(markdown_lines)
-  if vim.tbl_isempty(markdown_lines) then
-    -- return { 'No information available' }
-    return
-  end
-
-  local bufnr, winnr = util.open_floating_preview(markdown_lines,
-        'python',
-        {
-    pad_left = 1; pad_right = 1;
-  })
-  -- local bufnr, winnr = util.fancy_floating_markdown(markdown_lines, {
-  --   pad_left = 1; pad_right = 1;
-  -- })
-  -- vim.api.nvim_set_current_win(cwin)
-  -- P({bufnr, winnr})
-  -- util.close_preview_autocmd({"CursorMoved", "BufHidden", "InsertCharPre"}, winnr)
-    -- return bufnr, winnr
-  -- end)
-  M.results_inline_float(winnr) 
-  return bufnr, winnr
-end
-
-M.hover = function()
-  local params = vim.lsp.util.make_position_params()
-  P(vim.lsp.buf_request(0, 'textDocument/hover', params, M.hover_handler))
-end
-
-M.line_hover = function()
-  local selected_entry = action_state.get_selected_entry()
-  local value = selected_entry['value']
-  value.lnum = value.lnum - 1
-  local params = { 
-     ['position'] = {line = value.lnum; character = value.col};
-    ['textDocument'] = {uri = vim.uri_from_bufnr(1)}
-    }
-  local bufnr = vim.uri_to_bufnr(params['textDocument']['uri'])
-  P(vim.lsp.buf_request(bufnr, 'textDocument/hover', params, M.hover_handler))
-end
-
-function M._get_symbol_kind_name(symbol_kind)
-  local protocol = require 'vim.lsp.protocol'
-  return protocol.SymbolKind[symbol_kind] or "Unknown"
-end
-
-function M.symbols_to_items(symbols, bufnr)
-  --@private
-  local function _symbols_to_items(_symbols, _items, _bufnr)
-    for _, symbol in ipairs(_symbols) do
-      if symbol.location then -- SymbolInformation type
-        local range = symbol.location.range
-        local kind = M._get_symbol_kind_name(symbol.kind)
-        table.insert(_items, {
-          filename = vim.uri_to_fname(symbol.location.uri),
-          lnum = range.start.line + 1,
-          col = range.start.character + 1,
-          kind = kind,
-          text = '['..kind..'] '..symbol.name,
-        })
-      elseif symbol.selectionRange then -- DocumentSymbole type
-        local kind = M._get_symbol_kind_name(symbol.kind)
-        table.insert(_items, {
-          -- bufnr = _bufnr,
-          filename = vim.api.nvim_buf_get_name(_bufnr),
-          lnum = symbol.selectionRange.start.line + 1,
-          col = symbol.selectionRange.start.character + 1,
-          kind = kind,
-          text = '['..kind..'] '..symbol.name
-        })
-        if symbol.children then
-          for _, v in ipairs(_symbols_to_items(symbol.children, _items, _bufnr)) do
-            vim.list_extend(_items, v)
-          end
-        end
-      end
+    for name, item in pairs(entry) do
+      vim.list_extend(entries, prepare_match(item, name))
     end
-    return _items
   end
-  return _symbols_to_items(symbols, {}, bufnr)
+
+  return entries
 end
 
+local make_entry = function(entry)
+  local ts_utils = require('nvim-treesitter.ts_utils')
+  local start_row, start_col, end_row, _ = ts_utils.get_node_range(entry.node)
+  local node_text = ts_utils.get_node_text(entry.node)[1]
+  return {
+    valid = true,
 
-local actions = require('telescope.actions')
-local action_state = require('telescope.actions.state')
-local finders = require('telescope.finders')
-local make_entry = require('telescope.make_entry')
-local pickers = require('telescope.pickers')
-local utils = require('telescope.utils')
-local conf = require('telescope.config').values
-M.document_symbol = function(opts)
-  local params = {query = 'symbols'}
-  -- local results_lsp = vim.lsp.buf_request_sync(0, "workspace/symbol", params, opts.timeout or 10000)
-  local params = vim.lsp.util.make_position_params()
-  local results_lsp = vim.lsp.buf_request_sync(0, "textDocument/documentSymbol", params, opts.timeout or 10000)
+    value = entry.node,
+    kind = entry.kind,
+    ordinal = node_text .. " " .. entry.kind,
 
-  if not results_lsp or vim.tbl_isempty(results_lsp) then
-    print("No results from textDocument/documentSymbol")
-    return
-  end
- 
-  local locations = {}
-  for _, server_results in pairs(results_lsp) do
-    vim.list_extend(locations, M.symbols_to_items(server_results.result, 0) or {})
-  end
-  -- return results_lsp
-  if vim.tbl_isempty(locations) then
-    return
-  end
+    node_text = node_text,
 
-  opts.ignore_filename = opts.ignore_filename or true
-  pickers.new(opts, {
-    prompt_title = 'LSP Document Symbols',
-    finder    = finders.new_table {
-      results = locations,
-      entry_maker = opts.entry_maker or make_entry.gen_from_lsp_symbols(opts)
-    },
-    previewer = conf.qflist_previewer(opts),
-    sorter = conf.prefilter_sorter{
-      tag = "symbol_type",
-      sorter = conf.generic_sorter(opts)
-    }
-  }):find()
+    -- need to add one since the previewer substacts one
+    lnum = start_row + 1,
+    col = start_col,
+    text = node_text,
+    start = start_row,
+    finish = end_row
+  }
 end
 
+M.treesitter = function()
+  local has_nvim_treesitter, _ = pcall(require, 'nvim-treesitter')
+  if not has_nvim_treesitter then
+    print('You need to install nvim-treesitter')
+    return
+  end
 
---   local selected_entry = action_state.get_selected_entry()
---   local value = selected_entry['value']
---   local index = selected_entry['index']
+  local parsers = require('nvim-treesitter.parsers')
+  if not parsers.has_parser() then
+    print('No parser for the current buffer')
+    return
+  end
 
---   -- local prompt_row, prompt_col = unpack(vim.api.nvim_win_get_position(0))
+  local ts_locals = require('nvim-treesitter.locals')
+  local bufnr = vim.api.nvim_get_current_buf()
 
---   local bufnr, winid = vim.lsp.diagnostic.show_line_diagnostics({}, value.bufnr,
---                                                                 value.lnum - 1,
---                                                                 nil)
---   local w = vim.api.nvim_win_get_width(winid)
---   -- workaround nvim_win_get_height wrongly returning 1 when called from prompt 
---   local h = vim.tbl_count(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false))
---   local trg_row, trg_col = unpack(vim.api.nvim_win_get_position(
---                                     picker.results_win))
+  local results = {}
+  for _, definitions in ipairs(ts_locals.get_definitions(bufnr)) do
+    local entries = prepare_match(definitions)
+    for _, entry in ipairs(entries) do
+      table.insert(results, make_entry(entry))
+    end
+  end
 
---   -- vim.api.nvim_buf_add_highlight(bufnr, -1, 
---   -- each border 'adds' single row/col
---   local b = {}
---   local borders = {'╭', '─', '╮', '│', '╯', '─', '╰', '│'}
---   for _, border in pairs(borders) do
---     table.insert(b, {border, 'TelescopeResultsBorder'})
---   end
---   vim.api.nvim_win_set_config(winid, {
---     relative = 'editor',
---     row = trg_row + results_height - h - index - 2,
---     col = 0 + trg_col,
---     height = h,
---     width = results_width - 2,
---     border = b
---   })
---   -- border='single'})
---   -- vim.api.nvim_win_set_config(winid, {relative='editor', row=trg_row+results_height-h-index, col=0+trg_col, height=h, width=results_width-2})
--- end
-
-local action_state = require('telescope.actions.state')
-M.full_value = function()
-  local selected_entry = action_state.get_selected_entry()
-  local value = selected_entry['value']
-  print(value.type .. ': ' .. value.text)
+  if vim.tbl_isempty(results) then return end
+  return results
 end
 
 M.resize = function(vertical, margin)
@@ -358,7 +107,49 @@ M.toggle_qf = function()
   vim.cmd(qf_toggle)
 end
 
--- local mode = {'c', 'l', 'b'}
+-- put current window in new tab with cursor restored
+M.tabedit = function()
+  -- skip if there is only one window open
+  if vim.tbl_count(api.nvim_tabpage_list_wins(0)) == 1 then
+    print('Cannot expand single buffer')
+    return
+  end
+
+  local buf = api.nvim_get_current_buf()
+  local view = vim.fn.winsaveview()
+  -- note: tabedit % does not properly work with terminal buffer
+  vim.cmd [[tabedit]]
+  -- set buffer and remove one opened by tabedit
+  local tabedit_buf = api.nvim_get_current_buf()
+  api.nvim_win_set_buf(0, buf)
+  api.nvim_buf_delete(tabedit_buf, {force = true})
+  -- restore original view
+  vim.fn.winrestview(view)
+end
+
+-- restore old view with cursor retained
+M.tabclose = function()
+  local buf = api.nvim_get_current_buf()
+  local view = vim.fn.winsaveview()
+  vim.cmd [[tabclose]]
+  -- if we accidentally land somewhere else, do not restore
+  local new_buf = api.nvim_get_current_buf()
+  if buf == new_buf then vim.fn.winrestview(view) end
+end
+
+M.set_hl = function(group, options)
+  local bg = options.bg == nil and '' or 'guibg=' .. options.bg
+  local fg = options.fg == nil and '' or 'guifg=' .. options.fg
+  local gui = options.gui == nil and '' or 'gui=' .. options.gui
+  local link = options.link or false
+  local target = options.target
+
+  if not link then
+    vim.cmd(string.format('hi %s %s %s %s', group, bg, fg, gui))
+  else
+    vim.cmd(string.format('hi! link', group, target))
+  end
+end
 
 function M.convert_reg_to_pos(reg1, reg2)
   -- get {start: 'v', end: curpos} of visual selection 0-indexed

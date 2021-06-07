@@ -4,3 +4,4 @@ mons -e right
 pacman -Qqe > ~/dotfiles/paru/pkglist.txt
 xset r rate 500 60
 /usr/bin/feh --no-fehbg --bg-scale '/home/fdschmidt/.gruvbox_background.png' 
+systemctl --user import-environment DISPLAY

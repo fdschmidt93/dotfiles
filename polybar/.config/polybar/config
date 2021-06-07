@@ -8,17 +8,44 @@
 
 
 [colors]
-;orange = #FF6200
-;orange = #d65d0e
-darkgray = ${xrdb:color8}
-orange = ${xrdb:color9}
-white = #ebdbb2
-gray = #585858
-black = #090909
-red = #c795ae
-blue = #95aec7
-yellow = #c7ae95
-green = #aec795
+dark0_hard     = '#1d2021',
+dark0          = '#282828',
+dark0_soft     = '#32302f',
+dark1          = '#3c3836',
+dark2          = '#504945',
+dark3          = '#665c54',
+dark4          = '#7c6f64',
+gray_245       = '#928374',
+gray_244       = '#928374',
+light0_hard    = '#f9f5d7',
+light0         = '#fbf1c7',
+light0_soft    = '#f2e5bc',
+light1         = '#ebdbb2',
+light2         = '#d5c4a1',
+light3         = '#bdae93',
+light4         = '#a89984',
+bright_red     = '#fb4934',
+bright_green   = '#b8bb26',
+bright_yellow  = '#fabd2f',
+bright_blue    = '#83a598',
+bright_purple  = '#d3869b',
+bright_aqua    = '#8ec07c',
+bright_orange  = '#fe8019',
+neutral_red    = '#cc241d',
+neutral_green  = '#98971a',
+neutral_yellow = '#d79921',
+neutral_blue   = '#458588',
+neutral_purple = '#b16286',
+neutral_aqua   = '#689d6a',
+neutral_orange = '#d65d0e',
+faded_red      = '#9d0006',
+faded_green    = '#79740e',
+faded_yellow   = '#b57614',
+faded_blue     = '#076678',
+faded_purple   = '#8f3f71',
+faded_aqua     = '#427b58',
+faded_orange   = '#af3a03',
+
 #background = #1f222d
 background = #CE262626
 background-alt = #4e4e4e
@@ -48,7 +75,7 @@ padding-right = 0
 module-margin-right = 0
 module-margin-left = 0
 
-modules-right = rofi-usb-mount separator network separator volume separator backlight separator battery separator keyboard separator
+modules-right = separator rofi-usb-mount separator cpu separator network separator volume separator backlight separator battery separator 
 modules-left = i3
 modules-center = date
 
@@ -70,48 +97,96 @@ tray-scale = 1.0
 ; font-0 = "monospace:size=10;2"
 ; font-0 = "DejaVuSans:size=10;2"
 ; font-0 = "Fira Code Mono Nerd Font:size=10:style=retina;2"
-font-0 = "Fantasque Sans Mono:size=10:style=bold;2"
+; font-0 = "Iosevka Nerd Font:size=10;2"
+font-0 = "Fantasque Sans Mono:size=10:style=regular:antialias=true;2"
+; font-0 = "Fantasque Sans Mono:size=10:style=regular;2"
 font-1 = "DejaVuSans:size=10;2"
 font-2 = "FontAwesome:size=10;2"
-font-3 = "Siji:size=10;2"
+; font-2 = Font Awesome 5 Free:pixelsize=9;2
+font-3 = Font Awesome 5 Free Solid:pixelsize=9;2
+font-4 = Font Awesome 5 Brands:pixelsize=9;2
+font-5 = "Siji:size=10;2"
+font-6 = "Fantasque Sans Mono:size=10:style=bold;2"
 
 [module/rofi-usb-mount]
 type = custom/script
 exec = ~/.config/polybar/rofi-usb-mount.sh --check
 tail = true
+interval = 10
 click-left = ~/.config/polybar/rofi-usb-mount.sh --mount
 click-right = ~/.config/polybar/rofi-usb-mount.sh --umount
 click-middle = ~/.config/polybar/rofi-usb-mount.sh --umount-all
 
+[module/cpu]
+type = internal/cpu
+; Seconds to sleep between updates
+; Default: 1
+interval = 1
+
+; Available tags:
+;   <label> (default)
+;   <bar-load>
+;   <ramp-load>
+;   <ramp-coreload>
+;;format = <label> <ramp-coreload>
+format = <label>
+format-prefix = 
+
+; Available tokens:
+;   %percentage% (default) - total cpu load averaged over all cores
+;   %percentage-sum% - Cumulative load on all cores
+;   %percentage-cores% - load percentage for each core
+;   %percentage-core[1-9]% - load percentage for specific core
+label = " %percentage%%"
+
+; Spacing between individual per-core ramps
+;;ramp-coreload-spacing = 1
+;;ramp-coreload-0 = ${cpu.load0}
+;;ramp-coreload-1 = ${cpu.load1}
+
+;;ramp-load-0 = ${cpu.load0}
+;;ramp-load-1 = ${cpu.load1}
+
+
+; [module/vpn]
+; type = custom/script
+; exec = pgrep openconnect
+; label = 
+
 [module/i3]
 type = internal/i3
+
 format = <label-state>
 
 strip-wsnumbers = true
 index-sort = true
 
-label-visible = %index%
+; label-visible = %index%
+label-visible = %{T7}%index%%{T-} │ %{T7}%name%%{T-}
 label-visible-padding = 2
 
-label-focused = %index%
+label-focused = %{T7}%index%%{T-} │ %{T7}%name%%{T-}
 label-focused-background = ${colors.background-alt}
 label-focused-underline= ${colors.foreground-alt}
 label-focused-padding = 2
 
-label-occupied = %index%
+; label-occupied = %index%
+label-occupied = %{T7}%index%%{T-} │ %{T7}%name%%{T-}
 label-occupied-foreground = ${colors.darkgray}
 label-occupied-padding = 2
 
-label-unfocused = %index%
+; label-unfocused = %index%
+label-unfocused = %{T7}%index%%{T-} │ %{T7}%name%%{T-}
 label-unfocused-background = ${colors.background}
 label-unfocused-foreground = ${colors.foreground-alt}
 label-unfocused-padding = 2
 
-label-urgent = %index%
+; label-urgent = %index%
+label-urgent = %{T7}%index%%{T-} │ %{T7}%name%%{T-}
 label-urgent-background = ${colors.alert}
 label-urgent-padding = 2
 
-label-empty = %index%
+label-empty = %name%
 label-empty-foreground = ${colors.foreground-alt}
 label-empty-padding = 0
 
@@ -128,7 +203,7 @@ ws-icon-default = 
 type = internal/backlight
 card = amdgpu_bl0
 
-format = %{F#928374}<ramp>%{F} <label>
+format = <ramp> <label>
 format-background = ${colors.background}
 format-foreground = ${colors.foreground}
 format-padding = 1
@@ -149,6 +224,8 @@ bar-fill = ─
 bar-empty = ─
 
 [module/battery]
+
+
 type = internal/battery
 
 full-at = 99
@@ -159,46 +236,73 @@ adapter = ACAD
 poll-interval = 2
 time-format = %H:%M
 
-format-charging = %{F#928374}<animation-charging> %{F-}<label-charging>
-format-charging-background = ${colors.background}
-format-charging-foreground = ${colors.foreground}
-format-charging-underline = ${colors.white}
-format-charging-padding = 1
+; Available tags:
+;   <label-charging> (default)
+;   <bar-capacity>
+;   <ramp-capacity>
+;   <animation-charging>
+format-charging = <animation-charging> <label-charging>
 
-format-discharging = %{F#928374}<ramp-capacity> %{F-}<label-discharging>
-format-discharging-underline = ${colors.white}
-format-discharging-padding = 1
+; Available tags:
+;   <label-discharging> (default)
+;   <bar-capacity>
+;   <ramp-capacity>
+;   <animation-discharging>
+format-discharging = <ramp-capacity> <label-discharging>
 
+; Available tags:
+;   <label-full> (default)
+;   <bar-capacity>
+;   <ramp-capacity>
+format-full = <ramp-capacity> <label-full>
+
+; Available tokens:
+;   %percentage% (default) - is set to 100 if full-at is reached
+;   %percentage_raw%
+;   %time%
+;   %consumption% (shows current charge rate in watts)
 label-charging = %percentage%%
+
+; Available tokens:
+;   %percentage% (default) - is set to 100 if full-at is reached
+;   %percentage_raw%
+;   %time%
+;   %consumption% (shows current discharge rate in watts)
 label-discharging = %percentage%%
 
-label-full = Fully Charged
-label-full-background = ${colors.background}
-label-full-foreground = ${colors.foreground}
-label-full-underline = ${colors.white}
-label-full-padding = 1
+; Available tokens:
+;   %percentage% (default) - is set to 100 if full-at is reached
+;   %percentage_raw%
+; label-full = Fully charged
+label-full = %percentage%%
 
-ramp-capacity-0 = 
-ramp-capacity-1 = 
-ramp-capacity-2 = 
-ramp-capacity-3 = 
-ramp-capacity-4 = 
-ramp-capacity-5 = 
-ramp-capacity-6 = 
-ramp-capacity-7 = 
-ramp-capacity-8 = 
-ramp-capacity-9 = 
+; Only applies if <ramp-capacity> is used
+ramp-capacity-0 = 
+ramp-capacity-1 = 
+ramp-capacity-2 = 
+ramp-capacity-3 = 
+ramp-capacity-4 = 
 
-animation-charging-0 = 
-animation-charging-1 = 
-animation-charging-2 = 
-animation-charging-3 = 
-animation-charging-4 = 
-animation-charging-5 = 
-animation-charging-6 = 
-animation-charging-7 = 
-animation-charging-8 = 
+; Only applies if <bar-capacity> is used
+bar-capacity-width = 10
+
+; Only applies if <animation-charging> is used
+animation-charging-0 = 
+animation-charging-1 = 
+animation-charging-2 = 
+animation-charging-3 = 
+animation-charging-4 = 
+; Framerate in milliseconds
 animation-charging-framerate = 750
+
+; Only applies if <animation-discharging> is used
+animation-discharging-0 = 
+animation-discharging-1 = 
+animation-discharging-2 = 
+animation-discharging-3 = 
+animation-discharging-4 = 
+; Framerate in milliseconds
+animation-discharging-framerate = 500
 
 
 [module/date]
@@ -225,22 +329,22 @@ label-separator = |
 
 [module/volume]
 type = internal/pulseaudio
-
-format-volume = <label-volume> 
-format-volume-padding = 2
-
+ramp-volume-0 = 
+ramp-volume-1 = 
+ramp-volume-2 = 
+format-volume = <ramp-volume> <label-volume> 
 format-volume-underline = ${colors.white}
 
-label-volume = %{F#928374} %{F-}%percentage:3%%
+label-volume = %percentage:2%%
 #label-volume-foreground = ${color.white}
 
-label-muted =%{F#928374} %{F-}mute
+label-muted =%{F#928374} %{F-}off
 format-muted = <label-muted>
 format-muted-underline = ${colors.white}
-format-muted-padding = 2
 #label-muted-foreground = ${colors.gray}
 
-format-padding = 2
+click-right = pavucontrol
+
 
 [module/keyboard]
 type = internal/xkeyboard
@@ -290,8 +394,7 @@ interval = 3.0
 accumulate-stats = true
 unknown-as-up = true
 
-format-connected = %{F#928374}<ramp-signal>%{F} %{A1:networkmanager_dmenu:}<label-connected>%{A}
-; format-connected = <ramp-signal> <label-connected>
+format-connected = <ramp-signal> %{A1:networkmanager_dmenu:}%{A3:nm-connection-editor:}<label-connected>%{A}%{A}
 format-connected-background = ${colors.background}
 format-connected-foreground = ${colors.foreground}
 format-connected-padding = 1
@@ -315,7 +418,7 @@ ramp-signal-4 = 
 
 [module/separator]
 type = custom/text
-content = |
+content = " " 
 content-foreground = #4e4e4e
 
 ; vim:ft=dosini

@@ -19,14 +19,20 @@ local function launch_conda_env()
   return 'conda activate ' .. conda_env .. ' && '
 end
 
-function M.ipython_exists()
+function M.buf_name_contains(substring)
   local windows = api.nvim_tabpage_list_wins(0)
   for _, win in pairs(windows) do
     local buf_nr = api.nvim_win_get_buf(win)
     local buf_name = api.nvim_buf_get_name(buf_nr)
-    if buf_name:find('ipython') then return win, buf_nr, buf_name end
+    if buf_name:find(substring) then return win, buf_nr, buf_name end
   end
 end
+
+-- function M.toggle_term()
+--   local win, buf_nr, buf_name = M.buf_name_contains($SHELL)
+--   local width = api.nvim_win_get_width(win)
+--   local height = api.nvim_win_get_height(win)
+-- end
 
 -- (re-)starts ipython
 function M.re_start_ipython(side, command)
@@ -34,7 +40,7 @@ function M.re_start_ipython(side, command)
   local cur_win = api.nvim_get_current_win()
   local cur_buf = api.nvim_get_current_buf()
 
-  local win, buf_nr, buf_name = M.ipython_exists()
+  local win, buf_nr, buf_name = M.buf_name_contains('ipython')
   if win ~= nil then
     -- create new buf
     local new_buf = api.nvim_create_buf(true, false)
