@@ -53,28 +53,13 @@ require'nvim-treesitter.configs'.setup({
         ['am'] = '@call.outer',
         ['im'] = '@call.inner'
       }
-    },
-    lsp_interop = {
-      enable = true,
-      peek_definition_code = {
-        ["<space>df"] = "@function.outer",
-        ["<space>dF"] = "@class.outer",
-      }
     }
   },
   fold = {enable = true},
   refactor = {
-    highlight_current_scope = {
-      enable = false,
-      inverse_highlighting = true,
-      disable = {'python'}
-    },
+    highlight_current_scope = {enable = false, inverse_highlighting = true, disable = {'python'}},
     highlight_definitions = {enable = true},
-    smart_rename = {
-      enable = true,
-      disable = {},
-      keymaps = {smart_rename = 'grr'}
-    },
+    smart_rename = {enable = true, disable = {}, keymaps = {smart_rename = 'grr'}},
     navigation = {
       enable = true,
       disable = {},

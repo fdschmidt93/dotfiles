@@ -8,71 +8,56 @@ local c = 'ä anda α'
 local b = '全角全角全角'
 local d = 'hallääääääääää'
 
-local function prepare_match(entry, kind)
-  local entries = {}
+function M.list_filenames()
+  local buffers = api.nvim_list_bufs()
+  for _, buf in ipairs(buffers) do P(api.nvim_buf_get_name(buf)) end
+end
 
-  if entry.node then
-    entry["kind"] = kind
-    table.insert(entries, entry)
-  else
-    for name, item in pairs(entry) do
-      vim.list_extend(entries, prepare_match(item, name))
-    end
+M.toggle_qf = function()
+  local windows = vim.fn.getwininfo()
+  local qf_exists = false
+  for _, win in pairs(windows) do if win['quickfix'] == 1 then qf_exists = true end end
+  if qf_exists == true then
+    vim.cmd('cclose')
+    return
   end
-
-  return entries
+  if not vim.tbl_isempty(vim.fn.getqflist()) then vim.cmd('copen') end
 end
 
-local make_entry = function(entry)
-  local ts_utils = require('nvim-treesitter.ts_utils')
-  local start_row, start_col, end_row, _ = ts_utils.get_node_range(entry.node)
-  local node_text = ts_utils.get_node_text(entry.node)[1]
-  return {
-    valid = true,
-
-    value = entry.node,
-    kind = entry.kind,
-    ordinal = node_text .. " " .. entry.kind,
-
-    node_text = node_text,
-
-    -- need to add one since the previewer substacts one
-    lnum = start_row + 1,
-    col = start_col,
-    text = node_text,
-    start = start_row,
-    finish = end_row
-  }
-end
-
-M.treesitter = function()
-  local has_nvim_treesitter, _ = pcall(require, 'nvim-treesitter')
-  if not has_nvim_treesitter then
-    print('You need to install nvim-treesitter')
+-- tmux like <C-b>z: focus on one buffer in extra tab
+-- put current window in new tab with cursor restored
+M.tabedit = function()
+  -- skip if there is only one window open
+  if vim.tbl_count(vim.api.nvim_tabpage_list_wins(0)) == 1 then
+    print('Cannot expand single buffer')
     return
   end
 
-  local parsers = require('nvim-treesitter.parsers')
-  if not parsers.has_parser() then
-    print('No parser for the current buffer')
-    return
-  end
-
-  local ts_locals = require('nvim-treesitter.locals')
-  local bufnr = vim.api.nvim_get_current_buf()
-
-  local results = {}
-  for _, definitions in ipairs(ts_locals.get_definitions(bufnr)) do
-    local entries = prepare_match(definitions)
-    for _, entry in ipairs(entries) do
-      table.insert(results, make_entry(entry))
-    end
-  end
-
-  if vim.tbl_isempty(results) then return end
-  return results
+  local buf = vim.api.nvim_get_current_buf()
+  local view = vim.fn.winsaveview()
+  -- note: tabedit % does not properly work with terminal buffer
+  vim.cmd [[tabedit]]
+  -- set buffer and remove one opened by tabedit
+  local tabedit_buf = vim.api.nvim_get_current_buf()
+  vim.api.nvim_win_set_buf(0, buf)
+  vim.api.nvim_buf_delete(tabedit_buf, {force = true})
+  -- restore original view
+  vim.fn.winrestview(view)
 end
 
+-- restore old view with cursor retained
+M.tabclose = function()
+  local buf = vim.api.nvim_get_current_buf()
+  local view = vim.fn.winsaveview()
+  vim.cmd [[tabclose]]
+  -- if we accidentally land somewhere else, do not restore
+  local new_buf = vim.api.nvim_get_current_buf()
+  if buf == new_buf then vim.fn.winrestview(view) end
+end
+
+-- expand or minimize current buffer in "actual" direction
+-- this is useful as mapping ":resize 2" stand-alone might otherwise not be in the right direction if mapped to ctrl-leftarrow or something related
+-- use like this
 M.resize = function(vertical, margin)
   local cur_win = vim.api.nvim_get_current_win()
   -- go (possibly) right
@@ -95,48 +80,6 @@ M.resize = function(vertical, margin)
   vim.cmd(cmd)
 end
 
--- use quickfix window in combination with telescope
--- telescope: <C-q> sends items to quickfix list for later use
-M.toggle_qf = function()
-  local windows = vim.fn.getwininfo()
-  local qf_exists = false
-  for _, win in pairs(windows) do
-    if win['quickfix'] == 1 then qf_exists = true end
-  end
-  local qf_toggle = not qf_exists and 'copen' or 'cclose'
-  vim.cmd(qf_toggle)
-end
-
--- put current window in new tab with cursor restored
-M.tabedit = function()
-  -- skip if there is only one window open
-  if vim.tbl_count(api.nvim_tabpage_list_wins(0)) == 1 then
-    print('Cannot expand single buffer')
-    return
-  end
-
-  local buf = api.nvim_get_current_buf()
-  local view = vim.fn.winsaveview()
-  -- note: tabedit % does not properly work with terminal buffer
-  vim.cmd [[tabedit]]
-  -- set buffer and remove one opened by tabedit
-  local tabedit_buf = api.nvim_get_current_buf()
-  api.nvim_win_set_buf(0, buf)
-  api.nvim_buf_delete(tabedit_buf, {force = true})
-  -- restore original view
-  vim.fn.winrestview(view)
-end
-
--- restore old view with cursor retained
-M.tabclose = function()
-  local buf = api.nvim_get_current_buf()
-  local view = vim.fn.winsaveview()
-  vim.cmd [[tabclose]]
-  -- if we accidentally land somewhere else, do not restore
-  local new_buf = api.nvim_get_current_buf()
-  if buf == new_buf then vim.fn.winrestview(view) end
-end
-
 M.set_hl = function(group, options)
   local bg = options.bg == nil and '' or 'guibg=' .. options.bg
   local fg = options.fg == nil and '' or 'guifg=' .. options.fg
@@ -147,7 +90,7 @@ M.set_hl = function(group, options)
   if not link then
     vim.cmd(string.format('hi %s %s %s %s', group, bg, fg, gui))
   else
-    vim.cmd(string.format('hi! link', group, target))
+    vim.cmd(string.format('hi! link %s %s', group, target))
   end
 end
 
@@ -196,9 +139,7 @@ function M.adjust_pos_by_regtype(pos1, pos2, mode)
     wincol_pos = {wincol1, wincol2}
   else
     -- char- or linewise selection
-    if (line1 == line2 and col2 < col1) or line1 > line2 then
-      pos1, pos2 = pos2, pos1
-    end
+    if (line1 == line2 and col2 < col1) or line1 > line2 then pos1, pos2 = pos2, pos1 end
   end
   return pos1, pos2, wincol_pos
 end
@@ -317,15 +258,6 @@ function M.greedy_wincol_byte(wincol, pos, line_len, left)
   end
 end
 
-function M.visual_selection()
-  local mode = vim.api.nvim_get_mode().mode
-  -- vim.cmd [[set virtualedit=onemore]]
-  local pos1, pos2 = M.convert_reg_to_pos("v", ".")
-  vim.cmd [[normal :esc<CR>]]
-  P(M.region(0, pos1, pos2, mode, true))
-  -- vim.cmd [[set virtualedit=""]]
-end
-
 function M.region(bufnr, pos1, pos2, regtype, inclusive)
   local delimiter = ' '
   local trim = true
@@ -351,10 +283,8 @@ function M.region(bufnr, pos1, pos2, regtype, inclusive)
         if row == first_line or regtype == '' then
           if regtype == '' then
             -- Iterate from end of line to get maximum byte col for which wincol >= wincol_start
-            start_bytecol = M.greedy_wincol_byte(wincol_pos[1],
-            -- pass (1,0)-indexed pos
-                                                 {line1 + row, col1 - 1},
-                                                 #lines[row] - 1, false)
+            start_bytecol = M.greedy_wincol_byte(wincol_pos[1], -- pass (1,0)-indexed pos
+            {line1 + row, col1 - 1}, #lines[row] - 1, false)
             -- wincol_start is beyond line
             if start_bytecol ~= nil then
               start_bytecol = start_bytecol + 1 -- add 1 to 1-index column
@@ -375,10 +305,8 @@ function M.region(bufnr, pos1, pos2, regtype, inclusive)
           local end_bytecol
           if regtype == '' then
             -- Iterate from beginning of line to get maximum byte col for which wincol <= wincol_end
-            end_bytecol = M.greedy_wincol_byte(wincol_pos[2],
-            -- pass (1,0)-indexed pos
-                                               {line1 + row, col2 - 1},
-                                               #lines[row] - 1, true) -- get difference in byte offset inclusive and add back zero indexing
+            end_bytecol = M.greedy_wincol_byte(wincol_pos[2], -- pass (1,0)-indexed pos
+            {line1 + row, col2 - 1}, #lines[row] - 1, true) -- get difference in byte offset inclusive and add back zero indexing
             -- (difference here means absolute position after cutoff)
             - start_bytecol + 2
           end
@@ -392,6 +320,15 @@ function M.region(bufnr, pos1, pos2, regtype, inclusive)
     table.insert(concat, line)
   end
   return table.concat(concat, delimiter)
+end
+
+function M.visual_selection()
+  local mode = vim.api.nvim_get_mode().mode
+  -- vim.cmd [[set virtualedit=onemore]]
+  local pos1, pos2 = M.convert_reg_to_pos("v", ".")
+  vim.cmd [[normal :esc<CR>]]
+  P(M.region(0, pos1, pos2, mode, true))
+  -- vim.cmd [[set virtualedit=""]]
 end
 
 return M

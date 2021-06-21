@@ -1,17 +1,14 @@
 local opt = vim.opt
--- local opts_info = vim.api.nvim_get_all_options_info()
 
--- local opt = setmetatable({}, {
---   __newindex = function(_, key, value)
---     vim.o[key] = value
---     local scope = opts_info[key].scope
---     if scope == 'win' then
---       vim.wo[key] = value
---     elseif scope == 'buf' then
---       vim.bo[key] = value
---     end
---   end
--- })
+-- faster startup
+vim.g.loaded_gzip = false
+vim.g.loaded_matchit = false
+vim.g.loaded_netrwPlugin = false
+vim.g.loaded_tarPlugin = false
+vim.g.loaded_zipPlugin = false
+vim.g.loaded_man = false
+vim.g.loaded_2html_plugin = false
+vim.g.loaded_remote_plugins = false
 
 -- Incremental live completion
 opt.inccommand = 'nosplit'
@@ -57,6 +54,7 @@ opt.pumheight = 10
 
 opt.cursorline = true
 opt.termguicolors = true
+opt.conceallevel = 3
 
 -- python providers
 vim.g['python3_host_prog'] = string.format('/home/%s/miniconda3/bin/python',

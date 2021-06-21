@@ -83,7 +83,7 @@ floating_modifier $mod
 # start applications
 # bindsym $mod+Return exec alacritty
 bindsym $mod+Return exec kitty
-bindsym $mod+t exec chromium
+bindsym $mod+t exec chromium 
 bindsym $mod+Shift+t exec thunderbird
 
 # kill focused window
@@ -232,3 +232,5 @@ for_window [title="Path Effects"]         floating toggle
 for_window [title="Export PNG Image"]     floating toggle
 for_window [title="Fill and Stroke"]      floating toggle
 #
+bindsym $mod+Shift+b exec cpupower-gui -b && notify-send "CPU" "CPU Governer set to Balanced"
+bindsym $mod+Shift+p exec cpupower-gui -p && notify-send "CPU" "CPU Governer set to Performance"

@@ -75,7 +75,7 @@ padding-right = 0
 module-margin-right = 0
 module-margin-left = 0
 
-modules-right = separator rofi-usb-mount separator cpu separator network separator volume separator backlight separator battery separator 
+modules-right = separator rofi-usb-mount separator cpu separator memory network separator volume separator backlight separator battery separator 
 modules-left = i3
 modules-center = date
 
@@ -98,7 +98,7 @@ tray-scale = 1.0
 ; font-0 = "DejaVuSans:size=10;2"
 ; font-0 = "Fira Code Mono Nerd Font:size=10:style=retina;2"
 ; font-0 = "Iosevka Nerd Font:size=10;2"
-font-0 = "Fantasque Sans Mono:size=10:style=regular:antialias=true;2"
+font-0 = "Fantasque Sans Mono:size=9.5:style=bold:antialias=true;2"
 ; font-0 = "Fantasque Sans Mono:size=10:style=regular;2"
 font-1 = "DejaVuSans:size=10;2"
 font-2 = "FontAwesome:size=10;2"
@@ -129,8 +129,8 @@ interval = 1
 ;   <ramp-load>
 ;   <ramp-coreload>
 ;;format = <label> <ramp-coreload>
-format = <label>
-format-prefix = 
+format = %{F#8ec07c}<label>%{F-}
+; format-prefix = 
 
 ; Available tokens:
 ;   %percentage% (default) - total cpu load averaged over all cores
@@ -152,6 +152,104 @@ label = " %percentage%%"
 ; type = custom/script
 ; exec = pgrep openconnect
 ; label = 
+;
+[module/temperature]
+type = internal/temperature
+
+; Seconds to sleep between updates
+; Default: 1
+interval = 0.5
+
+; Thermal zone to use
+; To list all the zone types, run 
+; $ for i in /sys/class/thermal/thermal_zone*; do echo "$i: $(<$i/type)"; done
+; Default: 0
+thermal-zone = 0
+
+; Full path of temperature sysfs path
+; Use `sensors` to find preferred temperature source, then run
+; $ for i in /sys/class/hwmon/hwmon*/temp*_input; do echo "$(<$(dirname $i)/name): $(cat ${i%_*}_label 2>/dev/null || echo $(basename ${i%_*})) $(readlink -f $i)"; done
+; to find path to desired file
+; Default reverts to thermal zone setting
+hwmon-path = /sys/devices/platform/coretemp.0/hwmon/hwmon2/temp1_input
+
+; Base temperature for where to start the ramp (in degrees celsius)
+; Default: 0
+base-temperature = 20
+
+; Threshold temperature to display warning label (in degrees celsius)
+; Default: 80
+warn-temperature = 60 
+
+[module/memory]
+type = internal/memory
+
+; Seconds to sleep between updates
+; Default: 1
+interval = 3
+
+; Available tags:
+;   <label> (default)
+;   <bar-used>
+;   <bar-free>
+;   <ramp-used>
+;   <ramp-free>
+;   <bar-swap-used>
+;   <bar-swap-free>
+;   <ramp-swap-used>
+;   <ramp-swap-free>
+format = <label>
+
+; Available tokens:
+;   %percentage_used% (default)
+;   %percentage_free%
+;   %gb_used%
+;   %gb_free%
+;   %gb_total%
+;   %mb_used%
+;   %mb_free%
+;   %mb_total%
+;   %percentage_swap_used%
+;   %percentage_swap_free%
+;   %mb_swap_total%
+;   %mb_swap_free%
+;   %mb_swap_used%
+;   %gb_swap_total%
+;   %gb_swap_free%
+;   %gb_swap_used%
+
+label = %{F#fe8019} %gb_used%%{F-}
+
+; Only applies if <bar-used> is used
+bar-used-indicator =
+bar-used-width = 5
+bar-used-foreground-0 = #55aa55
+bar-used-foreground-1 = #557755
+bar-used-foreground-2 = #f5a70a
+bar-used-foreground-3 = #ff5555
+bar-used-fill = ▐
+bar-used-empty = ▐
+bar-used-empty-foreground = #444444
+
+; Only applies if <ramp-used> is used
+ramp-used-0 = ▁
+ramp-used-1 = ▂
+ramp-used-2 = ▃
+ramp-used-3 = ▄
+ramp-used-4 = ▅
+ramp-used-5 = ▆
+ramp-used-6 = ▇
+ramp-used-7 = █
+
+; Only applies if <ramp-free> is used
+ramp-free-0 = ▁
+ramp-free-1 = ▂
+ramp-free-2 = ▃
+ramp-free-3 = ▄
+ramp-free-4 = ▅
+ramp-free-5 = ▆
+ramp-free-6 = ▇
+ramp-free-7 = █
 
 [module/i3]
 type = internal/i3
@@ -241,20 +339,20 @@ time-format = %H:%M
 ;   <bar-capacity>
 ;   <ramp-capacity>
 ;   <animation-charging>
-format-charging = <animation-charging> <label-charging>
+format-charging = %{F#b8bb26}<animation-charging>%{F-} <label-charging>
 
 ; Available tags:
 ;   <label-discharging> (default)
 ;   <bar-capacity>
 ;   <ramp-capacity>
 ;   <animation-discharging>
-format-discharging = <ramp-capacity> <label-discharging>
+format-discharging = %{F#fabd2f}<animation-discharging>%{F-} <label-discharging>
 
 ; Available tags:
 ;   <label-full> (default)
 ;   <bar-capacity>
 ;   <ramp-capacity>
-format-full = <ramp-capacity> <label-full>
+format-full = %{F#b8bb26}<ramp-capacity>%{F-} <label-full>
 
 ; Available tokens:
 ;   %percentage% (default) - is set to 100 if full-at is reached
