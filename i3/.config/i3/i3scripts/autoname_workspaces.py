@@ -196,7 +196,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--norenumber_workspaces',
         action='store_true',
-        default=False,
+        default=True,
         help=
         "Disable automatic workspace re-numbering. By default, workspaces are automatically re-numbered in ascending order."
     )

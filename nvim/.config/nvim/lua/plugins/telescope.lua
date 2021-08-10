@@ -1,11 +1,56 @@
+-- this file may contain configuration related to ongoing telescope work
+-- it's not a COPYME
+
 local status, telescope = pcall(require, "telescope")
 if not status then
   return
 end
 
+local actions = require "telescope.actions"
 local action_state = require "telescope.actions.state"
-require("telescope").setup {
+local action_utils = require "telescope.actions.utils"
+local action_mt = require "telescope.actions.mt"
+
+ta = require "telescope.actions"
+ts = require "telescope.actions.state"
+tu = require "telescope.actions.utils"
+
+--- PR #1093
+-- local print_entry
+-- print_entry = actions.register_actions({
+--   print_entry = function()
+--     print(vim.inspect(action_state.get_selected_entry()))
+--   end,
+--   print_ordinal = function()
+--     P(vim.inspect(action_state.get_selected_entry()))
+--   end,
+-- })[1]
+
+telescope.setup {
+  defaults = {
+    mappings = {
+      i = {
+        -- PR #1093
+        -- ["<C-x>"] = actions.print_entry + actions.toggle_selection,
+        ["<C-space><CR>"] = function(prompt_bufnr)
+          require("telescope").extensions.hop._hop(prompt_bufnr, { callback = actions.select_default })
+        end,
+        ["<C-space>v"] = function(prompt_bufnr)
+          require("telescope").extensions.hop._hop(prompt_bufnr, { callback = actions.select_vertical })
+        end,
+        ["<C-space>h"] = function(prompt_bufnr)
+          require("telescope").extensions.hop._hop(prompt_bufnr, { callback = actions.select_horizontal })
+        end,
+      },
+    },
+  },
   extensions = {
+    hop = {
+      sign_hl = { "WarningMsg", "Title" },
+      line_hl = { "CursorLine", "Normal" },
+      trace_entry = true,
+      clear_selection_hl = false,
+    },
     fzf = {
       fuzzy = true, -- false will only do exact matching
       override_generic_sorter = false, -- override the generic sorter
@@ -14,6 +59,19 @@ require("telescope").setup {
     },
   },
   pickers = {
+    find_files = {
+      on_input_filter_cb = function(prompt)
+        if prompt:sub(#prompt) == "@" then
+          vim.schedule(function()
+            local prompt_bufnr = vim.api.nvim_get_current_buf()
+            require("telescope.actions").select_default(prompt_bufnr)
+            require("telescope.builtin").current_buffer_fuzzy_find()
+            -- properly enter prompt in insert mode
+            vim.cmd [[normal! A]]
+          end)
+        end
+      end,
+    },
     git_commits = {
       mappings = {
         i = {
@@ -28,6 +86,7 @@ require("telescope").setup {
     buffers = {
       mappings = {
         i = {
+          ["<C-d>"] = actions.delete_buffer + actions.move_to_top,
           ["<C-x>"] = function(prompt_bufnr)
             local current_picker = action_state.get_current_picker(prompt_bufnr)
             local selected_bufnr = action_state.get_selected_entry().bufnr
@@ -49,16 +108,41 @@ require("telescope").setup {
               -- fill winids with new empty buffers
               for _, winid in ipairs(winids) do
                 if vim.tbl_contains(tabwins, winid) then
-                  local new_buf = vim.F.if_nil(
-                    table.remove(replacement_buffers),
-                    vim.api.nvim_create_buf(false, true)
-                  )
+                  local new_buf = vim.F.if_nil(table.remove(replacement_buffers), vim.api.nvim_create_buf(false, true))
                   vim.api.nvim_win_set_buf(winid, new_buf)
                 end
               end
               -- remove buffer at last
               vim.api.nvim_buf_delete(bufnr, { force = true })
             end)
+          end,
+        },
+      },
+    },
+    git_status = {
+      mappings = {
+        i = {
+          ["<C-r>"] = function(prompt_bufnr)
+            local selection = action_state.get_selected_entry()
+            actions.close(prompt_bufnr)
+            local _, ret, stderr = R("telescope.utils").get_os_command_output {
+              "git",
+              "checkout",
+              "HEAD",
+              "--",
+              selection.value,
+            }
+            if ret == 0 then
+              print("Reset to HEAD: " .. selection.value)
+            else
+              print(
+                string.format(
+                  'Error when applying: %s. Git returned: "%s"',
+                  selection.value,
+                  table.concat(stderr, "  ")
+                )
+              )
+            end
           end,
         },
       },
@@ -92,65 +176,51 @@ require("telescope").setup {
     },
   },
 }
-
+telescope.load_extension "hop"
 telescope.load_extension "fzf"
--- telescope.load_extension('project')
 
--- local dropdown_opts = R('telescope.themes').get_dropdown {
---   border = true,
---   previewer = false,
---   shorten_path = false,
---   prompt_prefix = "> ",
---   results_height = 30
--- }
+local opts = { silent = true }
+local ts_builtin = require "telescope.builtin"
 
--- -- local find_nvim = function()
--- --   -- agnostic to local or ssh
--- --   local user = os.getenv('USER')
--- --   local opts = vim.deepcopy(dropdown_opts)
--- --   opts.prompt = 'Neovim'
--- --   opts.cwd = string.format('/home/%s/.config/nvim/', user)
--- --   R('telescope.builtin').find_files(opts)
--- -- end
-
--- -- local find_notes = function()
--- --   local user = os.getenv('USER')
--- --   R('telescope.builtin').find_files {
--- --     prompt = 'Neovim',
--- --     cwd = string.format('/home/%s/notes/', user)
--- --   }
--- -- end
-
--- -- local find_meetings = function()
--- --   local user = os.getenv('USER')
--- --   R('telescope.builtin').find_files {
--- --     prompt = 'Neovim',
--- --     cwd = string.format('/home/%s/phd/meetings', user)
--- --   }
--- -- end
-
--- -- mappings
-
-local opt = { silent = true }
-local ts_builtin = R "telescope.builtin"
-nnoremap { "<space><space>f", ts_builtin.find_files, opt }
-nnoremap { "<space><space>rs", ts_builtin.grep_string, opt }
+nnoremap { "<space><space>f", ts_builtin.find_files, opts }
+nnoremap { "<space><space>rs", ts_builtin.grep_string, opts }
 vnoremap {
   "<space><space>rg",
   function()
-    ts_builtin.grep_string { query = require("utils").visual_selection() }
+    ts_builtin.grep_string { default_text = require("utils").visual_selection() }
   end,
-  opt,
+  opts,
 }
-nnoremap { "<space><space>rg", ts_builtin.live_grep, opt }
-nnoremap { "<space><space>man", ts_builtin.man_pages, opt }
-nnoremap { "<space><space>help", ts_builtin.help_tags, opt }
-nnoremap { "<space><space>bi", ts_builtin.builtin, opt }
-nnoremap { "<space><space>rb", ts_builtin.current_buffer_fuzzy_find, opt }
-nnoremap { "<space><space>gb", ts_builtin.git_branches, opt }
-nnoremap { "<space><space>gc", ts_builtin.git_commits, opt }
-nnoremap { "<space><space>gs", ts_builtin.git_stash, opt }
-nnoremap { "<space><space>bf", ts_builtin.file_browser, opt }
-
--- -- nnoremap {'<space><space>nvim', find_nvim, opt}
--- -- nnoremap {'<leader><leader>n', find_notes, opt}
+nnoremap { "<space><space>b", ts_builtin.buffers, opts }
+nnoremap { "<space><space>rg", ts_builtin.live_grep, opts }
+nnoremap { "<space><space>man", ts_builtin.man_pages, opts }
+nnoremap { "<space><space>help", ts_builtin.help_tags, opts }
+nnoremap { "<space><space>bi", ts_builtin.builtin, opts }
+nnoremap { "<space><space>rb", ts_builtin.current_buffer_fuzzy_find, opts }
+nnoremap { "<space><space>gb", ts_builtin.git_branches, opts }
+nnoremap { "<space><space>gc", ts_builtin.git_commits, opts }
+nnoremap { "<space><space>gs", ts_builtin.git_status, opts }
+nnoremap { "<space><space>sg", ts_builtin.git_stash, opts }
+nnoremap { "<space><space>bf", ts_builtin.file_browser, opts }
+nnoremap { "<space><space>jl", ts_builtin.jumplist, opts }
+nnoremap { "gD", vim.lsp.buf.declaration, opts }
+nnoremap { "gi", vim.lsp.buf.implementation, opts }
+nnoremap { "gd", ts_builtin.lsp_definitions, opts }
+nnoremap { "gr", ts_builtin.lsp_references, opts }
+nnoremap { "<space>ds", ts_builtin.lsp_document_symbols, opts }
+nnoremap {
+  "<space>fs",
+  partial(ts_builtin.lsp_document_symbols, { symbols = { "function", "method" } }),
+  opts,
+}
+nnoremap { "<space>cs", partial(ts_builtin.lsp_document_symbols, { symbols = "class" }), opts }
+nnoremap { "<space>db", ts_builtin.lsp_document_diagnostics, opts }
+nnoremap { "<space>dw", ts_builtin.lsp_workspace_diagnostics, opts }
+nnoremap {
+  "<space>ws",
+  function()
+    ts_builtin.lsp_workspace_symbols { query = vim.fn.input "> " }
+  end,
+  opts,
+}
+nnoremap { "<space>wsd", ts_builtin.lsp_dynamic_workspace_symbols, opts }

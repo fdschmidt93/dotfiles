@@ -1,4 +1,4 @@
-local condition = require('galaxyline.condition')
+local condition = require "galaxyline.condition"
 
 M = {}
 

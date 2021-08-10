@@ -4,6 +4,8 @@ if not status then
   return
 end
 
+vim.opt.laststatus = 2
+
 local conditions = require "plugins.statusline.conditions"
 local utils = require "plugins.statusline.utils"
 

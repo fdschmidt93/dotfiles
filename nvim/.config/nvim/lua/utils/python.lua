@@ -21,7 +21,15 @@ function M.jump_to_ipy_error()
   else
     api.nvim_win_set_buf(0, bufnr)
   end
-  api.nvim_win_set_cursor(0, {buf_linenr, 0})
+  api.nvim_win_set_cursor(0, { buf_linenr, 0 })
 end
+
+
+-- open unlisted toggleable terminal automatically upon entering python
+vim.cmd [[
+  autocmd FileType python ++once lua require'utils.repl'.shell(require'utils.repl'.conda_env_prefix('ipython'), 'below', false)
+  autocmd FileType python ++once lua require'utils.repl'.toggle_termwin('below')
+  autocmd FileType python lua require'utils.repl'.set_slime_config()
+]]
 
 return M

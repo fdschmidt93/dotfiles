@@ -79,7 +79,6 @@ M.line_column = function()
   return string.format("%3d:%2d", line, column + 1)
 end
 
-
 M.checkwidth = function(width)
   return vim.fn.winwidth(0) / 2 > width
 end

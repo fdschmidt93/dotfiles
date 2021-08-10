@@ -1,26 +1,60 @@
-local status, telescope = pcall(require, 'telescope')
-if not status then return end
+local status, _ = pcall(require, "telescope")
+if not status then
+  return
+end
+
+local actions = require "telescope.actions"
+local action_state = require "telescope.actions.state"
 
 local M = {}
-local api = vim.api
 
-local action_state = require('telescope.actions.state')
-
-function M.toggle_all()
-  local prompt_bufnr = vim.api.nvim_get_current_buf()
-  local current_picker = action_state.get_current_picker(prompt_bufnr)
-  -- indices are 1-indexed, rows are 0-indexed
-  local i = 1
-  for entry in current_picker.manager:iter() do
-    current_picker._multi:toggle(entry)
-    -- highlighting
-    local row = current_picker:get_row(i)
-    -- TODO fix row > 0 in can_select_row(row)
-    if current_picker:can_select_row(row) and row > 0 then
-      -- if true then
-      current_picker.highlighter:hi_multiselect(row, current_picker._multi:is_selected(entry))
+--- Replace multi-selected buffers with previous buffers in the list, respectively.
+--- Falls back to empty unlisted scratch buffer as placeholder if no valid buffers found.
+--- See also: https://github.com/moll/vim-bbye
+---@param prompt_bufnr number: The prompt bufnr
+M.bbye_buffer = function(prompt_bufnr)
+  if prompt_bufnr == nil then
+    if vim.bo.filetype == "TelescopePrompt" then
+      prompt_bufnr = vim.api.nvim_get_current_buf()
+    else
+      print "Not in Telescope prompt"
+      return
     end
-    i = i + 1
   end
-  -- current_picker:refresh()
+  local current_picker = action_state.get_current_picker(prompt_bufnr)
+  local selected_buf = actions.map_selections(prompt_bufnr, function(selection)
+    return selection.bufnr
+  end)
+
+  local replacement_buffers = {}
+  for entry in current_picker.manager:iter() do
+    if not vim.tbl_contains(selected_buf, entry.bufnr) then
+      table.insert(replacement_buffers, entry.bufnr)
+    end
+  end
+  table.sort(replacement_buffers, function(x, y)
+    return x < y
+  end)
+
+  current_picker:delete_selection(function(selection)
+    local bufnr = selection.bufnr
+    -- get associated window(s)
+    local winids = vim.fn.win_findbuf(bufnr)
+
+    local selection_replacements = {}
+    for _, buf in ipairs(replacement_buffers) do
+      if buf < bufnr then
+        table.insert(selection_replacements, buf)
+      end
+    end
+
+    for _, winid in ipairs(winids) do
+      local new_buf = vim.F.if_nil(table.remove(selection_replacements), vim.api.nvim_create_buf(false, true))
+      vim.api.nvim_win_set_buf(winid, new_buf)
+    end
+    -- remove buffer at last
+    vim.api.nvim_buf_delete(bufnr, { force = true })
+  end)
 end
+
+return M

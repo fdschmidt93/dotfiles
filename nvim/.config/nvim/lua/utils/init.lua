@@ -3,25 +3,38 @@ local api = vim.api
 
 -- test strings for visual selection
 -- of PR for neovim core
-local a = '全ä'
-local c = 'ä anda α'
-local b = '全角全角全角'
-local d = 'hallääääääääää'
+local a = "全ä"
+local c = "ä anda α"
+local b = "全角全角全角"
+local d = "hallääääääääää"
 
-function M.list_filenames()
+-- neither wqa nor wqa! work nicely with terminal buffer opened
+M.write_close_all = function()
+  vim.cmd [[wa]]
+  vim.cmd [[qa]]
+end
+
+M.list_filenames = function()
   local buffers = api.nvim_list_bufs()
-  for _, buf in ipairs(buffers) do P(api.nvim_buf_get_name(buf)) end
+  for _, buf in ipairs(buffers) do
+    P(api.nvim_buf_get_name(buf))
+  end
 end
 
 M.toggle_qf = function()
-  local windows = vim.fn.getwininfo()
   local qf_exists = false
-  for _, win in pairs(windows) do if win['quickfix'] == 1 then qf_exists = true end end
+  for _, win in pairs(vim.fn.getwininfo()) do
+    if win["quickfix"] == 1 then
+      qf_exists = true
+    end
+  end
   if qf_exists == true then
-    vim.cmd('cclose')
+    vim.cmd "cclose"
     return
   end
-  if not vim.tbl_isempty(vim.fn.getqflist()) then vim.cmd('copen') end
+  if not vim.tbl_isempty(vim.fn.getqflist()) then
+    vim.cmd "copen"
+  end
 end
 
 -- tmux like <C-b>z: focus on one buffer in extra tab
@@ -29,7 +42,7 @@ end
 M.tabedit = function()
   -- skip if there is only one window open
   if vim.tbl_count(vim.api.nvim_tabpage_list_wins(0)) == 1 then
-    print('Cannot expand single buffer')
+    print "Cannot expand single buffer"
     return
   end
 
@@ -40,7 +53,7 @@ M.tabedit = function()
   -- set buffer and remove one opened by tabedit
   local tabedit_buf = vim.api.nvim_get_current_buf()
   vim.api.nvim_win_set_buf(0, buf)
-  vim.api.nvim_buf_delete(tabedit_buf, {force = true})
+  vim.api.nvim_buf_delete(tabedit_buf, { force = true })
   -- restore original view
   vim.fn.winrestview(view)
 end
@@ -52,45 +65,22 @@ M.tabclose = function()
   vim.cmd [[tabclose]]
   -- if we accidentally land somewhere else, do not restore
   local new_buf = vim.api.nvim_get_current_buf()
-  if buf == new_buf then vim.fn.winrestview(view) end
-end
-
--- expand or minimize current buffer in "actual" direction
--- this is useful as mapping ":resize 2" stand-alone might otherwise not be in the right direction if mapped to ctrl-leftarrow or something related
--- use like this
-M.resize = function(vertical, margin)
-  local cur_win = vim.api.nvim_get_current_win()
-  -- go (possibly) right
-  vim.cmd(string.format('wincmd %s', vertical and 'l' or 'j'))
-  local new_win = vim.api.nvim_get_current_win()
-
-  -- determine direction cond on increase and existing right-hand buffer
-  local not_last = not (cur_win == new_win)
-  local sign = margin > 0
-  -- go to previous window if required otherwise flip sign
-  if not_last == true then
-    vim.cmd [[wincmd p]]
-  else
-    sign = not sign
+  if buf == new_buf then
+    vim.fn.winrestview(view)
   end
-
-  sign = sign and '+' or '-'
-  local dir = vertical and 'vertical ' or ''
-  local cmd = dir .. 'resize ' .. sign .. math.abs(margin) .. '<CR>'
-  vim.cmd(cmd)
 end
 
 M.set_hl = function(group, options)
-  local bg = options.bg == nil and '' or 'guibg=' .. options.bg
-  local fg = options.fg == nil and '' or 'guifg=' .. options.fg
-  local gui = options.gui == nil and '' or 'gui=' .. options.gui
+  local bg = options.bg == nil and "" or "guibg=" .. options.bg
+  local fg = options.fg == nil and "" or "guifg=" .. options.fg
+  local gui = options.gui == nil and "" or "gui=" .. options.gui
   local link = options.link or false
   local target = options.target
 
   if not link then
-    vim.cmd(string.format('hi %s %s %s %s', group, bg, fg, gui))
+    vim.cmd(string.format("hi %s %s %s %s", group, bg, fg, gui))
   else
-    vim.cmd(string.format('hi! link %s %s', group, target))
+    vim.cmd(string.format("hi! link %s %s", group, target))
   end
 end
 
@@ -99,7 +89,7 @@ function M.convert_reg_to_pos(reg1, reg2)
   local pos1 = vim.fn.getpos(reg1)
   local pos2 = vim.fn.getpos(reg2)
   -- (0, 1)-indexed
-  return {pos1[2] - 1, pos1[3] + pos1[4]}, {pos2[2] - 1, pos2[3] + pos2[4]}
+  return { pos1[2] - 1, pos1[3] + pos1[4] }, { pos2[2] - 1, pos2[3] + pos2[4] }
 end
 
 -- Get position for passed registers
@@ -107,39 +97,43 @@ end
 -- @param end_register table see help :getpos
 -- @param exit_visual_mode boolean whether to exit visual mode
 function M.adjust_pos_by_regtype(pos1, pos2, mode)
-  mode = vim.F.if_nil(mode, 'c')
+  mode = vim.F.if_nil(mode, "c")
   local line1, col1 = unpack(pos1)
   local line2, col2 = unpack(pos2)
 
   -- Resolution via wincol (see :help wincol) enables reengineering of blockwise selection
   local wincol_pos
-  if mode == '' then
+  if mode == "" then
     -- get wincol for (1, 0)-indexed position
 
-    local wincol1 = M.get_wincol({line1 + 1, col1 - 1})
-    local wincol2 = M.get_wincol({line2 + 1, col2 - 1})
-    P({wincol1, wincol2})
+    local wincol1 = M.get_wincol { line1 + 1, col1 - 1 }
+    local wincol2 = M.get_wincol { line2 + 1, col2 - 1 }
+    P { wincol1, wincol2 }
     -- Blockwise selection requires the very most edge wincol
     -- Consider a multi-width char: 全, wincol solely returns the first visual column though char occupies 2 cols
     -- get edge pos for wincol start (most left) and end (most right) by line from original positions
     local line_flip = line1 > line2
     local col_flip = col1 > col2
-    wincol1 = M.resolve_wincol(wincol1, {line1 + 1, col1 - 1}, col_flip)
-    wincol2 = M.resolve_wincol(wincol2, {line2 + 1, col2 - 1}, not col_flip)
-    P({wincol1, wincol2})
+    wincol1 = M.resolve_wincol(wincol1, { line1 + 1, col1 - 1 }, col_flip)
+    wincol2 = M.resolve_wincol(wincol2, { line2 + 1, col2 - 1 }, not col_flip)
+    P { wincol1, wincol2 }
 
-    if line_flip then line1, line2 = line2, line1 end
+    if line_flip then
+      line1, line2 = line2, line1
+    end
     if col_flip then
       col1, col2 = col2, col1
       wincol1, wincol2 = wincol2, wincol1
     end
 
-    pos1 = {line1, col1}
-    pos2 = {line2, col2}
-    wincol_pos = {wincol1, wincol2}
+    pos1 = { line1, col1 }
+    pos2 = { line2, col2 }
+    wincol_pos = { wincol1, wincol2 }
   else
     -- char- or linewise selection
-    if (line1 == line2 and col2 < col1) or line1 > line2 then pos1, pos2 = pos2, pos1 end
+    if (line1 == line2 and col2 < col1) or line1 > line2 then
+      pos1, pos2 = pos2, pos1
+    end
   end
   return pos1, pos2, wincol_pos
 end
@@ -171,9 +165,11 @@ end
 function M.resolve_wincol(wincol, pos, right, allow_overhang)
   allow_overhang = vim.F.if_nil(allow_overhang, true)
   right = vim.F.if_nil(right, false)
-  local max_col = M.get_wincol({pos[1], 2 ^ 31 - 1})
+  local max_col = M.get_wincol { pos[1], 2 ^ 31 - 1 }
 
-  if wincol == 1 and not right then return 1 end
+  if wincol == 1 and not right then
+    return 1
+  end
 
   local newcol = M.get_wincol(pos)
   if right then
@@ -187,7 +183,7 @@ function M.resolve_wincol(wincol, pos, right, allow_overhang)
     if newcol > wincol then
       return newcol - 1
     else
-      return M.resolve_wincol(wincol, {pos[1], pos[2] + 1}, true)
+      return M.resolve_wincol(wincol, { pos[1], pos[2] + 1 }, true)
     end
   else
     if newcol < wincol then
@@ -195,7 +191,7 @@ function M.resolve_wincol(wincol, pos, right, allow_overhang)
     elseif newcol == wincol then
       return wincol
     else
-      return M.resolve_wincol(wincol, {pos[1], pos[2] - 1}, false)
+      return M.resolve_wincol(wincol, { pos[1], pos[2] - 1 }, false)
     end
   end
 end
@@ -220,7 +216,9 @@ function M.edge_bytecol(line, byte_index, use_utf16)
   local i = 1
   while byte_index ~= i do
     local utf_prev, _ = vim.str_utfindex(line, byte_index - i)
-    if utf_prev ~= utf_col then break end
+    if utf_prev ~= utf_col then
+      break
+    end
     i = i + 1
   end
   -- i as is represents first invalid offset, correct with - 1
@@ -239,27 +237,36 @@ end
 -- @param left boolean approximate or match wincol from left (true, ~max) or from right (false, ~min)
 function M.greedy_wincol_byte(wincol, pos, line_len, left)
   left = vim.F.if_nil(left, false)
-  local max_col = M.get_wincol({pos[1], 2 ^ 31 - 1})
+  local max_col = M.get_wincol { pos[1], 2 ^ 31 - 1 }
 
   if left then
-    if wincol > max_col then return line_len end
+    if wincol > max_col then
+      return line_len
+    end
     for i = 0, line_len do
-      local wcol = M.get_wincol({pos[1], i})
-      if wcol == wincol then return i end
-      if wcol > wincol then return i - 1 end
+      local wcol = M.get_wincol { pos[1], i }
+      if wcol == wincol then
+        return i
+      end
+      if wcol > wincol then
+        return i - 1
+      end
     end
   else
-    if wincol > max_col then return nil end
-    for i = line_len, 0, -1 do
-      local wcol = M.get_wincol({pos[1], i})
-      if wcol <= wincol then return i end
+    if wincol > max_col then
+      return nil
     end
-
+    for i = line_len, 0, -1 do
+      local wcol = M.get_wincol { pos[1], i }
+      if wcol <= wincol then
+        return i
+      end
+    end
   end
 end
 
 function M.region(bufnr, pos1, pos2, regtype, inclusive)
-  local delimiter = ' '
+  local delimiter = " "
   local trim = true
   local wincol_pos
   pos1, pos2, wincol_pos = M.adjust_pos_by_regtype(pos1, pos2, regtype)
@@ -278,13 +285,17 @@ function M.region(bufnr, pos1, pos2, regtype, inclusive)
   for row = first_line, last_line do
     local line = lines[row]
     if line ~= "" then
-      if regtype ~= 'V' then
+      if regtype ~= "V" then
         local start_bytecol
-        if row == first_line or regtype == '' then
-          if regtype == '' then
+        if row == first_line or regtype == "" then
+          if regtype == "" then
             -- Iterate from end of line to get maximum byte col for which wincol >= wincol_start
-            start_bytecol = M.greedy_wincol_byte(wincol_pos[1], -- pass (1,0)-indexed pos
-            {line1 + row, col1 - 1}, #lines[row] - 1, false)
+            start_bytecol = M.greedy_wincol_byte(
+              wincol_pos[1], -- pass (1,0)-indexed pos
+              { line1 + row, col1 - 1 },
+              #lines[row] - 1,
+              false
+            )
             -- wincol_start is beyond line
             if start_bytecol ~= nil then
               start_bytecol = start_bytecol + 1 -- add 1 to 1-index column
@@ -292,7 +303,6 @@ function M.region(bufnr, pos1, pos2, regtype, inclusive)
             else
               start_bytecol = #line + 1 -- clear out line
             end
-
           else
             -- Recursively get first byte index of utf char for initial byte column selection
             --  Example: multi-width Japanese Zenkaku, see change in columns from left to right char
@@ -301,14 +311,16 @@ function M.region(bufnr, pos1, pos2, regtype, inclusive)
           end
           line = line:sub(start_bytecol)
         end
-        if row == last_line or regtype == '' and line ~= '' then
+        if row == last_line or regtype == "" and line ~= "" then
           local end_bytecol
-          if regtype == '' then
+          if regtype == "" then
             -- Iterate from beginning of line to get maximum byte col for which wincol <= wincol_end
-            end_bytecol = M.greedy_wincol_byte(wincol_pos[2], -- pass (1,0)-indexed pos
-            {line1 + row, col2 - 1}, #lines[row] - 1, true) -- get difference in byte offset inclusive and add back zero indexing
-            -- (difference here means absolute position after cutoff)
-            - start_bytecol + 2
+            end_bytecol = M.greedy_wincol_byte(
+              wincol_pos[2], -- pass (1,0)-indexed pos
+              { line1 + row, col2 - 1 },
+              #lines[row] - 1,
+              true
+            )
           end
           -- Recursively get last byte index of utf char for last byte column selection
           _, end_bytecol = M.edge_bytecol(line, end_bytecol or col2)
@@ -316,7 +328,9 @@ function M.region(bufnr, pos1, pos2, regtype, inclusive)
         end
       end
     end
-    if trim then line = vim.trim(line) end
+    if trim then
+      line = vim.trim(line)
+    end
     table.insert(concat, line)
   end
   return table.concat(concat, delimiter)
