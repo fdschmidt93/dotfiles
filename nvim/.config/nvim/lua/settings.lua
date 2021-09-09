@@ -6,16 +6,18 @@ vim.g.loaded_matchit = false
 vim.g.loaded_netrwPlugin = false
 vim.g.loaded_tarPlugin = false
 vim.g.loaded_zipPlugin = false
-vim.g.loaded_man = false
 vim.g.loaded_2html_plugin = false
 vim.g.loaded_remote_plugins = false
 
+vim.cmd [[set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case]]
+vim.cmd [[set grepformat=%f:%l:%c:%m,%f:%l:%m]]
+
 -- disable flickering for lazyloading galaxyline/gitsigns/lsp
-vim.opt.laststatus = 0
-vim.opt.signcolumn = "yes"
+opt.laststatus = 0
+opt.signcolumn = "yes"
 
 -- no startup message
-vim.opt.shortmess:append "I"
+opt.shortmess:append "I"
 
 -- Incremental live completion
 opt.inccommand = "nosplit"
@@ -26,6 +28,7 @@ opt.backspace = [[indent,eol,start]]
 opt.clipboard = [[unnamedplus]]
 
 -- Set indent options for vim
+opt.title = true 
 opt.wrap = true
 opt.tabstop = 4
 opt.softtabstop = 4

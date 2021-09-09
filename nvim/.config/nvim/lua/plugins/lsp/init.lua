@@ -42,7 +42,7 @@ local on_attach = function(client, bufnr)
   nnoremap {
     "<space>ld",
     function()
-      lsp.diagnostic.show_line_diagnostics { border = "single" }
+      lsp.diagnostic.show_line_diagnostics { border = "solid" }
     end,
     opts,
   }
@@ -106,43 +106,42 @@ nvim_lsp.pyright.setup {
   },
 }
 
-nvim_lsp.efm.setup {
-  init_options = { documentFormatting = true },
-  on_attach = on_attach,
-  filetypes = { "lua", "python" },
-  settings = {
-    rootMarkers = { ".git/" },
-    languages = {
-      lua = {
-        {
-          formatCommand = "stylua --config-path " .. vim.env.HOME .. "/.config/nvim/stylua.toml -",
-          formatStdin = true,
-        },
-      },
-      python = {
-        { formatCommand = vim.env.HOME .. "/miniconda3/bin/black -", formatStdin = true },
-        { formatCommand = vim.env.HOME .. "/miniconda3/bin/isort --stdout --profile black -", formatStdin = true },
-      },
-    },
-  },
-}
-
--- TODO revisit once python formatting works better
--- local null_ls = require "null-ls"
--- local b = null_ls.builtins
-
--- local sources = {
---   b.formatting.stylua.with {
---     args = {
---       "--config-path",
---       vim.env.HOME .. "/.config/nvim/stylua.toml",
---       "-",
+-- nvim_lsp.efm.setup {
+--   init_options = { documentFormatting = true },
+--   on_attach = on_attach,
+--   filetypes = { "lua", "python" },
+--   settings = {
+--     rootMarkers = { ".git/" },
+--     languages = {
+--       lua = {
+--         {
+--           formatCommand = "stylua --config-path " .. vim.env.HOME .. "/.config/nvim/stylua.toml -",
+--           formatStdin = true,
+--         },
+--       },
+--       python = {
+--         { formatCommand = vim.env.HOME .. "/miniconda3/bin/black -", formatStdin = true },
+--         { formatCommand = vim.env.HOME .. "/miniconda3/bin/isort --stdout --profile black -", formatStdin = true },
+--       },
 --     },
 --   },
---   b.formatting.black,
---   b.formatting.isort,
 -- }
 
--- null_ls.setup {
---   sources = sources,
--- }
+-- TODO revisit once python formatting works better
+local null_ls = require "null-ls"
+local b = null_ls.builtins
+
+null_ls.config {
+  sources = {
+    b.formatting.stylua.with {
+      args = {
+        "--config-path",
+        vim.env.HOME .. "/.config/nvim/stylua.toml",
+        "-",
+      },
+    },
+    b.formatting.black,
+    b.formatting.isort,
+  },
+}
+nvim_lsp["null-ls"].setup { on_attach = on_attach }

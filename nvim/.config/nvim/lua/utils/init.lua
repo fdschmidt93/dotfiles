@@ -8,6 +8,11 @@ local c = "ä anda α"
 local b = "全角全角全角"
 local d = "hallääääääääää"
 
+M.if_nil = function(a, b)
+  if a == nil then return b end
+  return a
+end
+
 -- neither wqa nor wqa! work nicely with terminal buffer opened
 M.write_close_all = function()
   vim.cmd [[wa]]
@@ -35,6 +40,31 @@ M.toggle_qf = function()
   if not vim.tbl_isempty(vim.fn.getqflist()) then
     vim.cmd "copen"
   end
+end
+
+-- expand or minimize current buffer in "actual" direction
+-- this is useful as mapping ":resize 2" stand-alone might otherwise not be in the right direction if mapped to ctrl-leftarrow or something related
+-- use like this
+M.resize = function(vertical, margin)
+  local cur_win = vim.api.nvim_get_current_win()
+  -- go (possibly) right
+  vim.cmd(string.format('wincmd %s', vertical and 'l' or 'j'))
+  local new_win = vim.api.nvim_get_current_win()
+
+  -- determine direction cond on increase and existing right-hand buffer
+  local not_last = not (cur_win == new_win)
+  local sign = margin > 0
+  -- go to previous window if required otherwise flip sign
+  if not_last == true then
+    vim.cmd [[wincmd p]]
+  else
+    sign = not sign
+  end
+
+  sign = sign and '+' or '-'
+  local dir = vertical and 'vertical ' or ''
+  local cmd = dir .. 'resize ' .. sign .. math.abs(margin) .. '<CR>'
+  vim.cmd(cmd)
 end
 
 -- tmux like <C-b>z: focus on one buffer in extra tab
@@ -97,7 +127,7 @@ end
 -- @param end_register table see help :getpos
 -- @param exit_visual_mode boolean whether to exit visual mode
 function M.adjust_pos_by_regtype(pos1, pos2, mode)
-  mode = vim.F.if_nil(mode, "c")
+  mode = M.if_nil(mode, "c")
   local line1, col1 = unpack(pos1)
   local line2, col2 = unpack(pos2)
 
@@ -163,8 +193,8 @@ end
 -- @param wincol integer initial wincol prior to finding (synthetic) minimum or maximum
 -- @param maximum boolean true resolves towards right, false resolves towards left
 function M.resolve_wincol(wincol, pos, right, allow_overhang)
-  allow_overhang = vim.F.if_nil(allow_overhang, true)
-  right = vim.F.if_nil(right, false)
+  allow_overhang = M.if_nil(allow_overhang, true)
+  right = M.if_nil(right, false)
   local max_col = M.get_wincol { pos[1], 2 ^ 31 - 1 }
 
   if wincol == 1 and not right then
@@ -207,7 +237,7 @@ end
 -- @param offset integer: resolver char border towards char beginning (-1) or char end (+1)
 -- return byte_col integer: byte column of char beginning or end
 function M.edge_bytecol(line, byte_index, use_utf16)
-  use_utf16 = vim.F.if_nil(use_utf16, false)
+  use_utf16 = M.if_nil(use_utf16, false)
   local utf_col, _ = vim.str_utfindex(line, byte_index)
   -- convert utf to byte position for end index
   local byte_index_end = vim.str_byteindex(line, utf_col, use_utf16)
@@ -236,7 +266,7 @@ end
 -- @param line_len integer length of line in byte columns, zero-indexed (lua string length - 1)
 -- @param left boolean approximate or match wincol from left (true, ~max) or from right (false, ~min)
 function M.greedy_wincol_byte(wincol, pos, line_len, left)
-  left = vim.F.if_nil(left, false)
+  left = M.if_nil(left, false)
   local max_col = M.get_wincol { pos[1], 2 ^ 31 - 1 }
 
   if left then

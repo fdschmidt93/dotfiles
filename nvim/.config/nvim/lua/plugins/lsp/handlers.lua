@@ -10,11 +10,11 @@ lsp.handlers["textDocument/publishDiagnostics"] = lsp.with(lsp.diagnostic.on_pub
 })
 
 lsp.handlers["textDocument/hover"] = lsp.with(lsp.handlers.hover, {
-  border = "rounded",
+  border = "solid",
 })
 
 lsp.handlers["textDocument/signatureHelp"] = lsp.with(lsp.handlers.signature_help, {
-  border = "rounded",
+  border = "solid",
 })
 
 local signs = { "", "", "", "" }

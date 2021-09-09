@@ -1,8 +1,7 @@
-local utils = require "utils"
-
 inoremap { "jk", [[<Esc>]] }
 
 local repl = require "utils.repl"
+local utils = require "utils"
 
 -- normal mode mappings
 vim.tbl_map(nnoremap, {
@@ -16,10 +15,10 @@ vim.tbl_map(nnoremap, {
   { "<A-p>", require("utils").tabedit },
   { "<A-o>", require("utils").tabclose },
   -- resize more intuitively by direction of arrow key
-  { [[<A-Left>]], [[<C-W>> 2]]},
-  { [[<A-Right>]], [[<C-W>< 2]]},
-  { [[<A-Up>]], [[<C-W>+ 2]]},
-  { [[<A-Down>]], [[<C-W>- 2]]},
+  { [[<A-Left>]], partial(utils.resize, true, -2) },
+  { [[<A-Right>]], partial(utils.resize, true, 2) },
+  { [[<A-Down>]], partial(utils.resize, false, 2) },
+  { [[<A-Up>]], partial(utils.resize, false, -2) },
   -- open terminal
   { [[<Leader>t]], partial(repl.shell, nil, "right") },
   { [[<Leader><C-t>]], partial(repl.shell, nil, "below") },
@@ -36,6 +35,9 @@ vim.tbl_map(nnoremap, {
   { "<Leader><Leader>l", [[<cmd>luafile %<CR>]] },
   { "<Leader><Leader>swap", [[!rm ~/.local/nvim/swap/*]] },
   { "<A-q>", require("utils").write_close_all },
+  { "<Space><Space>2", [[<cmd>:diffget 2<CR>]] },
+  { "<Space><Space>3", [[<cmd>:diffget 3<CR>]] },
+  { "<Space>todo", partial(vim.cmd, string.format("edit %s/phd/todo.md", vim.env.HOME)) },
 })
 
 for _, mode in ipairs { tnoremap, inoremap, nnoremap } do
@@ -47,34 +49,18 @@ for _, mode in ipairs { tnoremap, inoremap, nnoremap } do
 end
 
 -- TODO replace when keymaps support expr
-vim.api.nvim_set_keymap(
-  "i",
-  [[<C-Space>]],
-  [[compe#complete()]],
-  { silent = true, noremap = true, expr = true }
-)
-vim.api.nvim_set_keymap(
-  "i",
-  [[<CR>]],
-  [[compe#confirm('<CR>')]],
-  { silent = true, noremap = true, expr = true }
-)
-vim.api.nvim_set_keymap(
-  "i",
-  [[<C-e>]],
-  [[compe#close('<C-e>')]],
-  { silent = true, noremap = true, expr = true }
-)
-vim.api.nvim_set_keymap(
-  "i",
-  [[<C-f>]],
-  [[compe#scroll({ 'delta': -4})]],
-  { silent = true, noremap = true, expr = true }
-)
-vim.api.nvim_set_keymap(
-  "i",
-  [[<C-d>]],
-  [[compe#scroll({ 'delta': +4})]],
-  { silent = true, noremap = true, expr = true }
-)
-
+-- vim.api.nvim_set_keymap("i", [[<C-Space>]], [[compe#complete()]], { silent = true, noremap = true, expr = true })
+-- vim.api.nvim_set_keymap("i", [[<CR>]], [[compe#confirm('<CR>')]], { silent = true, noremap = true, expr = true })
+-- vim.api.nvim_set_keymap("i", [[<C-e>]], [[compe#close('<C-e>')]], { silent = true, noremap = true, expr = true })
+-- vim.api.nvim_set_keymap(
+--   "i",
+--   [[<C-f>]],
+--   [[compe#scroll({ 'delta': -4})]],
+--   { silent = true, noremap = true, expr = true }
+-- )
+-- vim.api.nvim_set_keymap(
+--   "i",
+--   [[<C-d>]],
+--   [[compe#scroll({ 'delta': +4})]],
+--   { silent = true, noremap = true, expr = true }
+-- )

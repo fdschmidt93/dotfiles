@@ -13,7 +13,7 @@ local highlight_groups = {
   -- nvim
   { "Normal", { bg = "NONE" } },
   { "Comment", { gui = "italic" } },
-  { "NormalFloat", { bg = "NONE" } },
+  { "NormalFloat", { bg = palette.dark1 } },
   -- { "CursorLineNR", { fg = palette.bright_yellow, gui = "bold" } },
   { "StatusLine", { bg = "NONE" } },
   { "StatusLineNC", { bg = "NONE" } },

@@ -90,7 +90,7 @@ bindsym $mod+Shift+q kill
 
 # start rofi (app launcher)
 bindsym $mod+d exec --no-startup-id rofi -show drun -show-icons -theme gruvbox-dark-config -width 50 -location 2 -lines 5 -bw 2 -yoffset 28
-bindsym $mod+Shift+d exec --no-startup-id rofi -show window -show-icons -theme gruvbox-dark-config -width 50 -location 2 -lines 7 -bw 2 -yoffset 28
+bindsym $mod+Shift+d exec --no-startup-id rofi -show window -window-thumbnail -show-icons -theme gruvbox-dark-config -width 50 -location 2 -lines 7 -bw 2 -yoffset 28
 
 # change focus
 bindsym $mod+h focus left
