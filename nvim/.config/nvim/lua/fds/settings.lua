@@ -1,13 +1,22 @@
 local opt = vim.opt
 
--- faster startup
-vim.g.loaded_gzip = false
-vim.g.loaded_matchit = false
-vim.g.loaded_netrwPlugin = false
-vim.g.loaded_tarPlugin = false
-vim.g.loaded_zipPlugin = false
-vim.g.loaded_2html_plugin = false
-vim.g.loaded_remote_plugins = false
+-- for firenvim
+            -- \ 'content': 'text',
+vim.cmd [[set guifont=JetBrainsMono_Nerd_Font_Mono:h18]]
+vim.cmd [[
+let g:firenvim_config = { 
+    \ 'globalSettings': {
+        \ 'alt': 'all',
+    \  },
+    \ 'localSettings': {
+        \ '.*': {
+            \ 'cmdline': 'firenvim',
+            \ 'priority': 0,
+            \ 'takeover': 'never',
+        \ },
+    \ }
+\ }
+]]
 
 vim.cmd [[set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case]]
 vim.cmd [[set grepformat=%f:%l:%c:%m,%f:%l:%m]]
@@ -28,7 +37,7 @@ opt.backspace = [[indent,eol,start]]
 opt.clipboard = [[unnamedplus]]
 
 -- Set indent options for vim
-opt.title = true 
+opt.title = true
 opt.wrap = true
 opt.tabstop = 4
 opt.softtabstop = 4

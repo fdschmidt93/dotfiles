@@ -6,16 +6,13 @@ end
 
 vim.opt.laststatus = 2
 
-local conditions = require "plugins.statusline.conditions"
-local utils = require "plugins.statusline.utils"
+local conditions = require "fds.plugins.galaxyline.conditions"
+local utils = require "fds.plugins.galaxyline.utils"
 
-local fileinfo = require "galaxyline.provider_fileinfo"
+local fileinfo = require "galaxyline.providers.fileinfo"
 local gls = gl.section
-local colors = require "highlights.gruvbox"
--- local ts_utils = require('nvim-treesitter.ts_utils')
--- local parsers = require 'nvim-treesitter.parsers'
+local colors = require "fds.highlights.gruvbox"
 local api = vim.api
--- ensure inactive only shows short_line_{left, right}
 gl.short_line_list = { " ", "NvimTree", "packer" }
 
 local alias = {
@@ -78,9 +75,7 @@ table.insert(gls.left, {
       local mode = api.nvim_get_mode().mode
       local color = mode_color[mode]
       if color ~= previous_color and color ~= nil then
-        api.nvim_command(
-          [[hi GalaxyViMode guifg=]] .. colors.light0_hard .. [[ gui='bold' guibg=]] .. color
-        )
+        api.nvim_command([[hi GalaxyViMode guifg=]] .. colors.light0_hard .. [[ gui='bold' guibg=]] .. color)
         api.nvim_command([[hi GalaxyViModeSep guibg=NONE gui='bold' guifg=]] .. color)
         previous_color = color
       end
@@ -117,7 +112,7 @@ table.insert(gls.left, {
       return fileinfo.get_file_icon()
     end,
     condition = conditions.buffer_not_empty,
-    highlight = { require("galaxyline.provider_fileinfo").get_file_icon_color, "NONE" },
+    highlight = { fileinfo.get_file_icon_color, "NONE" },
   },
 })
 
@@ -321,10 +316,7 @@ table.insert(
   }
 )
 
-table.insert(
-  gls.right,
-  { LineInfo = { provider = utils.line_column, highlight = { colors.light1, "NONE" } } }
-)
+table.insert(gls.right, { LineInfo = { provider = utils.line_column, highlight = { colors.light1, "NONE" } } })
 
 table.insert(gls.right, {
   ScrollBar = {
@@ -341,7 +333,7 @@ table.insert(gls.short_line_left, {
       return fileinfo.get_file_icon()
     end,
     condition = conditions.buffer_not_empty,
-    highlight = { require("galaxyline.provider_fileinfo").get_file_icon_color, "NONE" },
+    highlight = { fileinfo.get_file_icon_color, "NONE" },
   },
 })
 

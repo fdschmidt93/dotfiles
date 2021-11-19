@@ -2,7 +2,7 @@ local lsp = vim.lsp
 
 lsp.handlers["textDocument/publishDiagnostics"] = lsp.with(lsp.diagnostic.on_publish_diagnostics, {
   underline = false, -- disable virtual text
-  virtual_text = false,
+  virtual_text = true,
   -- show signs
   signs = true,
   -- delay update diagnostics
@@ -10,21 +10,20 @@ lsp.handlers["textDocument/publishDiagnostics"] = lsp.with(lsp.diagnostic.on_pub
 })
 
 lsp.handlers["textDocument/hover"] = lsp.with(lsp.handlers.hover, {
-  border = "solid",
+  border = "rounded",
 })
 
 lsp.handlers["textDocument/signatureHelp"] = lsp.with(lsp.handlers.signature_help, {
-  border = "solid",
+  border = "rounded",
 })
 
 local signs = { "", "", "", "" }
-local diagnostic_types = { "Error", "Warning", "Information", "Hint" }
-
-for i = 1, #diagnostic_types do
-  local diagnostic_type = string.format("LspDiagnosticsSign%s", diagnostic_types[i])
+local lsp_diagnostic_types = { "Error", "Warning", "Information", "Hint" }
+for i = 1, #lsp_diagnostic_types do
+  local diagnostic_type = string.format("LspDiagnosticsSign%s", lsp_diagnostic_types[i])
   local opts = {
     text = signs[i],
-    texthl = diagnostic_type,
+    texthl = string.format("LspDiagnosticsDefault%s", lsp_diagnostic_types[i]),
     linehl = "",
     numhl = "",
   }

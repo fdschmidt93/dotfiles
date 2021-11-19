@@ -62,14 +62,14 @@ M.get_nvim_lsp_diagnostic = function(diag_type, icon)
 end
 
 M.separate = function(opts)
-  name = vim.F.if_nil(opts.name, opts.key)
-  hl = opts.hl or {}
+  opts.name = vim.F.if_nil(opts.name, opts.key)
+  opts.hl = opts.hl or {}
   return {
-    [name] = {
+    [opts.name] = {
       provider = function()
         return (opts.condition and opts.condition() or nil) and M.separators[opts.key]
       end,
-      highlight = hl,
+      highlight = opts.hl,
     },
   }
 end

@@ -1,6 +1,5 @@
-local palette = require "highlights.gruvbox"
-local utils = require "utils"
-local cmd = vim.cmd
+local palette = require "fds.highlights.gruvbox"
+local utils = require "fds.utils"
 
 vim.cmd [[colorscheme gruvbox]]
 vim.g.background = "dark"
@@ -20,16 +19,23 @@ local highlight_groups = {
   -- { "CursorLine", { bg = palette.dark1 } },
   { "SignColumn", { bg = "NONE" } },
   { "VertSplit", { fg = palette.gruvbox_dark1, bg = "NONE" } },
-  -- { "Pmenu", { fg = "NONE", bg = palette.dark1 } },
+  { "Pmenu", { fg = "NONE", bg = palette.dark1 } },
   { "gruvbox_yank", { fg = palette.light1, bg = palette.bright_aqua } }, -- telescope
 
   -- telescope
   { "TelescopePromptBorder", { fg = palette.bright_blue } },
   { "TelescopeResultsBorder", { fg = palette.bright_aqua } },
   { "TelescopePreviewBorder", { fg = palette.bright_aqua } }, -- gitsigns
-  -- compe
+  { "TelescopePromptTitle", { fg = palette.bright_blue } },
+  { "TelescopeResultsTitle", { fg = palette.bright_aqua } },
+  { "TelescopePreviewTitle", { fg = palette.bright_aqua } }, -- gitsigns
+
+  -- cmp
   { "CompeDocumentation", { bg = "NONE" } },
   { "CompeDocumentationBorder", { fg = palette.bright_blue } },
+  { "CmpItemAbbrDefault", { fg = palette.gray_245 } },
+  { "CmpItemAbbrMatchDefault", { fg = palette.light1, gui = "bold" } },
+  { "CmpItemAbbrMatchFuzzyDefault", { fg = palette.light4 } },
 
   -- git
   { "GitSignsAdd", { fg = palette.bright_green, bg = "NONE" } },
@@ -42,6 +48,12 @@ local highlight_groups = {
   -- { "NeogitDiffDeleteHighlight", { bg = palette.dark0, fg = palette.bright_red } },
 
   -- lspconfig
+  { "DiagnosticError", { fg = palette.bright_red } },
+  { "DiagnosticWarn", { fg = palette.neutral_yellow } },
+  { "DiagnosticHint", { fg = palette.neutral_aqua } },
+  { "DiagnosticInfo", { fg = palette.light3 } },
+  { "DiagnosticWarning", { fg = palette.neutral_yellow } },
+  { "DiagnosticInformation", { fg = palette.light3 } },
   { "LspDiagnosticsDefaultError", { fg = palette.bright_red } },
   { "LspDiagnosticsDefaultWarning", { fg = palette.neutral_yellow } },
   { "LspDiagnosticsDefaultHint", { fg = palette.neutral_aqua } },
@@ -50,20 +62,6 @@ local highlight_groups = {
   { "LspDiagnosticsFloatingWarning", { fg = palette.neutral_yellow } },
   { "LspDiagnosticsFloatingHint", { fg = palette.neutral_aqua } },
   { "LspDiagnosticsFloatingInformation", { fg = palette.light3 } },
-
-  { "HopSignA", { fg = palette.bright_green, bg = "NONE", gui = 'bold'} },
-  { "HopSignB", { fg = palette.bright_red, bg = palette.dark1 , gui = 'bold'} },
-  { "HopSignB", { fg = palette.bright_red, bg = "NONE" , gui = 'bold'} },
-  { "HopLineA", { fg = "NONE", bg = "NONE" } },
-  { "HopLineB", { fg = "NONE", bg = palette.dark1 } },
-  -- lspsaga.nvim
-  -- { "LspSagaLightBulb", { fg = palette.bright_blue } },
-  -- { "LspSagaDiagnosticBorder", { fg = palette.dark3 } },
-  -- { "LspSagaDiagnosticHeader", { fg = palette.light1, gui = "bold" } },
-  -- { "LspSagaDiagnosticTruncateLine", { fg = palette.dark3 } },
-  -- { "LspSagaRenameBorder", { fg = palette.neutral_blue } },
-  -- { "LspSagaHoverBorder", { fg = palette.dark3 } }, -- nvim-dap
-  -- { "LspTroubleFoldIcon", { fg = palette.bright_yellow, bg = "None", gui = "bold" } },
 
   -- dap
   { "Breakpoint", { fg = palette.bright_red } },
@@ -77,10 +75,35 @@ local highlight_groups = {
 
   -- IndentBlankLine
   { "IndentBlanklineContextChar", { fg = palette.dark4, bg = "None" } },
+
+  -- LightSpeed
+  -- { "LightspeedShortcut", { bg = palette.faded_red, gui = "underline" } },
+  -- { "LightspeedOneCharMatch", { bg = palette.bright_orange, fg = palette.dark0, gui = "underline" } },
+  -- { "LightspeedLabel", { fg = palette.bright_orange, gui = "bold,underline" } },
 }
 for _, hl in pairs(highlight_groups) do
   utils.set_hl(hl[1], hl[2])
 end
+
+-- vim.cmd [[hi link LightspeedLabel IncSearch]]
+-- vim.cmd [[hi link LightspeedLabel IncSearch]]
+-- vim.cmd [[hi link LightspeedShortcut IncSearch]]
+-- vim.cmd [[hi link LightspeedOneCharMatch IncSearch]]
+-- vim.cmd [[hi link LightspeedShortcutOverlapped IncSearch]]
+
+local signs = { "", "", "", "" }
+local diagnostic_types = { "Error", "Warn", "Info", "Hint" }
+for i = 1, #diagnostic_types do
+  local diagnostic_type = string.format("DiagnosticSign%s", diagnostic_types[i])
+  local opts = {
+    text = signs[i],
+    texthl = string.format("Diagnostic%s", diagnostic_types[i]),
+    linehl = "",
+    numhl = "",
+  }
+  vim.fn.sign_define(diagnostic_type, opts)
+end
+
 -- Set terminal colors in line with kitty
 -- black
 vim.g.terminal_color_0 = "#282828"

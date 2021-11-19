@@ -1,5 +1,6 @@
 acpi
 acpid
+act-bin
 adwaita-qt
 amd-ucode
 arandr
@@ -8,12 +9,14 @@ automake
 avahi
 base
 bashmount
+bat
 binutils
 bison
 btrfs-progs
 canon-maxify-mb5100-complete
 chromium
 cpupower-gui
+ctags
 cups
 dhcpcd
 discord
@@ -34,6 +37,7 @@ fzf
 gawk
 gcc
 gettext
+gimp
 git
 github-cli
 gnome-screenshot
@@ -57,6 +61,7 @@ kitty
 libtool
 libva-mesa-driver
 light
+linux
 linux-firmware
 linux-lts
 lua-format
@@ -71,6 +76,7 @@ mesa-vdpau
 mongo-c-driver
 mons
 mpv-git
+neofetch
 neovim-git
 neovim-remote
 nerd-fonts-jetbrains-mono
@@ -110,6 +116,8 @@ redshift
 reflector
 ripgrep
 rofi
+rust-analyzer
+screenkey
 sddm
 sed
 siji-git
@@ -145,6 +153,7 @@ udisks2
 unrar
 unzip
 vim
+visidata
 visual-studio-code-bin
 vulkan-radeon
 wget
@@ -181,7 +190,9 @@ xorg-xwd
 xorg-xwininfo
 xorg-xwud
 xss-lock
+xsv-bin
 yarn
+youtube-dl
 zathura
 zathura-djvu
 zathura-pdf-mupdf

@@ -1,13 +1,12 @@
--- I'm lazy
+-- shorthands for cli
 A = vim.api
 F = vim.fn
 B = vim.api.nvim_get_current_buf
 W = vim.api.nvim_get_current_win
-L = vim.api.nvim_get_current_line
 
-P = function(v)
-  print(vim.inspect(v))
-  return v
+P = function(...)
+  print(vim.inspect(...))
+  return ...
 end
 
 -- partial function for mapping keys
@@ -33,25 +32,10 @@ if pcall(require, "plenary") then
 end
 
 local k_status, k = pcall(require, "astronauta.keymap")
-if k_status == true then
+if k_status then
   local k = require "astronauta.keymap"
   nnoremap = k.nnoremap
   vnoremap = k.vnoremap
   tnoremap = k.tnoremap
   inoremap = k.inoremap
-end
-
-function deepcopy(orig)
-  local orig_type = type(orig)
-  local copy
-  if orig_type == "table" then
-    copy = {}
-    for orig_key, orig_value in next, orig, nil do
-      copy[deepcopy(orig_key)] = deepcopy(orig_value)
-    end
-    setmetatable(copy, deepcopy(getmetatable(orig)))
-  else -- number, string, boolean, etc
-    copy = orig
-  end
-  return copy
 end
