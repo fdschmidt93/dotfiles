@@ -1,10 +1,12 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
-SETUVAR --export SSH_AGENT_PID:677
-SETUVAR --export SSH_AUTH_SOCK:/tmp/ssh\x2dXXXXXXRze4KT/agent\x2e676
+SETUVAR --export SSH_AGENT_PID:618
+SETUVAR --export SSH_AUTH_SOCK:/tmp/ssh\x2dXXXXXXgxWGhL/agent\x2e617
 SETUVAR __fish_initialized:3100
+SETUVAR _fish_abbr_bm:bashmount
 SETUVAR _fish_abbr_ca:conda\x20activate
 SETUVAR _fish_abbr_pbar:/home/fdschmidt/\x2econfig/polybar/launch\x2esh
+SETUVAR _fish_abbr_ssh:kitty\x20\x2bkitten\x20ssh
 SETUVAR _fish_abbr_z:zathura
 SETUVAR fish_color_autosuggestion:555\x1ebrblack
 SETUVAR fish_color_cancel:\x2dr
@@ -28,7 +30,6 @@ SETUVAR fish_color_selection:white\x1e\x2d\x2dbold\x1e\x2d\x2dbackground\x3dbrbl
 SETUVAR fish_color_status:red
 SETUVAR fish_color_user:brgreen
 SETUVAR fish_color_valid_path:\x2d\x2dunderline
-SETUVAR fish_key_bindings:fish_vi_key_bindings
 SETUVAR fish_pager_color_completion:\x1d
 SETUVAR fish_pager_color_description:B3A06D\x1eyellow
 SETUVAR fish_pager_color_prefix:normal\x1e\x2d\x2dbold\x1e\x2d\x2dunderline

@@ -147,7 +147,7 @@ table.insert(gls.mid, {
 table.insert(gls.mid, {
   LSPError = {
     provider = function()
-      return utils.get_nvim_lsp_diagnostic("Error", "")
+      return utils.get_diagnostic_count(0, { severity = vim.diagnostic.severity.ERROR }, "")
     end,
     condition = conditions.buffer_not_empty,
     highlight = { colors.bright_red, lsp_bg },
@@ -156,7 +156,7 @@ table.insert(gls.mid, {
 table.insert(gls.mid, {
   LSPWarn = {
     provider = function()
-      return utils.get_nvim_lsp_diagnostic("Warning", "")
+      return utils.get_diagnostic_count(0, { severity = vim.diagnostic.severity.WARN }, "")
     end,
     condition = conditions.buffer_not_empty,
     highlight = { colors.bright_yellow, lsp_bg },
@@ -165,7 +165,7 @@ table.insert(gls.mid, {
 table.insert(gls.mid, {
   LSPInfo = {
     provider = function()
-      return utils.get_nvim_lsp_diagnostic("Information", "")
+      return utils.get_diagnostic_count(0, { severity = vim.diagnostic.severity.INFO }, "")
     end,
     condition = conditions.buffer_not_empty,
     highlight = { colors.neutral_aqua, lsp_bg },

@@ -24,6 +24,7 @@ docker
 dunst
 efibootmgr
 efm-langserver
+element-desktop
 emacs-pgtk-native-comp-git
 fakeroot
 fd
@@ -40,6 +41,7 @@ gettext
 gimp
 git
 github-cli
+gitui
 gnome-screenshot
 gparted
 grep
@@ -67,6 +69,7 @@ linux-lts
 lua-format
 lua-language-server
 luajit-2.1
+luarocks
 m4
 make
 man-db
@@ -146,6 +149,7 @@ thunar
 thunderbird
 timeshift
 timeshift-autosnap
+tmux
 tree
 ttf-dejavu
 ttf-fantasque-sans-mono

@@ -2,134 +2,167 @@ local repl = require "fds.utils.repl"
 local utils = require "fds.utils"
 local opts = { silent = true }
 
+local map = function(args)
+  vim.keymap.set(args.mode, args.lhs, args.rhs, args.opts)
+end
+
 -- general
-inoremap { "jk", [[<Esc>]] }
+map { mode = "i", lhs = "jk", rhs = "<ESC>", opts = { desc = "Exitting insert mode" } }
+map { mode = "n", lhs = "oo", rhs = [[m`o<Esc>``]], opts = { desc = "Insert line below" } }
+map { mode = "n", lhs = "OO", rhs = [[m`O<Esc>``]], opts = { desc = "Insert line above" } }
+
 -- enter lines above/below
-nnoremap { "oo", [[m`o<Esc>``]] }
-nnoremap { "OO", [[m`O<Esc>``]] }
-nnoremap { "Y", "y$" } -- emulate other uppercase variants
-nnoremap { [[<Leader>y]], [['+y']] } -- Copy to global clipboard with leader prefix
-nnoremap { [[<Leader>p]], [['+p']] } -- Copp to global clipboard with leader prefix
+map { mode = "n", lhs = "Y", rhs = "y$" } -- emulate other uppercase variants
+map { mode = "n", lhs = [[<Leader>y]], rhs = [['+y']] } -- Copy to global clipboard with leader prefix
+map { mode = "n", lhs = [[<Leader>p]], rhs = [['+p']] } -- Copp to global clipboard with leader prefix
 -- emulate tmux
-nnoremap { "<A-p>", utils.tabedit }
-nnoremap { "<A-o>", utils.tabclose }
+map { mode = "n", lhs = "<A-p>", rhs = utils.tabedit }
+map { mode = "n", lhs = "<A-o>", rhs = utils.tabclose }
 -- resize more intuitively by direction of arrow key
-nnoremap { [[<A-Left>]], partial(utils.resize, true, -2) }
-nnoremap { [[<A-Right>]], partial(utils.resize, true, 2) }
-nnoremap { [[<A-Down>]], partial(utils.resize, false, 2) }
-nnoremap { [[<A-Up>]], partial(utils.resize, false, -2) }
+map { mode = "n", lhs = [[<A-Left>]], rhs = partial(utils.resize, true, -2) }
+map { mode = "n", lhs = [[<A-Right>]], rhs = partial(utils.resize, true, 2) }
+map { mode = "n", lhs = [[<A-Down>]], rhs = partial(utils.resize, false, 2) }
+map { mode = "n", lhs = [[<A-Up>]], rhs = partial(utils.resize, false, -2) }
 -- open terminal
-nnoremap { [[<Leader>t]], partial(repl.shell, nil, "right") }
-nnoremap { [[<Leader><C-t>]], partial(repl.shell, nil, "below") }
+map { mode = "n", lhs = [[<Leader>t]], rhs = partial(repl.shell, nil, "right") }
+map { mode = "n", lhs = [[<Leader><C-t>]], rhs = partial(repl.shell, nil, "below") }
 -- restart ipython terminal
-nnoremap { [[<Leader>ti]], partial(repl.restart_term, repl.conda_env_prefix "ipython", "right") }
-nnoremap { [[<Leader><C-t>i]], partial(repl.restart_term, repl.conda_env_prefix "ipython", "below") }
+map { mode = "n", lhs = [[<Leader>ti]], rhs = partial(repl.restart_term, repl.conda_env_prefix "ipython", "right") }
+map { mode = "n", lhs = [[<Leader><C-t>i]], rhs = partial(repl.restart_term, repl.conda_env_prefix "ipython", "below") }
 -- toggle terminal
-nnoremap { "<A-u>", partial(repl.toggle_termwin, "right") }
-nnoremap { "<A-i>", partial(repl.toggle_termwin, "below") }
+map { mode = "n", lhs = "<A-u>", rhs = partial(repl.toggle_termwin, "right") }
+map { mode = "n", lhs = "<A-i>", rhs = partial(repl.toggle_termwin, "below") }
 -- misc
-nnoremap { "<Leader><Leader>p", [[<cmd>PackerCompile<CR><cmd>PackerSync<CR>]] }
-nnoremap { "<Leader><Leader>l", [[<cmd>luafile %<CR>]] }
-nnoremap { "<Leader><Leader>swap", [[!rm ~/.local/nvim/swap/*]] }
-nnoremap { "<A-q>", require("fds.utils").write_close_all }
-nnoremap { "<Space><Space>2", [[<cmd>:diffget 2<CR>]] }
-nnoremap { "<Space><Space>3", [[<cmd>:diffget 3<CR>]] }
-nnoremap { "<Space>todo", partial(vim.cmd, string.format("edit %s/phd/todo.md", vim.env.HOME)) }
+map { mode = "n", lhs = "<Leader><Leader>p", rhs = [[<cmd>PackerCompile<CR><cmd>PackerSync<CR>]] }
+map { mode = "n", lhs = "<Leader><Leader>l", rhs = [[<cmd>luafile %<CR>]] }
+map { mode = "n", lhs = "<Leader><Leader>swap", rhs = [[!rm ~/.local/nvim/swap/*]] }
+map { mode = "n", lhs = "<A-q>", rhs = require("fds.utils").write_close_all }
+map { mode = "n", lhs = "<Space><Space>2", rhs = [[<cmd>:diffget 2<CR>]] }
+map { mode = "n", lhs = "<Space><Space>3", rhs = [[<cmd>:diffget 3<CR>]] }
+map { mode = "n", lhs = "<Space>todo", rhs = partial(vim.cmd, string.format("edit %s/phd/todo.md", vim.env.HOME)) }
 --
 -- python-specific binding
-nnoremap { "<Space><Leader>t", require("fds.utils.python").jump_to_ipy_error }
+map { mode = "n", lhs = "<Space><Leader>t", rhs = require("fds.utils.python").jump_to_ipy_error }
 
 -- replace word under cursor with last yanked word
-nnoremap { "<Leader>z", ":%s/<C-R><C-W>/<C-R>0/g<CR>" }
+map { mode = "n", lhs = "<Leader>z", rhs = ":%s/<C-R><C-W>/<C-R>0/g<CR>" }
 
-for _, mode in ipairs { tnoremap, inoremap, nnoremap } do
-  -- Move with M from any mode
-  mode { "<A-h>", [[<C-\><C-N><C-w>h]] }
-  mode { "<A-j>", [[<C-\><C-N><C-w>j]] }
-  mode { "<A-k>", [[<C-\><C-N><C-w>k]] }
-  mode { "<A-l>", [[<C-\><C-N><C-w>l]] }
-end
+-- Move with M from any mode
+map { mode = { "n", "i", "t" }, lhs = "<A-h>", rhs = [[<C-\><C-N><C-w>h]] }
+map { mode = { "n", "i", "t" }, lhs = "<A-j>", rhs = [[<C-\><C-N><C-w>j]] }
+map { mode = { "n", "i", "t" }, lhs = "<A-k>", rhs = [[<C-\><C-N><C-w>k]] }
+map { mode = { "n", "i", "t" }, lhs = "<A-l>", rhs = [[<C-\><C-N><C-w>l]] }
 
 -- telescope
 local ts_builtin = require "telescope.builtin"
 local my_finders = require "fds.plugins.telescope.finders"
 local ts_leader = "<space><space>"
 
-nnoremap { ts_leader .. "f", ts_builtin.find_files, opts }
-nnoremap { ts_leader .. "rs", ts_builtin.grep_string, opts }
+map { mode = "n", lhs = ts_leader .. "f", rhs = ts_builtin.find_files, opts = opts }
+map { mode = "n", lhs = ts_leader .. "rs", rhs = ts_builtin.grep_string, opts = opts }
 -- vnoremap {
 --   ts_leader .. "rg",
 --   partial(ts_builtin.grep_string, { default_text = require("utils").visual_selection() }),
---   opts,
+--    opts = opts,
 -- }
 
-nnoremap { ts_leader .. "bb", partial(ts_builtin.buffers, { sort_mru = true }), opts }
-nnoremap { ts_leader .. "bf", require("telescope").extensions.file_browser.file_browser, opts }
-nnoremap { ts_leader .. "bi", ts_builtin.builtin, opts }
-nnoremap { ts_leader .. "gS", ts_builtin.git_stash, opts }
-nnoremap { ts_leader .. "gb", ts_builtin.git_branches, opts }
-nnoremap { ts_leader .. "gc", ts_builtin.git_commits, opts }
-nnoremap { ts_leader .. "gs", ts_builtin.git_status, opts }
-nnoremap { ts_leader .. "help", ts_builtin.help_tags, opts }
-nnoremap { ts_leader .. "jl", ts_builtin.jumplist, opts }
-nnoremap { ts_leader .. "man", ts_builtin.man_pages, opts }
-nnoremap { ts_leader .. "nf", my_finders.neorg_files, opts }
-nnoremap { ts_leader .. "ng", my_finders.neorg_grep, opts }
-nnoremap { ts_leader .. "pp", my_finders.papers, opts }
-nnoremap { ts_leader .. "re", ts_builtin.resume, opts }
-nnoremap { ts_leader .. "rr", require("telescope").extensions.live_grep_raw.live_grep_raw, opts }
-nnoremap { ts_leader .. "rb", ts_builtin.current_buffer_fuzzy_find, opts }
-nnoremap { ts_leader .. "rg", ts_builtin.live_grep, opts }
-nnoremap { "gD", vim.lsp.buf.declaration, opts }
-nnoremap { "gi", vim.lsp.buf.implementation, opts }
-nnoremap { "gd", ts_builtin.lsp_definitions, opts }
-nnoremap { "gr", ts_builtin.lsp_references, opts }
-nnoremap { "<space>ds", ts_builtin.lsp_document_symbols, opts }
-vnoremap { "<space>ds", ts_builtin.lsp_document_symbols, opts }
-nnoremap {
-  "<space>fs",
-  partial(ts_builtin.lsp_document_symbols, { symbols = { "function", "method" } }),
-  opts,
+map { mode = "n", lhs = ts_leader .. "bb", rhs = ts_builtin.buffers, opts = opts }
+-- nnoremap { ts_leader .. "bf", require("telescope").extensions.file_browser.file_browser,  opts = opts }
+map {
+  mode = "n",
+  lhs = ts_leader .. "bf",
+  rhs = "<cmd>lua require('telescope').extensions.file_browser.file_browser()<CR>",
+  opts = opts,
+}
+map { mode = "n", lhs = ts_leader .. "bi", rhs = ts_builtin.builtin, opts = opts }
+map { mode = "n", lhs = ts_leader .. "gS", rhs = ts_builtin.git_stash, opts = opts }
+map { mode = "n", lhs = ts_leader .. "gb", rhs = ts_builtin.git_branches, opts = opts }
+map { mode = "n", lhs = ts_leader .. "gc", rhs = ts_builtin.git_commits, opts = opts }
+map { mode = "n", lhs = ts_leader .. "gs", rhs = ts_builtin.git_status, opts = opts }
+map { mode = "n", lhs = ts_leader .. "help", rhs = ts_builtin.help_tags, opts = opts }
+map { mode = "n", lhs = ts_leader .. "jl", rhs = ts_builtin.jumplist, opts = opts }
+map { mode = "n", lhs = ts_leader .. "man", rhs = ts_builtin.man_pages, opts = opts }
+map { mode = "n", lhs = ts_leader .. "nf", rhs = my_finders.neorg_files, opts = opts }
+map { mode = "n", lhs = ts_leader .. "ng", rhs = my_finders.neorg_grep, opts = opts }
+map { mode = "n", lhs = ts_leader .. "pp", rhs = my_finders.papers, opts = opts }
+map { mode = "n", lhs = ts_leader .. "re", rhs = ts_builtin.resume, opts = opts }
+map {
+  mode = "n",
+  lhs = ts_leader .. "rr",
+  rhs = require("telescope").extensions.live_grep_raw.live_grep_raw,
+  opts = opts,
+}
+map { mode = "n", lhs = ts_leader .. "rb", rhs = ts_builtin.current_buffer_fuzzy_find, opts = opts }
+map { mode = "n", lhs = ts_leader .. "rg", rhs = ts_builtin.live_grep, opts = opts }
+map { mode = "n", lhs = ts_leader .. "ts", rhs = ts_builtin.treesitter, opts = opts }
+map { mode = "n", lhs = "gD", rhs = vim.lsp.buf.declaration, opts = opts }
+map { mode = "n", lhs = "gi", rhs = vim.lsp.buf.implementation, opts = opts }
+map { mode = "n", lhs = "gd", rhs = ts_builtin.lsp_definitions, opts = opts }
+map { mode = "n", lhs = "gr", rhs = ts_builtin.lsp_references, opts = opts }
+map { mode = "n", lhs = "<space>ds", rhs = ts_builtin.lsp_document_symbols, opts = opts }
+map {
+  mode = "n",
+  lhs = "<space>fs",
+  rhs = partial(ts_builtin.lsp_document_symbols, { symbols = { "function", "method" } }),
+  opts = opts,
 }
 
 -- lsp
-nnoremap { "<space>db", ts_builtin.lsp_document_diagnostics, opts }
-nnoremap { "<space>dw", ts_builtin.lsp_workspace_diagnostics, opts }
-nnoremap { "<space>cs", partial(ts_builtin.lsp_document_symbols, { symbols = "class" }), opts }
-nnoremap {
-  "<space>ws",
-  function()
+map {
+  mode = "n",
+  lhs = "<space>db",
+  rhs = partial(ts_builtin.diagnostics, { prompt_title = "Document Diagnostics", bufnr = 0 }),
+  opts = opts,
+}
+map {
+  mode = "n",
+  lhs = "<space>dw",
+  rhs = partial(ts_builtin.diagnostics, { prompt_title = "Workspace Diagnostics" }),
+  opts = opts,
+}
+map {
+  mode = "n",
+  lhs = "<space>cs",
+  rhs = partial(ts_builtin.lsp_document_symbols, { symbols = "class" }),
+  opts = opts,
+}
+map {
+  mode = "n",
+  lhs = "<space>ws",
+  rhs = function()
     ts_builtin.lsp_workspace_symbols { query = vim.fn.input "> " }
   end,
-  opts,
+  opts = opts,
 }
-nnoremap { "<space>wsd", ts_builtin.lsp_dynamic_workspace_symbols, opts }
+map { mode = "n", lhs = "<space>wsd", rhs = ts_builtin.lsp_dynamic_workspace_symbols, opts = opts }
 
-nnoremap {
-  "<space>ld",
-  function()
+map {
+  mode = "n",
+  lhs = "<space>ld",
+  rhs = function()
     vim.lsp.diagnostic.show_line_diagnostics { border = "solid" }
   end,
-  opts,
+  opts = opts,
 }
-nnoremap { "[d", vim.lsp.diagnostic.goto_prev, opts }
-nnoremap { "]d", vim.lsp.diagnostic.goto_next, opts }
-nnoremap { "<space>rn", require("renamer").rename, opts }
-nnoremap { "K", vim.lsp.buf.hover, opts }
-nnoremap { "gs", vim.lsp.buf.signature_help, opts }
-nnoremap {
-  "<space>wl",
-  function()
+map { mode = "n", lhs = "[d", rhs = vim.lsp.diagnostic.goto_prev, opts = opts }
+map { mode = "n", lhs = "]d", rhs = vim.lsp.diagnostic.goto_next, opts = opts }
+map { mode = "n", lhs = "<space>rn", rhs = require("renamer").rename, opts = opts }
+map { mode = "n", lhs = "K", rhs = vim.lsp.buf.hover, opts = opts }
+map { mode = "n", lhs = "gs", rhs = vim.lsp.buf.signature_help, opts = opts }
+map {
+  mode = "n",
+  lhs = "<space>wl",
+  rhs = function()
     P(vim.lsp.buf.list_workspace_folders())
   end,
-  opts,
+  opts = opts,
 }
-nnoremap { "<space>D", vim.lsp.buf.type_definition, opts }
-nnoremap { "<space>wa", vim.lsp.buf.add_workspace_folder, opts }
-nnoremap { "<space>wr", vim.lsp.buf.remove_workspace_folder, opts }
-nnoremap { "<space>f", vim.lsp.buf.formatting, opts }
+map { mode = "n", lhs = "<space>D", rhs = vim.lsp.buf.type_definition, opts = opts }
+map { mode = "n", lhs = "<space>wa", rhs = vim.lsp.buf.add_workspace_folder, opts = opts }
+map { mode = "n", lhs = "<space>wr", rhs = vim.lsp.buf.remove_workspace_folder, opts = opts }
+map { mode = "n", lhs = "<space>f", rhs = vim.lsp.buf.formatting, opts = opts }
 
 -- norg
-nnoremap { "<leader>otc", [[<cmd>Neorg gtd capture<CR>]], opts }
-nnoremap { "<leader>otv", [[<cmd>Neorg gtd views<CR>]], opts }
-nnoremap { "<leader>ote", [[<cmd>Neorg gtd edit<CR>]], opts }
+map { mode = "n", lhs = "<leader>otc", rhs = [[<cmd>Neorg gtd capture<CR>]], opts = opts }
+map { mode = "n", lhs = "<leader>otv", rhs = [[<cmd>Neorg gtd views<CR>]], opts = opts }
+map { mode = "n", lhs = "<leader>ote", rhs = [[<cmd>Neorg gtd edit<CR>]], opts = opts }

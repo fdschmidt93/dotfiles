@@ -8,11 +8,13 @@ end
 local actions = require "telescope.actions"
 local action_state = require "telescope.actions.state"
 local action_utils = require "telescope.actions.utils"
-local Path = require "plenary.path"
+local fb_actions = require("telescope").extensions.file_browser.actions
 
 -- local action_generate = require "telescope.actions.generate"
 local ts_utils = require "telescope.utils"
 local ts_state = require "telescope.state"
+
+local Path = require "plenary.path"
 
 -- global short hands for telescope.nvim development
 ta = actions
@@ -26,6 +28,10 @@ end
 
 telescope.setup {
   defaults = {
+    borderchars = { " ", " ", " ", " ", " ", " ", " ", " " },
+    layout_config = { prompt_position = "top" },
+    prompt_prefix = " ",
+    sorting_strategy = "ascending",
     cache_picker = {
       num_pickers = 20,
     },
@@ -47,8 +53,7 @@ telescope.setup {
     dynamic_preview_title = true,
     mappings = {
       i = {
-        ["<PageUp>"] = actions.move_selection_next,
-        ["<PageDown>"] = actions.move_selection_previous,
+        ["<A-p>"] = require("telescope.actions.layout").toggle_preview,
         ["<C-space><CR>"] = function(prompt_bufnr)
           require("telescope").extensions.hop._hop(prompt_bufnr, { callback = actions.select_default })
         end,
@@ -68,6 +73,9 @@ telescope.setup {
     },
   },
   extensions = {
+    file_browser = {
+      path_display = { truncate = 3 },
+    },
     hop = {
       sign_hl = { "WarningMsg", "Title" },
       line_hl = { "CursorLine", "Normal" },
@@ -86,7 +94,7 @@ telescope.setup {
       mappings = {
         i = {
           ["<C-a>"] = function(prompt_bufnr)
-            R("fds.telescope.actions").append_task(prompt_bufnr)
+            R("fds.plugins.telescope.actions").append_task(prompt_bufnr)
           end,
         },
       },
@@ -125,9 +133,11 @@ telescope.setup {
       },
     },
     buffers = {
+      sort_mru = true,
+      sort_lastused = true,
       mappings = {
-        i = {
-          ["<C-x>"] = function(prompt_bufnr)
+        n = {
+          ["x"] = function(prompt_bufnr)
             local current_picker = action_state.get_current_picker(prompt_bufnr)
             local selected_bufnr = action_state.get_selected_entry().bufnr
 
@@ -216,10 +226,10 @@ telescope.setup {
     },
   },
 }
-telescope.load_extension "file_browser"
-telescope.load_extension "frecency"
 telescope.load_extension "fzf"
 telescope.load_extension "hop"
 telescope.load_extension "project"
 telescope.load_extension "smart_history"
-telescope.load_extension "ui-select"
+-- telescope.load_extension "ui-select"
+telescope.load_extension "file_browser"
+telescope.load_extension "neorg"

@@ -96,7 +96,8 @@ M.append_task = function(prompt_bufnr)
     false
   )
 
-  local filename = action_state.get_selected_entry().path
+  local filename = vim.loop.cwd() .. "/" .. action_state.get_selected_entry().value:sub(3, -1)
+  P(filename)
   local buf_nr = load_file(filename)
   append_lines_to_buf(task_lines, buf_nr)
 

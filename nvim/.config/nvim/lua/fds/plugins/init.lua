@@ -7,9 +7,9 @@ end
 
 local modules = {
   { "wbthomason/packer.nvim" },
+  { "rcarriga/nvim-notify", requires = "~/repos/lua/plenary.nvim" },
   { "lewis6991/impatient.nvim" },
   { "nathom/filetype.nvim" },
-  { "tjdevries/astronauta.nvim" },
   { "kyazdani42/nvim-web-devicons" },
   { "nanotee/luv-vimdocs" },
   { "romainl/vim-cool" },
@@ -19,7 +19,13 @@ local modules = {
       vim.g.cursorhold_updatetime = 500
     end,
   },
-  { "tpope/vim-commentary", keys = "gc" },
+  {
+    "numToStr/Comment.nvim",
+    config = function()
+      require("Comment").setup()
+    end,
+  },
+
   { "tpope/vim-surround", event = "InsertEnter" },
   {
     "ggandor/lightspeed.nvim",
@@ -72,7 +78,6 @@ local modules = {
     -- TODO check why it cannot be linked to programming filetypes
     -- opt = true,
     config = function()
-      vim.g.indent_blankline_filetype = { "python", "lua" }
       vim.g.indent_blankline_char = "│"
       vim.g.indent_blankline_show_current_context = true
     end,
@@ -93,7 +98,7 @@ local modules = {
           hunk = { "樂", "" },
         },
       }
-      nnoremap { "<A-n>", [[<cmd>Neogit<CR>]], { silent = true } }
+      vim.keymap.set("n", "<A-n>", [[<cmd>Neogit<CR>]], { silent = true })
     end,
     requires = { "sindrets/diffview.nvim", "~/repos/lua/plenary.nvim" },
   },
@@ -114,11 +119,7 @@ local modules = {
     keys = "<C-q>",
     config = function()
       -- toggle qf window
-      nnoremap {
-        "<C-q>",
-        require("utils").toggle_qf,
-        { silent = true },
-      }
+      vim.keymap.set("n", "<C-q>", require("utils").toggle_qf, { silent = true })
     end,
   },
 
@@ -172,7 +173,7 @@ local modules = {
       }
       for i = 1, 9 do
         i = tostring(i)
-        nnoremap { "<leader>" .. i, "<cmd>BufferLineGoToBuffer " .. i .. "<CR>", { silent = true } }
+        vim.keymap.set("n", "<leader>" .. i, "<cmd>BufferLineGoToBuffer " .. i .. "<CR>", { silent = true })
       end
     end,
   },
@@ -181,7 +182,7 @@ local modules = {
     "junegunn/fzf.vim",
     keys = "<space><space>zrg",
     config = function()
-      nnoremap { "<space><space>zrg", "<cmd>Rg<CR>", { silent = true } }
+      vim.keymap.set("n", "<space><space>zrg", "<cmd>Rg<CR>", { silent = true })
     end,
   },
   {
@@ -215,21 +216,28 @@ local modules = {
     },
     config = defer_require "fds.plugins.telescope",
   },
+
+  {
+    "rcarriga/nvim-dap-ui",
+    config = function()
+      require("dapui").setup()
+    end,
+    requires = { "mfussenegger/nvim-dap" },
+  },
   {
     "mfussenegger/nvim-dap",
-    opt = true,
     requires = {
       "nvim-telescope/telescope-dap.nvim",
     },
     config = function()
       local opts = { silent = true }
-      nnoremap { "<F5>", require("dap").continue, opts }
-      nnoremap { "<F10>", require("dap").step_over, opts }
-      nnoremap { "<F11>", require("dap").step_into, opts }
-      nnoremap { "<F12>", require("dap").step_out, opts }
-      nnoremap { "<space>b", require("dap").toggle_breakpoint, opts }
-      nnoremap { "<space>dr", require("dap").repl.open, opts }
-      nnoremap { "<space>dl", require("dap").run_last, opts }
+      vim.keymap.set("n", "<F5>", require("dap").continue, opts)
+      vim.keymap.set("n", "<F10>", require("dap").step_over, opts)
+      vim.keymap.set("n", "<F11>", require("dap").step_into, opts)
+      vim.keymap.set("n", "<F12>", require("dap").step_out, opts)
+      vim.keymap.set("n", "<space>b", require("dap").toggle_breakpoint, opts)
+      vim.keymap.set("n", "<space>dr", require("dap").repl.open, opts)
+      vim.keymap.set("n", "<space>dl", require("dap").run_last, opts)
       vim.fn.sign_define("DapBreakpoint", { text = "", texthl = "Breakpoint" })
       vim.fn.sign_define("DapStopped", { text = "", texthl = "Stopped" })
       require("telescope").load_extension "dap"
@@ -237,9 +245,8 @@ local modules = {
   },
   {
     "mfussenegger/nvim-dap-python",
-    opt = true,
     config = function()
-      local python_path = string.format("/home/%s/miniconda3/bin/python", os.getenv "R")
+      local python_path = string.format("/home/%s/miniconda3/bin/python", vim.env.USER)
       require("dap-python").setup(python_path)
     end,
   },
@@ -379,19 +386,14 @@ local modules = {
     requires = "kyazdani42/nvim-web-devicons",
     -- keys = "<A-m>",
     config = function()
-      nnoremap {
-        "<A-m>",
-        [[<cmd>NvimTreeToggle<CR>]],
-        { silent = true },
-      }
+      vim.keymap.set("n", "<A-m>", [[<cmd>NvimTreeToggle<CR>]], { silent = true })
       vim.g.nvim_tree_indent_markers = 1
       vim.g.nvim_tree_highlight_opened_files = 1
-      -- vim.g.nvim_tree_git_hl = 1
     end,
   },
   {
-    "~/repos/lua/neorg",
-    branch = "unstable",
+    "nvim-neorg/neorg",
+    -- branch = "unstable",
     after = "nvim-treesitter",
     config = function()
       local parser_configs = require("nvim-treesitter.parsers").get_parser_configs()
@@ -448,6 +450,13 @@ local modules = {
     "glacambre/firenvim",
     run = function()
       vim.fn["firenvim#install"](0)
+    end,
+  },
+  "MunifTanjim/nui.nvim",
+  {
+    "~/repos/lua/nvim-neoclip.lua",
+    config = function()
+      require("neoclip").setup()
     end,
   },
 }

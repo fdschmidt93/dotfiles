@@ -34,11 +34,12 @@ nvim_lsp.pyright.setup {
 }
 
 local b = null_ls.builtins
-null_ls.config {
+null_ls.setup {
   sources = {
     vim.fn.executable "black" == 1 and b.formatting.black or nil,
     vim.fn.executable "isort" == 1 and b.formatting.isort or nil,
     b.formatting.stylua,
   },
+  on_attach = on_attach,
+  capabilities = capabilities,
 }
-nvim_lsp["null-ls"].setup { on_attach = on_attach, capabilities = capabilities }

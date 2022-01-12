@@ -23,29 +23,27 @@ local highlight_groups = {
   { "gruvbox_yank", { fg = palette.light1, bg = palette.bright_aqua } }, -- telescope
 
   -- telescope
-  { "TelescopePromptBorder", { fg = palette.bright_blue } },
-  { "TelescopeResultsBorder", { fg = palette.bright_aqua } },
-  { "TelescopePreviewBorder", { fg = palette.bright_aqua } }, -- gitsigns
-  { "TelescopePromptTitle", { fg = palette.bright_blue } },
-  { "TelescopeResultsTitle", { fg = palette.bright_aqua } },
-  { "TelescopePreviewTitle", { fg = palette.bright_aqua } }, -- gitsigns
+  { "TelescopeSelection", { bg = palette.dark1 } }, -- gitsigns
+  { "TelescopeNormal", { fg = palette.light1, bg = palette.dark0_hard } },
+  { "TelescopePromptNormal", { bg = palette.dark1 } }, -- gitsigns
+  { "TelescopeResultsBorder", { fg = palette.bright_aqua, bg = palette.dark0_hard } },
+  { "TelescopePreviewBorder", { fg = palette.bright_aqua, bg = palette.dark0_hard } },
+  { "TelescopePromptBorder", { fg = palette.bright_blue, bg = palette.dark1 } },
+  { "TelescopePromptTitle", { fg = palette.dark1, bg = palette.bright_blue } },
+  { "TelescopeResultsTitle", { fg = palette.dark1, bg = palette.bright_aqua } },
+  { "TelescopePreviewTitle", { fg = palette.dark1, bg = palette.bright_aqua } },
 
   -- cmp
   { "CompeDocumentation", { bg = "NONE" } },
   { "CompeDocumentationBorder", { fg = palette.bright_blue } },
-  { "CmpItemAbbrDefault", { fg = palette.gray_245 } },
-  { "CmpItemAbbrMatchDefault", { fg = palette.light1, gui = "bold" } },
-  { "CmpItemAbbrMatchFuzzyDefault", { fg = palette.light4 } },
+  { "CmpItemAbbr", { fg = palette.gray_245 } },
+  { "CmpItemAbbrMatch", { fg = palette.light1, gui = "bold" } },
+  { "CmpItemAbbrMatchFuzzy", { fg = palette.light4 } },
 
   -- git
   { "GitSignsAdd", { fg = palette.bright_green, bg = "NONE" } },
   { "GitSignsChange", { fg = palette.bright_blue, bg = "NONE" } },
   { "GitSignsDelete", { fg = palette.bright_red, bg = "NONE" } }, -- neogit
-  -- { "DiffAdd", { bg = palette.bright_green, fg = palette.dark1 } },
-  -- { "DiffChange", { bg = palette.bright_blue, fg = palette.dark1 } },
-  -- { "DiffDelete", { bg = palette.bright_red, fg = palette.dark1 } },
-  -- { "NeogitDiffAddHighlight", { bg = palette.dark0, fg = palette.bright_green } },
-  -- { "NeogitDiffDeleteHighlight", { bg = palette.dark0, fg = palette.bright_red } },
 
   -- lspconfig
   { "DiagnosticError", { fg = palette.bright_red } },
@@ -76,20 +74,10 @@ local highlight_groups = {
   -- IndentBlankLine
   { "IndentBlanklineContextChar", { fg = palette.dark4, bg = "None" } },
 
-  -- LightSpeed
-  -- { "LightspeedShortcut", { bg = palette.faded_red, gui = "underline" } },
-  -- { "LightspeedOneCharMatch", { bg = palette.bright_orange, fg = palette.dark0, gui = "underline" } },
-  -- { "LightspeedLabel", { fg = palette.bright_orange, gui = "bold,underline" } },
 }
 for _, hl in pairs(highlight_groups) do
   utils.set_hl(hl[1], hl[2])
 end
-
--- vim.cmd [[hi link LightspeedLabel IncSearch]]
--- vim.cmd [[hi link LightspeedLabel IncSearch]]
--- vim.cmd [[hi link LightspeedShortcut IncSearch]]
--- vim.cmd [[hi link LightspeedOneCharMatch IncSearch]]
--- vim.cmd [[hi link LightspeedShortcutOverlapped IncSearch]]
 
 local signs = { "", "", "", "" }
 local diagnostic_types = { "Error", "Warn", "Info", "Hint" }

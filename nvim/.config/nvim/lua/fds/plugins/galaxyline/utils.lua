@@ -42,23 +42,12 @@ M.gitsigns = function(type, fmt)
   return ""
 end
 
-M.get_nvim_lsp_diagnostic = function(diag_type, icon)
-  if next(lsp.buf_get_clients(0)) == nil then
+M.get_diagnostic_count = function(bufnr, opts, icon)
+  local count = #vim.diagnostic.get(bufnr, opts)
+  if count == 0 then
     return ""
   end
-  local active_clients = lsp.get_active_clients()
-
-  if active_clients then
-    local count = 0
-
-    for _, client in ipairs(active_clients) do
-      count = count + lsp.diagnostic.get_count(api.nvim_get_current_buf(), diag_type, client.id)
-    end
-    if count == 0 then
-      return ""
-    end
-    return string.format("  %s %s", icon, count)
-  end
+  return string.format("  %s %s", icon, count)
 end
 
 M.separate = function(opts)

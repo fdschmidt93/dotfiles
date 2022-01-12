@@ -30,12 +30,3 @@ if pcall(require, "plenary") then
     return require(name)
   end
 end
-
-local k_status, k = pcall(require, "astronauta.keymap")
-if k_status then
-  local k = require "astronauta.keymap"
-  nnoremap = k.nnoremap
-  vnoremap = k.vnoremap
-  tnoremap = k.tnoremap
-  inoremap = k.inoremap
-end
