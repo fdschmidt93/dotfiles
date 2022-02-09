@@ -7,7 +7,9 @@ local function load_plugins()
     {
       'wbthomason/packer.nvim',
       {
-        'nvim-telescope/telescope.nvim',
+        -- 'nvim-telescope/telescope.nvim',
+        'kylo252/telescope.nvim',
+        branch = "nvim-nightly-compat",
         requires = {
           'nvim-lua/plenary.nvim',
           { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' },

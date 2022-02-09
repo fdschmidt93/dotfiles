@@ -108,7 +108,41 @@ local modules = {
     -- lazy load only once a proper buffer has been loaded
     config = function()
       vim.schedule(function()
-        require("gitsigns").setup()
+        require("gitsigns").setup {
+          on_attach = function(bufnr)
+            local gs = package.loaded.gitsigns
+
+            local function map(mode, l, r, opts)
+              opts = opts or {}
+              opts.buffer = bufnr
+              vim.keymap.set(mode, l, r, opts)
+            end
+
+            -- Navigation
+            map("n", "]c", "&diff ? ']c' : '<cmd>Gitsigns next_hunk<CR>'", { expr = true })
+            map("n", "[c", "&diff ? '[c' : '<cmd>Gitsigns prev_hunk<CR>'", { expr = true })
+
+            -- Actions
+            map({ "n", "v" }, "<leader>hs", gs.stage_hunk)
+            map({ "n", "v" }, "<leader>hr", gs.reset_hunk)
+            map("n", "<leader>hS", gs.stage_buffer)
+            map("n", "<leader>hu", gs.undo_stage_hunk)
+            map("n", "<leader>hR", gs.reset_buffer)
+            map("n", "<leader>hp", gs.preview_hunk)
+            map("n", "<leader>hb", function()
+              gs.blame_line { full = true }
+            end)
+            map("n", "<leader>tb", gs.toggle_current_line_blame)
+            map("n", "<leader>hd", gs.diffthis)
+            map("n", "<leader>hD", function()
+              gs.diffthis "~"
+            end)
+            map("n", "<leader>td", gs.toggle_deleted)
+
+            -- Text object
+            map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>")
+          end,
+        }
       end)
     end,
   },
@@ -185,6 +219,25 @@ local modules = {
       vim.keymap.set("n", "<space><space>zrg", "<cmd>Rg<CR>", { silent = true })
     end,
   },
+  -- {
+  --   "ibhagwan/fzf-lua",
+  --   keys = "<space><space>zrg",
+  --   config = function()
+  --     require("fzf-lua").setup {
+  --       winopts = { width = 0.9 },
+  --       hl = {
+  --         normal = "TelescopeNormal",
+  --         border = "TelescopeResultsBorder",
+  --       },
+  --     }
+  --     vim.keymap.set(
+  --       "n",
+  --       "<space><space>zrg",
+  --       "<cmd>lua require('fzf-lua').grep_project()<CR>",
+  --       { silent = true }
+  --     )
+  --   end,
+  -- },
   {
     "norcalli/nvim-colorizer.lua",
     ft = "lua",
@@ -207,7 +260,7 @@ local modules = {
       { "nvim-telescope/telescope-fzf-native.nvim", run = "make" },
       { "nvim-telescope/telescope-smart-history.nvim", requires = "tami5/sqlite.lua" },
       "nvim-telescope/telescope-frecency.nvim",
-      "nvim-telescope/telescope-fzf-writer.nvim",
+      "~/repos/lua/telescope-fzf-writer.nvim",
       "nvim-telescope/telescope-project.nvim",
       "nvim-telescope/telescope-live-grep-raw.nvim",
       "~/repos/lua/telescope-file-browser.nvim",
@@ -254,7 +307,7 @@ local modules = {
   {
     "neovim/nvim-lspconfig",
     requires = {
-      "ray-x/lsp_signature.nvim",
+      -- "ray-x/lsp_signature.nvim",
       "folke/lua-dev.nvim",
       {
         "filipdutescu/renamer.nvim",
@@ -294,15 +347,41 @@ local modules = {
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
       "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-nvim-lsp-signature-help",
       "saadparwaiz1/cmp_luasnip",
-      "onsails/lspkind-nvim",
       "lukas-reineke/cmp-rg",
     },
     config = function()
       vim.o.completeopt = "menuone,noselect"
       local cmp = require "cmp"
       local luasnip = require "luasnip"
-      local lspkind = require "lspkind"
+      local kind_icons = {
+        Text = "",
+        Method = "",
+        Function = "",
+        Constructor = "",
+        Field = "ﰠ",
+        Variable = "",
+        Class = "",
+        Interface = "",
+        Module = "",
+        Property = "",
+        Unit = "",
+        Value = "",
+        Enum = "",
+        Keyword = "",
+        Snippet = "",
+        Color = "",
+        File = "",
+        Reference = "",
+        Folder = "",
+        EnumMember = "",
+        Constant = "",
+        Struct = "פּ",
+        Event = "",
+        Operator = "",
+        TypeParameter = "",
+      }
       cmp.setup {
         experimental = {
           native_menu = false,
@@ -310,15 +389,20 @@ local modules = {
         },
 
         -- Youtube: How to set up nice formatting for your sources.
-        format = lspkind.cmp_format {
-          menu = {
-            buffer = "[buf]",
-            nvim_lsp = "[LSP]",
-            nvim_lua = "[api]",
-            path = "[path]",
-            luasnip = "[snip]",
-            rg = "[rg]",
-          },
+        formatting = {
+          -- menu = {
+          --   buffer = "[buf]",
+          --   nvim_lsp = "[LSP]",
+          --   nvim_lua = "[api]",
+          --   path = "[path]",
+          --   luasnip = "[snip]",
+          --   rg = "[rg]",
+          -- },
+          fields = { "kind", "abbr", "menu" },
+          format = function(_, vim_item)
+            vim_item.kind = string.format("%s", kind_icons[vim_item.kind])
+            return vim_item
+          end,
         },
         snippet = {
           expand = function(args)
@@ -330,7 +414,7 @@ local modules = {
           completeopt = "menuone,noselect",
         },
         documentation = {
-          border = "rounded",
+          border = "none",
           winhighlight = "NormalFloat:CompeDocumentation,FloatBorder:CompeDocumentationBorder",
           max_width = 120,
           min_width = 60,
@@ -339,6 +423,7 @@ local modules = {
         },
         sources = {
           { name = "nvim_lsp" },
+          { name = "nvim_lsp_signature_help" },
           { name = "path" },
           { name = "buffer" },
           { name = "luasnip" },

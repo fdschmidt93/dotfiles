@@ -29,7 +29,12 @@ end
 telescope.setup {
   defaults = {
     borderchars = { " ", " ", " ", " ", " ", " ", " ", " " },
-    layout_config = { prompt_position = "top" },
+    layout_strategy = "vertical",
+    layout_config = {
+      height = 0.90,
+      prompt_position = "top",
+      preview_height = 15,
+    },
     prompt_prefix = " ",
     sorting_strategy = "ascending",
     cache_picker = {
@@ -74,7 +79,8 @@ telescope.setup {
   },
   extensions = {
     file_browser = {
-      path_display = { truncate = 3 },
+      grouped = true,
+      default_selection_index = 2,
     },
     hop = {
       sign_hl = { "WarningMsg", "Title" },
@@ -91,6 +97,7 @@ telescope.setup {
   },
   pickers = {
     find_files = {
+      find_command = { "fd", "--type", "f", "--strip-cwd-prefix" },
       mappings = {
         i = {
           ["<C-a>"] = function(prompt_bufnr)

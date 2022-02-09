@@ -9,7 +9,9 @@ local b = "全角全角全角"
 local d = "hallääääääääää"
 
 M.if_nil = function(a, b)
-  if a == nil then return b end
+  if a == nil then
+    return b
+  end
   return a
 end
 
@@ -48,7 +50,7 @@ end
 M.resize = function(vertical, margin)
   local cur_win = vim.api.nvim_get_current_win()
   -- go (possibly) right
-  vim.cmd(string.format('wincmd %s', vertical and 'l' or 'j'))
+  vim.cmd(string.format("wincmd %s", vertical and "l" or "j"))
   local new_win = vim.api.nvim_get_current_win()
 
   -- determine direction cond on increase and existing right-hand buffer
@@ -61,9 +63,9 @@ M.resize = function(vertical, margin)
     sign = not sign
   end
 
-  sign = sign and '+' or '-'
-  local dir = vertical and 'vertical ' or ''
-  local cmd = dir .. 'resize ' .. sign .. math.abs(margin) .. '<CR>'
+  sign = sign and "+" or "-"
+  local dir = vertical and "vertical " or ""
+  local cmd = dir .. "resize " .. sign .. math.abs(margin) .. "<CR>"
   vim.cmd(cmd)
 end
 
@@ -97,20 +99,6 @@ M.tabclose = function()
   local new_buf = vim.api.nvim_get_current_buf()
   if buf == new_buf then
     vim.fn.winrestview(view)
-  end
-end
-
-M.set_hl = function(group, options)
-  local bg = options.bg == nil and "" or "guibg=" .. options.bg
-  local fg = options.fg == nil and "" or "guifg=" .. options.fg
-  local gui = options.gui == nil and "" or "gui=" .. options.gui
-  local link = options.link or false
-  local target = options.target
-
-  if not link then
-    vim.cmd(string.format("hi %s %s %s %s", group, bg, fg, gui))
-  else
-    vim.cmd(string.format("hi! link %s %s", group, target))
   end
 end
 

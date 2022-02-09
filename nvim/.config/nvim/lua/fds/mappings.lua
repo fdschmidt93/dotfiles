@@ -139,13 +139,11 @@ map { mode = "n", lhs = "<space>wsd", rhs = ts_builtin.lsp_dynamic_workspace_sym
 map {
   mode = "n",
   lhs = "<space>ld",
-  rhs = function()
-    vim.lsp.diagnostic.show_line_diagnostics { border = "solid" }
-  end,
+  rhs = vim.diagnostic.open_float,
   opts = opts,
 }
-map { mode = "n", lhs = "[d", rhs = vim.lsp.diagnostic.goto_prev, opts = opts }
-map { mode = "n", lhs = "]d", rhs = vim.lsp.diagnostic.goto_next, opts = opts }
+map { mode = "n", lhs = "[d", rhs = vim.diagnostic.goto_prev, opts = opts }
+map { mode = "n", lhs = "]d", rhs = vim.diagnostic.goto_next, opts = opts }
 map { mode = "n", lhs = "<space>rn", rhs = require("renamer").rename, opts = opts }
 map { mode = "n", lhs = "K", rhs = vim.lsp.buf.hover, opts = opts }
 map { mode = "n", lhs = "gs", rhs = vim.lsp.buf.signature_help, opts = opts }

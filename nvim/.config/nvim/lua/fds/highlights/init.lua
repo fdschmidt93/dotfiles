@@ -1,5 +1,4 @@
 local palette = require "fds.highlights.gruvbox"
-local utils = require "fds.utils"
 
 vim.cmd [[colorscheme gruvbox]]
 vim.g.background = "dark"
@@ -10,17 +9,11 @@ vim.cmd [[hi clear StatusLine]]
 local highlight_groups = {
 
   -- nvim
-  { "Normal", { bg = "NONE" } },
-  { "Comment", { gui = "italic" } },
-  { "NormalFloat", { bg = palette.dark1 } },
-  -- { "CursorLineNR", { fg = palette.bright_yellow, gui = "bold" } },
-  { "StatusLine", { bg = "NONE" } },
-  { "StatusLineNC", { bg = "NONE" } },
-  -- { "CursorLine", { bg = palette.dark1 } },
+  { "Comment", { fg = palette.gray_245, italic = true } },
+  { "NormalFloat", { bg = palette.dark0_soft } },
+  { "CursorLine", { default = true } },
   { "SignColumn", { bg = "NONE" } },
-  { "VertSplit", { fg = palette.gruvbox_dark1, bg = "NONE" } },
-  { "Pmenu", { fg = "NONE", bg = palette.dark1 } },
-  { "gruvbox_yank", { fg = palette.light1, bg = palette.bright_aqua } }, -- telescope
+  { "VertSplit", { fg = palette.dark1, bg = "NONE" } },
 
   -- telescope
   { "TelescopeSelection", { bg = palette.dark1 } }, -- gitsigns
@@ -34,16 +27,18 @@ local highlight_groups = {
   { "TelescopePreviewTitle", { fg = palette.dark1, bg = palette.bright_aqua } },
 
   -- cmp
-  { "CompeDocumentation", { bg = "NONE" } },
+  { "Pmenu", { fg = "NONE", bg = palette.dark0_soft } },
+  { "CompeDocumentation", { bg = palette.dark0_soft } },
   { "CompeDocumentationBorder", { fg = palette.bright_blue } },
   { "CmpItemAbbr", { fg = palette.gray_245 } },
-  { "CmpItemAbbrMatch", { fg = palette.light1, gui = "bold" } },
-  { "CmpItemAbbrMatchFuzzy", { fg = palette.light4 } },
+  { "CmpItemAbbrMatch", { fg = palette.bright_yellow, bold = true } },
+  { "CmpItemAbbrMatchFuzzy", { fg = palette.bright_yellow, bold = true } },
+  { "CmpItemKind", { fg = palette.neutral_yellow, bold = true } },
 
   -- git
   { "GitSignsAdd", { fg = palette.bright_green, bg = "NONE" } },
   { "GitSignsChange", { fg = palette.bright_blue, bg = "NONE" } },
-  { "GitSignsDelete", { fg = palette.bright_red, bg = "NONE" } }, -- neogit
+  { "GitSignsDelete", { fg = palette.bright_red, bg = "NONE" } },
 
   -- lspconfig
   { "DiagnosticError", { fg = palette.bright_red } },
@@ -65,18 +60,15 @@ local highlight_groups = {
   { "Breakpoint", { fg = palette.bright_red } },
   { "Stopped", { fg = palette.bright_green } }, -- LspTrouble
 
-  -- NvimTree
-  { "NvimTreeIndentMarker", { fg = palette.dark2, bg = "None", gui = "bold" } },
-  { "NvimTreeFolderIcon", { fg = palette.bright_aqua, bg = "None", gui = "bold" } },
-  { "NvimTreeFolderName", { fg = palette.bright_blue, bg = "None", gui = "bold" } },
-  { "NvimTreeOpenedFolderName", { fg = palette.bright_aqua, bg = "None", gui = "bold" } },
+  -- tree-sitter
+  { "TSOperator", { fg = "None", bg = "None" } }, -- avoid conflict with cursorline
 
   -- IndentBlankLine
   { "IndentBlanklineContextChar", { fg = palette.dark4, bg = "None" } },
-
+  { "gruvbox_yank", { fg = palette.light1, bg = palette.bright_aqua } },
 }
 for _, hl in pairs(highlight_groups) do
-  utils.set_hl(hl[1], hl[2])
+  vim.api.nvim_set_hl(0, hl[1], hl[2])
 end
 
 local signs = { "", "", "", "" }

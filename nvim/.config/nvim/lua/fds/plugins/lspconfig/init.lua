@@ -8,8 +8,6 @@ local capabilities = lsp.protocol.make_client_capabilities()
 capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
 
 local on_attach = function()
-  require("lsp_signature").on_attach { hint_enable = false }
-
   vim.cmd [[autocmd ColorScheme * :lua require('vim.lsp.diagnostic')._define_default_signs_and_highlights()]]
 end
 
