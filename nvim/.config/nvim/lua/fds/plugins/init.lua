@@ -5,9 +5,23 @@ local defer_require = function(mod)
   }
 end
 
+local home = vim.loop.os_homedir()
+
+local local_or_git = function(path, fallback)
+  if path:sub(1, 1) == "~" then
+    path = home .. path:sub(2, -1)
+  end
+  if vim.loop.fs_realpath(path) then
+    return path
+  else
+    return fallback
+  end
+end
+
 local modules = {
   { "wbthomason/packer.nvim" },
-  { "rcarriga/nvim-notify", requires = "~/repos/lua/plenary.nvim" },
+  { local_or_git("~/repos/lua/plenary.nvim", "nvim-lua/plenary.nvim") },
+  { "rcarriga/nvim-notify", requires = "plenary.nvim" },
   { "lewis6991/impatient.nvim" },
   { "nathom/filetype.nvim" },
   { "kyazdani42/nvim-web-devicons" },
@@ -100,11 +114,11 @@ local modules = {
       }
       vim.keymap.set("n", "<A-n>", [[<cmd>Neogit<CR>]], { silent = true })
     end,
-    requires = { "sindrets/diffview.nvim", "~/repos/lua/plenary.nvim" },
+    requires = { "sindrets/diffview.nvim", "plenary.nvim" },
   },
   {
     "lewis6991/gitsigns.nvim",
-    requires = { "~/repos/lua/plenary.nvim" },
+    requires = { "plenary.nvim" },
     -- lazy load only once a proper buffer has been loaded
     config = function()
       vim.schedule(function()
@@ -254,18 +268,17 @@ local modules = {
     end,
   },
   {
-    "~/repos/lua/telescope.nvim",
+    local_or_git("~/repos/lua/telescope.nvim", "nvim-telescope/telescope.nvim"),
     requires = {
-      "~/repos/lua/plenary.nvim",
+      "plenary.nvim",
       { "nvim-telescope/telescope-fzf-native.nvim", run = "make" },
       { "nvim-telescope/telescope-smart-history.nvim", requires = "tami5/sqlite.lua" },
       "nvim-telescope/telescope-frecency.nvim",
-      "~/repos/lua/telescope-fzf-writer.nvim",
       "nvim-telescope/telescope-project.nvim",
       "nvim-telescope/telescope-live-grep-raw.nvim",
-      "~/repos/lua/telescope-file-browser.nvim",
-      "~/repos/lua/telescope-hop.nvim",
-      "~/repos/lua/telescope-ui-select.nvim",
+      local_or_git("~/repos/lua/telescope-file-browser.nvim", "nvim-telescope/telescope-file-browser.nvim"),
+      local_or_git("~/repos/lua/telescope-hop.nvim", "nvim-telescope/telescope-hop.nvim"),
+      "nvim-telescope/telescope-ui-select.nvim",
     },
     config = defer_require "fds.plugins.telescope",
   },
@@ -321,7 +334,7 @@ local modules = {
       require "fds.plugins.lspconfig"
     end,
   },
-  { "jose-elias-alvarez/null-ls.nvim", requires = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" } },
+  { "jose-elias-alvarez/null-ls.nvim", requires = { "plenary.nvim", "neovim/nvim-lspconfig" } },
 
   {
     "hrsh7th/nvim-cmp",
@@ -522,7 +535,7 @@ local modules = {
         },
       }
     end,
-    requires = { "nvim-lua/plenary.nvim", "nvim-neorg/neorg-telescope" },
+    requires = { "plenary.nvim", "nvim-neorg/neorg-telescope" },
   },
   {
     "simrat39/rust-tools.nvim",
@@ -539,7 +552,7 @@ local modules = {
   },
   "MunifTanjim/nui.nvim",
   {
-    "~/repos/lua/nvim-neoclip.lua",
+    "AckslD/nvim-neoclip.lua",
     config = function()
       require("neoclip").setup()
     end,
