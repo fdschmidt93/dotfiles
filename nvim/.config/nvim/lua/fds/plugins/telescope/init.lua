@@ -9,6 +9,7 @@ local actions = require "telescope.actions"
 local action_state = require "telescope.actions.state"
 local action_utils = require "telescope.actions.utils"
 local fb_actions = require("telescope").extensions.file_browser.actions
+local ffi = require "ffi"
 
 -- local action_generate = require "telescope.actions.generate"
 local ts_utils = require "telescope.utils"
@@ -236,7 +237,10 @@ telescope.setup {
 telescope.load_extension "fzf"
 telescope.load_extension "hop"
 telescope.load_extension "project"
-telescope.load_extension "smart_history"
 -- telescope.load_extension "ui-select"
 telescope.load_extension "file_browser"
 telescope.load_extension "neorg"
+
+if ffi.load "libsqlite3" then
+  telescope.load_extension "smart_history"
+end

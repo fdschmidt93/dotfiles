@@ -98,7 +98,15 @@ local modules = {
   },
 
   -- git
-  { "tpope/vim-fugitive", cmd = "Git" },
+  {
+    "tpope/vim-fugitive",
+    keys = "<A-N>",
+    config = function()
+      vim.keymap.set("n", "<A-N>", [[<cmd>Git<CR>]], { silent = true })
+      vim.keymap.set("n", "<A-a>", [[<cmd>diffget //2<CR>]], { silent = true })
+      vim.keymap.set("n", "<A-d>", [[<cmd>diffget //3<CR>]], { silent = true })
+    end,
+  },
   {
     "TimUntersberger/neogit",
     -- lazy load with key combination
@@ -202,7 +210,6 @@ local modules = {
     branch = "main",
     config = defer_require "fds.plugins.galaxyline",
   },
-
   {
     "akinsho/nvim-bufferline.lua",
     after = "gruvbox",
@@ -211,7 +218,7 @@ local modules = {
         options = {
           view = "multiwindow",
           numbers = function(opts)
-            return opts.raise(opts.ordinal)
+            return string.format("%s|%s", opts.lower(opts.ordinal), opts.raise(opts.id))
           end,
           tab_size = 18,
           show_buffer_close_icons = false,
@@ -225,33 +232,38 @@ local modules = {
       end
     end,
   },
-  -- for extremely large code- and databases
   {
-    "junegunn/fzf.vim",
+    "ibhagwan/fzf-lua",
     keys = "<space><space>zrg",
     config = function()
-      vim.keymap.set("n", "<space><space>zrg", "<cmd>Rg<CR>", { silent = true })
+      local actions = require "fzf-lua.actions"
+      require("fzf-lua").setup {
+        winopts = { width = 0.9, preview = {
+          layout = "vertical",
+        } },
+        hl = {},
+      }
+      require("fzf-lua").setup {
+        winopts = {
+          hl = {
+            normal = "TelescopeNormal",
+            border = "TelescopeResultsBorder",
+          },
+          preview = {
+            vertical = "down:45%",
+            layout = "vertical",
+            delay = 10,
+          },
+        },
+        actions = {
+          files = {
+            ["ctrl-x"] = actions.file_split, -- harmonize with telescope
+          },
+        },
+      }
+      vim.keymap.set("n", "<space><space>zrg", "<cmd>lua require('fzf-lua').grep_project()<CR>", { silent = true })
     end,
   },
-  -- {
-  --   "ibhagwan/fzf-lua",
-  --   keys = "<space><space>zrg",
-  --   config = function()
-  --     require("fzf-lua").setup {
-  --       winopts = { width = 0.9 },
-  --       hl = {
-  --         normal = "TelescopeNormal",
-  --         border = "TelescopeResultsBorder",
-  --       },
-  --     }
-  --     vim.keymap.set(
-  --       "n",
-  --       "<space><space>zrg",
-  --       "<cmd>lua require('fzf-lua').grep_project()<CR>",
-  --       { silent = true }
-  --     )
-  --   end,
-  -- },
   {
     "norcalli/nvim-colorizer.lua",
     ft = "lua",
@@ -320,15 +332,7 @@ local modules = {
   {
     "neovim/nvim-lspconfig",
     requires = {
-      -- "ray-x/lsp_signature.nvim",
       "folke/lua-dev.nvim",
-      {
-        "filipdutescu/renamer.nvim",
-        config = function()
-          require("renamer").setup()
-        end,
-        requires = { "plenary.nvim" },
-      },
     },
     config = function()
       require "fds.plugins.lspconfig"
@@ -479,19 +483,7 @@ local modules = {
   },
 
   {
-    "kyazdani42/nvim-tree.lua",
-    as = "nvim-tree",
-    requires = "kyazdani42/nvim-web-devicons",
-    -- keys = "<A-m>",
-    config = function()
-      vim.keymap.set("n", "<A-m>", [[<cmd>NvimTreeToggle<CR>]], { silent = true })
-      vim.g.nvim_tree_indent_markers = 1
-      vim.g.nvim_tree_highlight_opened_files = 1
-    end,
-  },
-  {
     "nvim-neorg/neorg",
-    -- branch = "unstable",
     after = "nvim-treesitter",
     config = function()
       local parser_configs = require("nvim-treesitter.parsers").get_parser_configs()
@@ -550,7 +542,6 @@ local modules = {
       vim.fn["firenvim#install"](0)
     end,
   },
-  "MunifTanjim/nui.nvim",
   {
     "AckslD/nvim-neoclip.lua",
     config = function()

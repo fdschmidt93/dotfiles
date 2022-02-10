@@ -144,7 +144,7 @@ map {
 }
 map { mode = "n", lhs = "[d", rhs = vim.diagnostic.goto_prev, opts = opts }
 map { mode = "n", lhs = "]d", rhs = vim.diagnostic.goto_next, opts = opts }
-map { mode = "n", lhs = "<space>rn", rhs = require("renamer").rename, opts = opts }
+map { mode = "n", lhs = "<space>rn", rhs = vim.lsp.buf.rename, opts = opts }
 map { mode = "n", lhs = "K", rhs = vim.lsp.buf.hover, opts = opts }
 map { mode = "n", lhs = "gs", rhs = vim.lsp.buf.signature_help, opts = opts }
 map {
