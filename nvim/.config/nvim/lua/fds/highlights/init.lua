@@ -13,7 +13,8 @@ local highlight_groups = {
   { "NormalFloat", { bg = palette.dark0_soft } },
   { "CursorLine", { default = true } },
   { "SignColumn", { bg = "NONE" } },
-  { "VertSplit", { fg = palette.dark1, bg = "NONE" } },
+  { "WinSeparator", { fg = palette.dark1, bg = "NONE" } },
+  { "FloatBorder", { fg = palette.dark4, bg = palette.dark0_soft } },
 
   -- telescope
   { "TelescopeSelection", { bg = palette.dark1 } }, -- gitsigns
@@ -27,13 +28,17 @@ local highlight_groups = {
   { "TelescopePreviewTitle", { fg = palette.dark1, bg = palette.bright_aqua } },
 
   -- cmp
-  { "Pmenu", { fg = "NONE", bg = palette.dark0_soft } },
-  { "CompeDocumentation", { bg = palette.dark0_soft } },
-  { "CompeDocumentationBorder", { fg = palette.bright_blue } },
+  { "Pmenu", { fg = palette.light1, bg = palette.dark0_soft } },
   { "CmpItemAbbr", { fg = palette.gray_245 } },
   { "CmpItemAbbrMatch", { fg = palette.bright_yellow, bold = true } },
   { "CmpItemAbbrMatchFuzzy", { fg = palette.bright_yellow, bold = true } },
-  { "CmpItemKind", { fg = palette.neutral_yellow, bold = true } },
+  { "CmpItemKind", { fg = palette.bright_yellow, bold = true } },
+  { "CmpItemMenu", { fg = palette.light1, bg = palette.neutral_aqua } },
+  { "CmpItemMenuDefault", { fg = palette.light1, bg = palette.neutral_aqua } },
+  { "CmpBorderedWindow_Normal", { fg = palette.light1, bg = palette.dark0_soft } },
+  { "CmpBorderedWindow_FloatBorder", { fg = palette.dark4, bg = palette.dark0_soft } },
+  { "CmpCompletionWindowBorder", { fg = palette.dark4, bg = palette.dark4 } },
+  { "CmpDocumentationWindowBorder", { fg = palette.dark4, bg = palette.dark4 } },
 
   -- git
   { "GitSignsAdd", { fg = palette.bright_green, bg = "NONE" } },
@@ -61,7 +66,7 @@ local highlight_groups = {
   { "Stopped", { fg = palette.bright_green } }, -- LspTrouble
 
   -- tree-sitter
-  { "TSOperator", { fg = "None", bg = "None" } }, -- avoid conflict with cursorline
+  { "Operator", { bg = "NONE" } }, -- avoid conflict with cursorline
 
   -- IndentBlankLine
   { "IndentBlanklineContextChar", { fg = palette.dark4, bg = "None" } },

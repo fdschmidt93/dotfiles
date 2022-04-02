@@ -1,3 +1,5 @@
+local HOME = vim.loop.os_homedir()
+
 -- defer setup for atomic plugins
 local defer_require = function(mod)
   return {
@@ -5,11 +7,10 @@ local defer_require = function(mod)
   }
 end
 
-local home = vim.loop.os_homedir()
-
+-- attempt to find local repo, otherwise fallback to git
 local local_or_git = function(path, fallback)
   if path:sub(1, 1) == "~" then
-    path = home .. path:sub(2, -1)
+    path = HOME .. path:sub(2, -1)
   end
   if vim.loop.fs_realpath(path) then
     return path
@@ -19,12 +20,21 @@ local local_or_git = function(path, fallback)
 end
 
 local modules = {
+
+  -- package management & startup tools
   { "wbthomason/packer.nvim" },
   { local_or_git("~/repos/lua/plenary.nvim", "nvim-lua/plenary.nvim") },
-  { "rcarriga/nvim-notify", requires = "plenary.nvim" },
   { "lewis6991/impatient.nvim" },
   { "nathom/filetype.nvim" },
-  { "kyazdani42/nvim-web-devicons" },
+
+  -- misc tools
+  {
+    "rcarriga/nvim-notify",
+    requires = "plenary.nvim",
+    config = function()
+      vim.notify = require "notify"
+    end,
+  },
   { "nanotee/luv-vimdocs" },
   { "romainl/vim-cool" },
   {
@@ -39,7 +49,12 @@ local modules = {
       require("Comment").setup()
     end,
   },
-
+  {
+    "glacambre/firenvim",
+    run = function()
+      vim.fn["firenvim#install"](0)
+    end,
+  },
   { "tpope/vim-surround", event = "InsertEnter" },
   {
     "ggandor/lightspeed.nvim",
@@ -53,6 +68,21 @@ local modules = {
       vim.api.nvim_set_keymap("", "T", "<Plug>Lightspeed_T", {})
     end,
   },
+  { -- show hex rgb colors
+    "norcalli/nvim-colorizer.lua",
+    ft = "lua",
+    config = function()
+      require("colorizer").setup()
+    end,
+  },
+  {
+    "kkoomen/vim-doge",
+    run = ":call doge#install()",
+    config = function()
+      vim.g.doge_enable_mappings = 1
+      vim.g.doge_doc_standard_python = "google"
+    end,
+  },
 
   -- theme & icons
   {
@@ -61,36 +91,30 @@ local modules = {
       require "fds.highlights"
     end,
   },
-
-  -- tools
+  { "kyazdani42/nvim-web-devicons" },
 
   -- filetype plugins
   { "chrisbra/csv.vim", ft = "csv" },
   {
     "iamcco/markdown-preview.nvim",
     run = "cd app && yarn install",
-    -- ft = "markdown",
-    -- cmd = "MarkdownPreview",
+    ft = "markdown",
   },
   {
     "lervag/vimtex",
-    ft = "tex",
     config = function()
       vim.g.tex_flavor = "latex"
       vim.g.vimtex_fold_manual = 1
-      vim.g.vimtex_latexmk_continuous = 1
-      vim.g.vimtex_compiler_progname = "nvr"
       vim.g.vimtex_view_method = "zathura"
+      vim.g.vimtex_view_general_viewer = "zathura"
+      vim.g.vimtex_compiler_progname = "nvr"
       vim.g.vimtex_quickfix_mode = 0
       vim.wo.conceallevel = 2
       vim.g.tex_conceal = "abdgm"
     end,
   },
-
   {
     "lukas-reineke/indent-blankline.nvim",
-    -- TODO check why it cannot be linked to programming filetypes
-    -- opt = true,
     config = function()
       vim.g.indent_blankline_char = "│"
       vim.g.indent_blankline_show_current_context = true
@@ -168,14 +192,15 @@ local modules = {
       end)
     end,
   },
+  -- mlua rust git experiment
+  local_or_git "~/repos/lua/grit/",
 
   -- floating window preview for quickfix list
   {
     "kevinhwang91/nvim-bqf",
     keys = "<C-q>",
     config = function()
-      -- toggle qf window
-      vim.keymap.set("n", "<C-q>", require("utils").toggle_qf, { silent = true })
+      -- toggle qf window vim.keymap.set("n", "<C-q>", require("fds.utils").toggle_qf, { silent = true })
     end,
   },
 
@@ -232,7 +257,7 @@ local modules = {
       end
     end,
   },
-  {
+  { -- grepping in large projects
     "ibhagwan/fzf-lua",
     keys = "<space><space>zrg",
     config = function()
@@ -257,26 +282,15 @@ local modules = {
         },
         actions = {
           files = {
+            ["default"] = actions.file_edit_or_qf,
             ["ctrl-x"] = actions.file_split, -- harmonize with telescope
+            ["ctrl-v"] = actions.file_vsplit,
+            ["ctrl-t"] = actions.file_tabedit,
+            ["alt-q"] = actions.file_sel_to_qf,
           },
         },
       }
       vim.keymap.set("n", "<space><space>zrg", "<cmd>lua require('fzf-lua').grep_project()<CR>", { silent = true })
-    end,
-  },
-  {
-    "norcalli/nvim-colorizer.lua",
-    ft = "lua",
-    config = function()
-      require("colorizer").setup()
-    end,
-  }, -- show hex rgb colors
-  {
-    "kkoomen/vim-doge",
-    run = ":call doge#install()",
-    config = function()
-      vim.g.doge_enable_mappings = 1
-      vim.g.doge_doc_standard_python = "google"
     end,
   },
   {
@@ -285,14 +299,11 @@ local modules = {
       "plenary.nvim",
       { "nvim-telescope/telescope-fzf-native.nvim", run = "make" },
       { "nvim-telescope/telescope-smart-history.nvim", requires = "tami5/sqlite.lua" },
-      "nvim-telescope/telescope-frecency.nvim",
-      "nvim-telescope/telescope-project.nvim",
-      "nvim-telescope/telescope-live-grep-raw.nvim",
       local_or_git("~/repos/lua/telescope-file-browser.nvim", "nvim-telescope/telescope-file-browser.nvim"),
-      local_or_git("~/repos/lua/telescope-hop.nvim", "nvim-telescope/telescope-hop.nvim"),
-      "nvim-telescope/telescope-ui-select.nvim",
     },
-    config = defer_require "fds.plugins.telescope",
+    config = function()
+      require "fds.plugins.telescope"
+    end,
   },
 
   {
@@ -342,143 +353,26 @@ local modules = {
 
   {
     "hrsh7th/nvim-cmp",
+    branch = "dev",
     after = "gruvbox",
+    event = "InsertEnter",
     requires = {
       {
         "L3MON4D3/LuaSnip",
         config = function()
-          local ls = require "luasnip"
-          local str = [[@code ${1}
-  ${2}
-@end
-]]
-          ls.snippets = {
-            all = {
-              ls.parser.parse_snippet("cod", str),
-
-              ls.parser.parse_snippet("lspsyn", "Wow! This ${1:Stuff} really ${2:works. ${3:Well, a bit.}}"),
-            },
-          }
+          require "fds.plugins.snip"
         end,
       },
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-nvim-lsp-signature-help",
+      "hrsh7th/cmp-omni",
       "saadparwaiz1/cmp_luasnip",
       "lukas-reineke/cmp-rg",
     },
     config = function()
-      vim.o.completeopt = "menuone,noselect"
-      local cmp = require "cmp"
-      local luasnip = require "luasnip"
-      local kind_icons = {
-        Text = "",
-        Method = "",
-        Function = "",
-        Constructor = "",
-        Field = "ﰠ",
-        Variable = "",
-        Class = "",
-        Interface = "",
-        Module = "",
-        Property = "",
-        Unit = "",
-        Value = "",
-        Enum = "",
-        Keyword = "",
-        Snippet = "",
-        Color = "",
-        File = "",
-        Reference = "",
-        Folder = "",
-        EnumMember = "",
-        Constant = "",
-        Struct = "פּ",
-        Event = "",
-        Operator = "",
-        TypeParameter = "",
-      }
-      cmp.setup {
-        experimental = {
-          native_menu = false,
-          ghost_text = true,
-        },
-
-        -- Youtube: How to set up nice formatting for your sources.
-        formatting = {
-          -- menu = {
-          --   buffer = "[buf]",
-          --   nvim_lsp = "[LSP]",
-          --   nvim_lua = "[api]",
-          --   path = "[path]",
-          --   luasnip = "[snip]",
-          --   rg = "[rg]",
-          -- },
-          fields = { "kind", "abbr", "menu" },
-          format = function(_, vim_item)
-            vim_item.kind = string.format("%s", kind_icons[vim_item.kind])
-            return vim_item
-          end,
-        },
-        snippet = {
-          expand = function(args)
-            luasnip.lsp_expand(args.body)
-          end,
-        },
-        completion = {
-          autocomplete = { "InsertEnter", "TextChanged", "TextChangedI" },
-          completeopt = "menuone,noselect",
-        },
-        documentation = {
-          border = "none",
-          winhighlight = "NormalFloat:CompeDocumentation,FloatBorder:CompeDocumentationBorder",
-          max_width = 120,
-          min_width = 60,
-          max_height = math.floor(vim.o.lines * 0.3),
-          min_height = 1,
-        },
-        sources = {
-          { name = "nvim_lsp" },
-          { name = "nvim_lsp_signature_help" },
-          { name = "path" },
-          { name = "buffer" },
-          { name = "luasnip" },
-          { name = "neorg" },
-          { name = "rg" },
-        },
-        mapping = {
-          ["<C-p>"] = cmp.mapping.select_prev_item(),
-          ["<C-n>"] = cmp.mapping.select_next_item(),
-          ["<C-d>"] = cmp.mapping.scroll_docs(4),
-          ["<C-f>"] = cmp.mapping.scroll_docs(-4),
-          ["<C-Space>"] = cmp.mapping.complete(),
-          ["<C-e>"] = cmp.mapping.close(),
-          ["<ESC>"] = cmp.mapping.close(),
-          ["<CR>"] = cmp.mapping.confirm {
-            behavior = cmp.ConfirmBehavior.Replace,
-            select = false,
-          },
-          ["<Tab>"] = function(fallback)
-            if vim.fn.pumvisible() == 1 then
-              vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<C-n>", true, true, true), "n")
-            elseif luasnip.expand_or_jumpable() then
-              vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<Plug>luasnip-expand-or-jump", true, true, true), "")
-            else
-              fallback()
-            end
-          end,
-          ["<S-Tab>"] = function(fallback)
-            if vim.fn.pumvisible() == 1 then
-              vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<C-p>", true, true, true), "n")
-            elseif luasnip.jumpable(-1) then
-              vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<Plug>luasnip-jump-prev", true, true, true), "")
-            else
-              fallback()
-            end
-          end,
-        },
-      }
+      require "fds.plugins.cmp"
     end,
   },
 
@@ -486,68 +380,19 @@ local modules = {
     "nvim-neorg/neorg",
     after = "nvim-treesitter",
     config = function()
-      local parser_configs = require("nvim-treesitter.parsers").get_parser_configs()
-
-      parser_configs.norg = {
-        install_info = {
-          url = "https://github.com/vhyrro/tree-sitter-norg",
-          files = { "src/parser.c", "src/scanner.cc" },
-          branch = "main",
-        },
-      }
-      require("neorg").setup {
-        load = {
-          ["core.defaults"] = {},
-          ["core.keybinds"] = {
-            config = {
-              default_keybinds = true,
-              neorg_leader = "<Leader>o",
-            },
-          },
-          ["core.integrations.telescope"] = {},
-          ["core.norg.completion"] = {
-            config = {
-              engine = "nvim-cmp",
-            },
-          },
-          ["core.norg.concealer"] = {},
-          ["core.norg.dirman"] = {
-            config = {
-              workspaces = {
-                main = vim.env.HOME .. "/neorg",
-                gtd = vim.env.HOME .. "/gtd",
-              },
-            },
-          },
-          ["core.gtd.base"] = {
-            config = {
-              workspace = "gtd",
-            },
-          },
-        },
-      }
+      require "fds.plugins.norg"
     end,
     requires = { "plenary.nvim", "nvim-neorg/neorg-telescope" },
   },
   {
     "simrat39/rust-tools.nvim",
+    ft = "rust",
     config = function()
       require("rust-tools").setup {}
     end,
     requires = "plenary.nvim",
   },
-  {
-    "glacambre/firenvim",
-    run = function()
-      vim.fn["firenvim#install"](0)
-    end,
-  },
-  {
-    "AckslD/nvim-neoclip.lua",
-    config = function()
-      require("neoclip").setup()
-    end,
-  },
+  { "stevearc/dressing.nvim" },
 }
 
 require("packer").startup {

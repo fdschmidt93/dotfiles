@@ -60,15 +60,6 @@ telescope.setup {
     mappings = {
       i = {
         ["<A-p>"] = require("telescope.actions.layout").toggle_preview,
-        ["<C-space><CR>"] = function(prompt_bufnr)
-          require("telescope").extensions.hop._hop(prompt_bufnr, { callback = actions.select_default })
-        end,
-        ["<C-space>v"] = function(prompt_bufnr)
-          require("telescope").extensions.hop._hop(prompt_bufnr, { callback = actions.select_vertical })
-        end,
-        ["<C-space>h"] = function(prompt_bufnr)
-          require("telescope").extensions.hop._hop(prompt_bufnr, { callback = actions.select_horizontal })
-        end,
         ["<C-Down>"] = actions.cycle_history_next,
         ["<C-Up>"] = actions.cycle_history_prev,
       },
@@ -80,14 +71,19 @@ telescope.setup {
   },
   extensions = {
     file_browser = {
+      -- hijack_netrw = true,
+      -- mappings = {
+      --   ["i"] = {
+      --     ["F"] = function()
+      --       print "test"
+      --     end,
+      --   },
+      --   ["n"] = {
+      --     ["c"] = false,
+      --   },
+      -- },
       grouped = true,
-      default_selection_index = 2,
-    },
-    hop = {
-      sign_hl = { "WarningMsg", "Title" },
-      line_hl = { "CursorLine", "Normal" },
-      trace_entry = true,
-      clear_selection_hl = false,
+      previewer = false,
     },
     fzf = {
       fuzzy = true, -- false will only do exact matching
@@ -234,12 +230,10 @@ telescope.setup {
     },
   },
 }
+
 telescope.load_extension "fzf"
-telescope.load_extension "hop"
-telescope.load_extension "project"
--- telescope.load_extension "ui-select"
 telescope.load_extension "file_browser"
-telescope.load_extension "neorg"
+-- telescope.load_extension "neorg"
 
 if ffi.load "libsqlite3" then
   telescope.load_extension "smart_history"

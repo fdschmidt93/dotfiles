@@ -9,12 +9,23 @@ lsp.handlers["textDocument/publishDiagnostics"] = lsp.with(lsp.diagnostic.on_pub
   update_in_insert = false,
 })
 
+local border = {
+  { "🭽", "FloatBorder" },
+  { "▔", "FloatBorder" },
+  { "🭾", "FloatBorder" },
+  { "▕", "FloatBorder" },
+  { "🭿", "FloatBorder" },
+  { "▁", "FloatBorder" },
+  { "🭼", "FloatBorder" },
+  { "▏", "FloatBorder" },
+}
+
 lsp.handlers["textDocument/hover"] = lsp.with(lsp.handlers.hover, {
-  border = "rounded",
+  border = border,
 })
 
 lsp.handlers["textDocument/signatureHelp"] = lsp.with(lsp.handlers.signature_help, {
-  border = "rounded",
+  border = border,
 })
 
 local signs = { "", "", "", "" }

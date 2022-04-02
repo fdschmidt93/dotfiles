@@ -30,10 +30,11 @@ function M.shell(cmd, side, listed)
   local termbuf = vim.api.nvim_create_buf(listed, listed and true or false)
   vim.api.nvim_set_current_buf(termbuf)
   vim.api.nvim_buf_delete(buf, { force = true })
-
+  vim.cmd [[set winhighlight=Normal:TelescopeNormal]]
   vim.fn.termopen(cmd)
   M.set_slime_config(vim.b.terminal_job_id)
   vim.api.nvim_set_current_win(cur_win)
+  return termbuf
 end
 
 -- Apply slime config to all buffers

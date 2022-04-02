@@ -83,7 +83,7 @@ floating_modifier $mod
 # bindsym $mod+Return exec alacritty
 bindsym $mod+Return exec kitty
 bindsym $mod+t exec chromium 
-bindsym $mod+Shift+t exec thunderbird
+bindsym $mod+Shift+t exec thunderbird-beta
 
 # kill focused window
 bindsym $mod+Shift+q kill

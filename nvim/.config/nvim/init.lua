@@ -1,5 +1,4 @@
 -- bootstrap packer if not found
---
 local fn = vim.fn
 local install_path = fn.stdpath "data" .. "/site/pack/packer/start/packer.nvim"
 if fn.empty(fn.glob(install_path)) > 0 then
@@ -25,7 +24,11 @@ vim.api.nvim_exec(
 
 vim.cmd [[packadd packer.nvim]]
 -- configuration
-pcall(require, "impatient")
+local status, impatient = pcall(require, "impatient")
+if status then
+  impatient.enable_profile()
+end
+
 require "fds.settings"
 require "fds.plugins"
 require "fds.globals"

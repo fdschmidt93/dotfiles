@@ -8,6 +8,7 @@ local make_entry = require "telescope.make_entry"
 local os_sep = Path.path.sep
 local pickers = require "telescope.pickers"
 local scan = require "plenary.scandir"
+local sorters = require "telescope.sorters"
 
 local my_pickers = {}
 
@@ -46,6 +47,26 @@ my_pickers.live_grep_in_folder = function(opts)
       end)
       return true
     end,
+  }):find()
+end
+
+my_pickers.fzf = function(opts)
+  opts = opts or {}
+  pickers.new(opts, {
+    prompt_title = "Telefzf",
+    finder = finders.new_job(function(prompt)
+      return { "telefzf", prompt }
+      -- end, make_entry.gen_from_vimgrep(opts), 1000, vim.loop.cwd()),
+      -- end, make_entry.gen_from_string(), 1000, vim.loop.cwd()),
+    end, function(x)
+      return setmetatable({}, {
+        __index = function()
+          return x
+        end,
+      })
+    end, 1000, vim.loop.cwd()),
+    previewer = conf.file_previewer(opts),
+    sorter = sorters.highlighter_only(opts),
   }):find()
 end
 

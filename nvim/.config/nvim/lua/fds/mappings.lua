@@ -86,12 +86,6 @@ map { mode = "n", lhs = ts_leader .. "nf", rhs = my_finders.neorg_files, opts = 
 map { mode = "n", lhs = ts_leader .. "ng", rhs = my_finders.neorg_grep, opts = opts }
 map { mode = "n", lhs = ts_leader .. "pp", rhs = my_finders.papers, opts = opts }
 map { mode = "n", lhs = ts_leader .. "re", rhs = ts_builtin.resume, opts = opts }
-map {
-  mode = "n",
-  lhs = ts_leader .. "rr",
-  rhs = require("telescope").extensions.live_grep_raw.live_grep_raw,
-  opts = opts,
-}
 map { mode = "n", lhs = ts_leader .. "rb", rhs = ts_builtin.current_buffer_fuzzy_find, opts = opts }
 map { mode = "n", lhs = ts_leader .. "rg", rhs = ts_builtin.live_grep, opts = opts }
 map { mode = "n", lhs = ts_leader .. "ts", rhs = ts_builtin.treesitter, opts = opts }

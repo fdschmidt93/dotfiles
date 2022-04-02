@@ -4,7 +4,7 @@ if not status then
   return
 end
 
-vim.opt.laststatus = 2
+vim.opt.laststatus = 3
 
 local conditions = require "fds.plugins.galaxyline.conditions"
 local utils = require "fds.plugins.galaxyline.utils"

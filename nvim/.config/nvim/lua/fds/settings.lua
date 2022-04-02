@@ -1,7 +1,7 @@
 local opt = vim.opt
 
 -- for firenvim
-            -- \ 'content': 'text',
+-- \ 'content': 'text',
 vim.cmd [[set guifont=JetBrainsMono_Nerd_Font_Mono:h18]]
 vim.cmd [[
 let g:firenvim_config = { 
@@ -70,13 +70,24 @@ opt.splitright = true -- New vertical splits window right
 
 opt.scrolloff = 10 -- always 10 lines below/above cursor
 opt.pumheight = 10
+vim.o.completeopt = "menuone,noselect"
 
 opt.cursorline = true
 opt.termguicolors = true
 opt.conceallevel = 3
 
 -- python providers
-vim.g["python3_host_prog"] = string.format("/home/%s/miniconda3/bin/python", os.getenv "USER")
+-- vim.g["python3_host_prog"] = string.format("/home/%s/miniconda3/bin/python", os.getenv "USER")
 
 vim.cmd [[let &fcs='eob: ']] -- hide end of buffer line markers
-vim.cmd [[set fillchars+=vert:\│]]
+-- vim.cmd [[set fillchars+=vert:\│]]
+
+-- vim.opt.fillchars = {
+--   horiz     = '━',
+--   horizup   = '┻',
+--   horizdown = '┳',
+--   vert      = '┃',
+--   vertleft  = '┫',
+--   vertright = '┣',
+--   verthoriz = '╋',
+-- }

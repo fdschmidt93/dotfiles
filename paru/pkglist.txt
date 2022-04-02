@@ -12,8 +12,12 @@ bashmount
 bat
 binutils
 bison
+blueman
+bluez
+bluez-utils
 btrfs-progs
 canon-maxify-mb5100-complete
+catimg
 chromium
 cpupower-gui
 ctags
@@ -26,6 +30,7 @@ efibootmgr
 efm-langserver
 element-desktop
 emacs-pgtk-native-comp-git
+evince
 fakeroot
 fd
 feh
@@ -56,12 +61,13 @@ himalaya-git
 htop
 i3-gaps
 i3lock-fancy-rapid-git
-inferno-git
 keepassxc
 keychain
 kitty
+lazygit
 libtool
 libva-mesa-driver
+libvterm-0.1
 light
 linux
 linux-firmware
@@ -79,9 +85,9 @@ mesa-vdpau
 mongo-c-driver
 mons
 mpv-git
+nautilus
 neofetch
 neovim-git
-neovim-remote
 nerd-fonts-jetbrains-mono
 network-manager-applet
 networkmanager
@@ -112,7 +118,7 @@ polybar
 pyright
 python-black
 python-isort
-python-pynvim
+python-pip
 python-virtualenv
 qt5ct
 redshift
@@ -120,6 +126,7 @@ reflector
 ripgrep
 rofi
 rust-analyzer
+rustup
 screenkey
 sddm
 sed
@@ -133,6 +140,7 @@ sudo
 svp
 teams
 texinfo
+texlab
 texlive-bibtexextra
 texlive-core
 texlive-fontsextra
@@ -145,8 +153,7 @@ texlive-pictures
 texlive-pstricks
 texlive-publishers
 texlive-science
-thunar
-thunderbird
+thunderbird-beta-bin
 timeshift
 timeshift-autosnap
 tmux
@@ -154,6 +161,7 @@ tree
 ttf-dejavu
 ttf-fantasque-sans-mono
 udisks2
+ueberzug
 unrar
 unzip
 vim

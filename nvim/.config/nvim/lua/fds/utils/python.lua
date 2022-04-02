@@ -46,11 +46,36 @@ function M.jump_to_ipy_error()
   api.nvim_win_set_cursor(0, { buf_linenr, 0 })
 end
 
+-- WIP
+M.send_to_ipython = function(job_id, data)
+  local header = "cpaste -q\n"
+  api.nvim_chan_send(job_id, header)
+  vim.wait(50) -- cpaste otherwise doesn't properly work
+  api.nvim_chan_send(job_id, data .. "\n--\n")
+end
+
+-- WIP
+M.inspect_python_var = function()
+  local mode = vim.api.nvim_get_mode().mode
+  local variable = vim.fn.expand "<cword>"
+  M.send_to_ipython(316, string.format([[print(%s.shape if not hasattr(%s, "shape") else len(%s));]], variable))
+  local line_count = api.nvim_buf_line_count(api.nvim_win_get_buf(1702))
+  api.nvim_win_set_cursor(1702, { line_count, 0 })
+end
+
+function M.init_repl()
+  local repl = require "fds.utils.repl"
+  local termbuf = repl.shell(repl.conda_env_prefix "ipython", "below", false)
+  repl.toggle_termwin("below", termbuf)
+end
+
+api.nvim_create_autocmd("FileType", { pattern = "python", once = true, callback = M.init_repl })
+api.nvim_create_autocmd("FileType", { pattern = "python", callback = require("fds.utils.repl").set_slime_config })
+
 -- open unlisted toggleable terminal automatically upon entering python
-vim.cmd [[
-  autocmd FileType python ++once lua require'fds.utils.repl'.shell(require'fds.utils.repl'.conda_env_prefix('ipython'), 'below', false)
-  autocmd FileType python ++once lua require'fds.utils.repl'.toggle_termwin('below')
-  autocmd FileType python lua require'fds.utils.repl'.set_slime_config()
-]]
+-- vim.cmd [[
+--   autocmd FileType python ++once lua
+--   autocmd FileType python lua require'fds.utils.repl'.set_slime_config()
+-- ]]
 
 return M

@@ -8,10 +8,11 @@ set -x FZF_DEFAULT_COMMAND "$RG_PREFIX '$INITIAL_QUERY'" \
   fzf --bind "change:reload:$RG_PREFIX {q} || true" \
       --ansi --disabled --query "$INITIAL_QUERY" \
       --height=50% --layout=reverse
-set -gx FZF_CTRL_T_COMMAND "fd --hidden"
+set -gx FZF_CTRL_T_COMMAND "fd --hidden --strip-cwd-prefix"
 set -gx FZF_ALT_C_COMMAND "fd --hidden -t d . $HOME"
 set -gx MANPAGER 'nvim +Man!'
 set -gx MANWIDTH 999
+set -gx NVIM_LISTEN_ADDRESS "/tmp/nvimsocket"
 alias vi=nvim
 source /home/fdschmidt/miniconda3/etc/fish/conf.d/conda.fish
 eval (keychain --eval --agents ssh -Q --quiet id_rsa --nogui --noask)
