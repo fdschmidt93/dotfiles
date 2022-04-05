@@ -12,7 +12,7 @@ local local_or_git = function(path, fallback)
   if path:sub(1, 1) == "~" then
     path = HOME .. path:sub(2, -1)
   end
-  if vim.loop.fs_realpath(path) then
+  if vim.loop.fs_stat(path) then
     return path
   else
     return fallback
@@ -192,8 +192,6 @@ local modules = {
       end)
     end,
   },
-  -- mlua rust git experiment
-  local_or_git "~/repos/lua/grit/",
 
   -- floating window preview for quickfix list
   {
@@ -360,7 +358,7 @@ local modules = {
       {
         "L3MON4D3/LuaSnip",
         config = function()
-          require "fds.plugins.snip"
+          require "fds.plugins.luasnip"
         end,
       },
       "hrsh7th/cmp-buffer",
@@ -392,7 +390,25 @@ local modules = {
     end,
     requires = "plenary.nvim",
   },
-  { "stevearc/dressing.nvim" },
+  {
+    "stevearc/dressing.nvim",
+    config = function()
+      require("dressing").setup {
+        select = {
+          telescope = {
+            previewer = false,
+            borderchars = { " ", " ", " ", " ", " ", " ", " ", " " },
+            layout_strategy = "vertical",
+            layout_config = {
+              height = 0.6,
+            },
+            prompt_prefix = " ",
+            sorting_strategy = "ascending",
+          },
+        },
+      }
+    end,
+  },
 }
 
 require("packer").startup {

@@ -53,7 +53,7 @@ telescope.setup {
       end,
     },
     history = {
-      path = vim.env.HOME .. "/.local/share/nvim/databases/telescope_history.sqlite3",
+      path = vim.env.HOME .. "/.local/share/nvim/telescope_history.sqlite3",
       limit = 100,
     },
     dynamic_preview_title = true,

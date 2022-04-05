@@ -1,8 +1,8 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
-SETUVAR --export SSH_AGENT_PID:618
-SETUVAR --export SSH_AUTH_SOCK:/tmp/ssh\x2dXXXXXXgxWGhL/agent\x2e617
-SETUVAR __fish_initialized:3100
+SETUVAR --export SSH_AGENT_PID:709
+SETUVAR --export SSH_AUTH_SOCK:/tmp/ssh\x2dXXXXXXD3Vs5R/agent\x2e708
+SETUVAR __fish_initialized:3400
 SETUVAR _fish_abbr_bm:bashmount
 SETUVAR _fish_abbr_ca:conda\x20activate
 SETUVAR _fish_abbr_pbar:/home/fdschmidt/\x2econfig/polybar/launch\x2esh
@@ -34,3 +34,4 @@ SETUVAR fish_pager_color_completion:\x1d
 SETUVAR fish_pager_color_description:B3A06D\x1eyellow
 SETUVAR fish_pager_color_prefix:normal\x1e\x2d\x2dbold\x1e\x2d\x2dunderline
 SETUVAR fish_pager_color_progress:brwhite\x1e\x2d\x2dbackground\x3dcyan
+SETUVAR fish_pager_color_selected_background:\x2dr
