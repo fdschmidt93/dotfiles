@@ -140,27 +140,4 @@ set({ "i", "s" }, "<C-j>", function()
   end
 end, { silent = true })
 
-set("v", "<C-r><C-r>", function()
-  local selection = table.concat(require("fds.utils").visual_selection(), "\n")
-  local session = require("dap").session()
-  session:evaluate(selection, function(err)
-    if err then
-      require("dap.repl").append(err.message)
-      return
-    end
-  end)
-  require("dap.repl").append(selection)
-  -- scroll dap repl to bottom
-  local repl_buf = vim.tbl_filter(function(b)
-    if vim.bo[b].filetype == "dap-repl" then
-      return true
-    end
-    return false
-  end, vim.api.nvim_list_bufs())[1]
-  -- deferring since otherwise too early
-  vim.defer_fn(function()
-    vim.api.nvim_buf_call(repl_buf, function()
-      vim.cmd [[normal! G]]
-    end)
-  end, 50)
-end)
+set("n", "<leader><leader>K", [[<cmd>source ~/.config/nvim/lua/fds/mappings.lua<CR>|<cmd>echo "sourced mappings"<CR>]])

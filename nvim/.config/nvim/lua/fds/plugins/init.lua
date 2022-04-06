@@ -317,18 +317,7 @@ local modules = {
       "nvim-telescope/telescope-dap.nvim",
     },
     config = function()
-      local opts = { silent = true }
-      vim.keymap.set("n", "<F5>", require("dap").continue, opts)
-      vim.keymap.set("n", "<F10>", require("dap").step_over, opts)
-      vim.keymap.set("n", "<F11>", require("dap").step_into, opts)
-      vim.keymap.set("n", "<F12>", require("dap").step_out, opts)
-      vim.keymap.set("n", "<space>b", require("dap").toggle_breakpoint, opts)
-      vim.keymap.set("n", "<space>dr", require("dap").repl.open, opts)
-      vim.keymap.set("n", "<space>dl", require("dap").run_last, opts)
-      vim.fn.sign_define("DapBreakpoint", { text = "", texthl = "Breakpoint" })
-      vim.fn.sign_define("DapStopped", { text = "", texthl = "Stopped" })
-      require("telescope").load_extension "dap"
-      vim.api.nvim_create_autocmd("FileType", { pattern = "dap-repl", callback = require("dap.ext.autocompl").attach })
+      require "fds.plugins.dap"
     end,
   },
   {

@@ -23,7 +23,10 @@ vim.cmd [[set grepformat=%f:%l:%c:%m,%f:%l:%m]]
 
 -- disable flickering for lazyloading galaxyline/gitsigns/lsp
 opt.laststatus = 0
-opt.signcolumn = "yes"
+
+-- at least 1 signcolumn to reduce flicker, up to 4 for nvim-dap
+-- "yes" does not adequately expand in case of multiple signs for eg nvim-dap
+opt.signcolumn = "auto:1-4"
 
 -- no startup message
 opt.shortmess:append "I"
