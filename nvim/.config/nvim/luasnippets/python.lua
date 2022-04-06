@@ -5,7 +5,6 @@ local auto_new_line = function(snip)
       if type(ret) == "table" then
         table.insert(ret, "")
       else
-        print(true)
         ret = { ret, "" }
       end
       return ret

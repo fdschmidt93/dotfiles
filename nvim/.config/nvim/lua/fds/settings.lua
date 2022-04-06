@@ -80,7 +80,7 @@ opt.termguicolors = true
 opt.conceallevel = 3
 
 -- python providers
--- vim.g["python3_host_prog"] = string.format("/home/%s/miniconda3/bin/python", os.getenv "USER")
+vim.g["python3_host_prog"] = string.format("/home/%s/miniconda3/bin/python", os.getenv "USER")
 
 vim.cmd [[let &fcs='eob: ']] -- hide end of buffer line markers
 -- vim.cmd [[set fillchars+=vert:\│]]
