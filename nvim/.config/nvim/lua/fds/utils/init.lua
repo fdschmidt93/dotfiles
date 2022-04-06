@@ -277,8 +277,6 @@ function M.greedy_wincol_byte(wincol, pos, line_len, left)
 end
 
 function M.region(bufnr, pos1, pos2, regtype, inclusive)
-  local delimiter = " "
-  local trim = true
   local wincol_pos
   pos1, pos2, wincol_pos = M.adjust_pos_by_regtype(pos1, pos2, regtype)
   -- P(pos1)
@@ -339,12 +337,9 @@ function M.region(bufnr, pos1, pos2, regtype, inclusive)
         end
       end
     end
-    if trim then
-      line = vim.trim(line)
-    end
     table.insert(concat, line)
   end
-  return table.concat(concat, delimiter)
+  return concat
 end
 
 function M.visual_selection()
@@ -352,7 +347,8 @@ function M.visual_selection()
   -- vim.cmd [[set virtualedit=onemore]]
   local pos1, pos2 = M.convert_reg_to_pos("v", ".")
   vim.cmd [[normal :esc<CR>]]
-  P(M.region(0, pos1, pos2, mode, true))
+  local selection = M.region(0, pos1, pos2, mode, true)
+  return selection
   -- vim.cmd [[set virtualedit=""]]
 end
 

@@ -328,6 +328,7 @@ local modules = {
       vim.fn.sign_define("DapBreakpoint", { text = "", texthl = "Breakpoint" })
       vim.fn.sign_define("DapStopped", { text = "", texthl = "Stopped" })
       require("telescope").load_extension "dap"
+      vim.api.nvim_create_autocmd("FileType", { pattern = "dap-repl", callback = require("dap.ext.autocompl").attach })
     end,
   },
   {
