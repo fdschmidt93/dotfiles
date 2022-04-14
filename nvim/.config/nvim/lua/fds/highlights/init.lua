@@ -35,10 +35,6 @@ local highlight_groups = {
   { "CmpItemKind", { fg = palette.bright_yellow, bold = true } },
   { "CmpItemMenu", { fg = palette.light1, bg = palette.neutral_aqua } },
   { "CmpItemMenuDefault", { fg = palette.light1, bg = palette.neutral_aqua } },
-  { "CmpBorderedWindow_Normal", { fg = palette.light1, bg = palette.dark0_soft } },
-  { "CmpBorderedWindow_FloatBorder", { fg = palette.dark4, bg = palette.dark0_soft } },
-  { "CmpCompletionWindowBorder", { fg = palette.dark4, bg = palette.dark4 } },
-  { "CmpDocumentationWindowBorder", { fg = palette.dark4, bg = palette.dark4 } },
 
   -- git
   { "GitSignsAdd", { fg = palette.bright_green, bg = "NONE" } },

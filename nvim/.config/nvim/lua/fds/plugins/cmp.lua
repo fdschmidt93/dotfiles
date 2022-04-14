@@ -80,10 +80,12 @@ cmp.setup {
     completion = {
       border = border,
       scrollbar = "┃",
+      winhighlight = "Normal:Pmenu,FloatBorder:FloatBorder,CursorLine:Visual,Search:None",
     },
     documentation = {
       border = border,
       scrollbar = "┃",
+      winhighlight = "Normal:Pmenu,FloatBorder:FloatBorder,CursorLine:Visual,Search:None",
     },
   },
   sources = {
@@ -93,7 +95,8 @@ cmp.setup {
     { name = "buffer" },
     { name = "luasnip" },
     { name = "neorg" },
-    { name = "rg" },
+    -- not in home
+    vim.loop.cwd() ~= vim.env.HOME and { name = "rg" } or nil,
   },
   mapping = {
     ["<C-p>"] = cmp.mapping.select_prev_item(),

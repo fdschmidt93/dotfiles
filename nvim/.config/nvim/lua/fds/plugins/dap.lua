@@ -15,10 +15,7 @@ local send_to_repl = function(text)
   require("dap.repl").append(text)
   -- scroll dap repl to bottom
   local repl_buf = vim.tbl_filter(function(b)
-    if vim.bo[b].filetype == "dap-repl" then
-      return true
-    end
-    return false
+    return vim.bo[b].filetype == "dap-repl"
   end, vim.api.nvim_list_bufs())[1]
   -- deferring since otherwise too early
   vim.defer_fn(function()

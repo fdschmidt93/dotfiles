@@ -24,7 +24,10 @@ st = ts_state
 tu = action_utils
 ut = ts_utils
 tp = function()
-  return TelescopeGlobalState[B()].picker
+  local prompt_buf = vim.tbl_filter(function(b)
+    return vim.bo[b].filetype == "TelescopePrompt"
+  end, vim.api.nvim_list_bufs())[1]
+  return TelescopeGlobalState[prompt_buf].picker
 end
 
 telescope.setup {

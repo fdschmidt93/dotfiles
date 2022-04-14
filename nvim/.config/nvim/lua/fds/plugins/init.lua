@@ -341,7 +341,6 @@ local modules = {
 
   {
     "hrsh7th/nvim-cmp",
-    branch = "dev",
     after = "gruvbox",
     event = "InsertEnter",
     requires = {
