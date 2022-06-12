@@ -5,25 +5,17 @@ if not status then
   return
 end
 
-local actions = require "telescope.actions"
 local action_state = require "telescope.actions.state"
 local action_utils = require "telescope.actions.utils"
-local fb_actions = require("telescope").extensions.file_browser.actions
-local ffi = require "ffi"
-
--- local action_generate = require "telescope.actions.generate"
-local ts_utils = require "telescope.utils"
+local actions = require "telescope.actions"
+local fds_ts_actions = require "fds.plugins.telescope.actions"
 local ts_state = require "telescope.state"
-
-local Path = require "plenary.path"
+local ts_utils = require "telescope.utils"
 
 -- global short hands for telescope.nvim development
-ta = actions
-ts = action_state
-st = ts_state
-tu = action_utils
-ut = ts_utils
-tp = function()
+TA, TS, TU, ST, UT = actions, action_state, action_utils, ts_state, ts_utils
+FBA = require("telescope").extensions.file_browser.actions
+TP = function()
   local prompt_buf = vim.tbl_filter(function(b)
     return vim.bo[b].filetype == "TelescopePrompt"
   end, vim.api.nvim_list_bufs())[1]
@@ -44,17 +36,6 @@ telescope.setup {
     cache_picker = {
       num_pickers = 20,
     },
-    preview = {
-      filesize_limit = 5,
-      timeout = 150,
-      treesitter = true,
-      filesize_hook = function(filepath, bufnr, opts)
-        local path = Path:new(filepath)
-        local height = vim.api.nvim_win_get_height(opts.winid)
-        local lines = vim.split(path:head(height), "[\r]?\n")
-        vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
-      end,
-    },
     history = {
       path = vim.env.HOME .. "/.local/share/nvim/telescope_history.sqlite3",
       limit = 100,
@@ -65,26 +46,17 @@ telescope.setup {
         ["<A-p>"] = require("telescope.actions.layout").toggle_preview,
         ["<C-Down>"] = actions.cycle_history_next,
         ["<C-Up>"] = actions.cycle_history_prev,
+        ["<F1>"] = actions.which_key,
       },
       n = {
         ["gg"] = actions.move_to_top,
         ["G"] = actions.move_to_bottom,
+        ["<F1>"] = actions.which_key,
       },
     },
   },
   extensions = {
     file_browser = {
-      -- hijack_netrw = true,
-      -- mappings = {
-      --   ["i"] = {
-      --     ["F"] = function()
-      --       print "test"
-      --     end,
-      --   },
-      --   ["n"] = {
-      --     ["c"] = false,
-      --   },
-      -- },
       grouped = true,
       previewer = false,
     },
@@ -96,15 +68,21 @@ telescope.setup {
     },
   },
   pickers = {
+    live_grep = {
+      on_input_filter_cb = function(prompt)
+        -- AND operator for live_grep like how fzf handles spaces
+        return { prompt = prompt:gsub("%s", ".*") }
+      end,
+    },
     find_files = {
       find_command = { "fd", "--type", "f", "--strip-cwd-prefix" },
       mappings = {
         i = {
-          ["<C-a>"] = function(prompt_bufnr)
-            R("fds.plugins.telescope.actions").append_task(prompt_bufnr)
-          end,
+          ["<C-a>"] = require("fds.plugins.telescope.actions").append_task,
+          ["<C-s>"] = require("fds.plugins.telescope.actions").insert_relative_path,
         },
       },
+      -- trigger current_buffer_fuzzy_find in currently selected file with appending "@"
       on_input_filter_cb = function(prompt)
         if prompt:sub(#prompt) == "@" then
           vim.schedule(function()
@@ -120,26 +98,15 @@ telescope.setup {
     git_commits = {
       mappings = {
         i = {
-          ["<C-l>"] = function(prompt_bufnr)
-            R("telescope.actions").close(prompt_bufnr)
-            local value = action_state.get_selected_entry().value
-            vim.cmd("DiffviewOpen " .. value .. "~1.." .. value)
-          end,
-          ["<C-a>"] = function(prompt_bufnr)
-            R("telescope.actions").close(prompt_bufnr)
-            local value = action_state.get_selected_entry().value
-            vim.cmd("DiffviewOpen " .. value)
-          end,
-          ["<C-u>"] = function(prompt_bufnr)
-            R("telescope.actions").close(prompt_bufnr)
-            local value = action_state.get_selected_entry().value
-            local rev = ts_utils.get_os_command_output({ "git", "rev-parse", "upstream/master" }, vim.loop.cwd())[1]
-            vim.cmd("DiffviewOpen " .. rev .. " " .. value)
-          end,
+          ["<C-l>r"] = fds_ts_actions.diffview_relative,
+          ["<C-l>a"] = fds_ts_actions.diffview_absolute,
+          ["<C-l>u"] = fds_ts_actions.diffview_upstream_master,
+          ["<C-r>r"] = fds_ts_actions.revert_commit,
         },
       },
     },
     buffers = {
+      initial_mode = "normal",
       sort_mru = true,
       sort_lastused = true,
       mappings = {
@@ -179,54 +146,24 @@ telescope.setup {
     git_status = {
       mappings = {
         i = {
-          ["<C-r>"] = function(prompt_bufnr)
-            local selection = action_state.get_selected_entry()
-            actions.close(prompt_bufnr)
-            local _, ret, stderr = R("telescope.utils").get_os_command_output {
-              "git",
-              "checkout",
-              "HEAD",
-              "--",
-              selection.value,
-            }
-            if ret == 0 then
-              print("Reset to HEAD: " .. selection.value)
-            else
-              print(
-                string.format(
-                  'Error when applying: %s. Git returned: "%s"',
-                  selection.value,
-                  table.concat(stderr, "  ")
-                )
-              )
-            end
-          end,
+          ["<C-r>"] = fds_ts_actions.reset_to_head,
         },
       },
     },
     git_stash = {
       mappings = {
         i = {
-          ["<C-d>"] = function(prompt_bufnr)
-            local selection = R("telescope.actions").get_selected_entry()
-            R("telescope.actions").close(prompt_bufnr)
-            local _, ret, stderr = R("telescope.utils").get_os_command_output {
-              "git",
-              "stash",
-              "drop",
-              selection.value,
-            }
-            if ret == 0 then
-              print("dropped: " .. selection.value)
-            else
-              print(
-                string.format(
-                  'Error when applying: %s. Git returned: "%s"',
-                  selection.value,
-                  table.concat(stderr, "  ")
-                )
-              )
-            end
+          ["<C-d>"] = fds_ts_actions.delete_stash,
+        },
+      },
+    },
+    quickfixhistory = {
+      mappings = {
+        i = {
+          ["<C-s>"] = function(prompt_buf)
+            local entry = action_state.get_selected_entry()
+            actions.close(prompt_buf)
+            vim.cmd(string.format("%schistory | copen", entry.nr))
           end,
         },
       },
@@ -236,8 +173,7 @@ telescope.setup {
 
 telescope.load_extension "fzf"
 telescope.load_extension "file_browser"
--- telescope.load_extension "neorg"
 
-if ffi.load "libsqlite3" then
+if require("ffi").load "libsqlite3" then
   telescope.load_extension "smart_history"
 end

@@ -14,6 +14,29 @@ M.write_close_all = function()
   vim.cmd [[qa]]
 end
 
+M.hl_lines = function(expr, opts)
+  opts = opts or {}
+  opts.hl_group = vim.F.if_nil(opts.hl_group, "CursorLine")
+  local lines = api.nvim_buf_get_lines(0, 0, -1, false)
+  local ns = api.nvim_create_namespace "HLLINES"
+  for i, line in ipairs(lines) do
+    if string.match(line, expr) then
+      api.nvim_buf_set_extmark(
+        0,
+        ns,
+        i - 1,
+        0,
+        { end_row = i, hl_eol = true, hl_group = opts.hl_group, hl_mode = "combine" }
+      )
+    end
+  end
+end
+
+M.clear_hl_lines = function()
+  local ns = api.nvim_create_namespace "HLLINES"
+  api.nvim_buf_clear_namespace(0, ns, 0, -1)
+end
+
 M.list_filenames = function()
   local buffers = api.nvim_list_bufs()
   for _, buf in ipairs(buffers) do

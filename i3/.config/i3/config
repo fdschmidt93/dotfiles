@@ -84,6 +84,7 @@ floating_modifier $mod
 bindsym $mod+Return exec kitty
 bindsym $mod+t exec chromium 
 bindsym $mod+Shift+t exec thunderbird-beta
+bindsym $mod+Shift+z exec kitty fish -c zp
 
 # kill focused window
 bindsym $mod+Shift+q kill

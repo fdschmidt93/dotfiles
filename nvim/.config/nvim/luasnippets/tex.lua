@@ -1,4 +1,4 @@
-return _,
+return nil,
   {
     s({ name = "textbf", trig = ";fn" }, fmt([[\footnote{{{}}}]], { i(1) })),
     s({ name = "textbf", trig = ";bf" }, fmt([[\textbf{{{}}}]], { i(1) })),

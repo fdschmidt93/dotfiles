@@ -106,4 +106,13 @@ vim.fn.sign_define("DapStopped", { text = "", texthl = "Stopped" })
 require("telescope").load_extension "dap"
 
 -- autocompletion
-vim.api.nvim_create_autocmd("FileType", { pattern = "dap-repl", callback = require("dap.ext.autocompl").attach })
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "dap-repl",
+  callback = function()
+    require("dap.ext.autocompl").attach()
+  end,
+})
+
+local python_path = string.format("/home/%s/miniconda3/bin/python", vim.env.USER)
+require("dap-python").setup(python_path)
+require("dapui").setup()

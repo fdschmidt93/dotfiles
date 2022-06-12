@@ -14,7 +14,7 @@ local auto_new_line = function(snip)
   end
 end
 
-return _,
+return nil,
   {
     s(
       { desc = "import torch", name = "torch", trig = ".t" },

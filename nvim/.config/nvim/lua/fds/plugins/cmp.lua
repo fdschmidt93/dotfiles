@@ -55,16 +55,7 @@ cmp.setup {
   experimental = {
     ghost_text = true,
   },
-  -- Youtube: How to set up nice formatting for your sources.
   formatting = {
-    -- menu = {
-    --   buffer = "[buf]",
-    --   nvim_lsp = "[LSP]",
-    --   nvim_lua = "[api]",
-    --   path = "[path]",
-    --   luasnip = "[snip]",
-    --   rg = "[rg]",
-    -- },
     fields = { "kind", "abbr", "menu" },
     format = function(_, vim_item)
       vim_item.kind = string.format("%s", kind_icons[vim_item.kind])
@@ -95,8 +86,6 @@ cmp.setup {
     { name = "buffer" },
     { name = "luasnip" },
     { name = "neorg" },
-    -- not in home
-    vim.loop.cwd() ~= vim.env.HOME and { name = "rg" } or nil,
   },
   mapping = {
     ["<C-p>"] = cmp.mapping.select_prev_item(),

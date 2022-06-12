@@ -51,21 +51,29 @@ set({ "n", "i", "t" }, "<A-k>", [[<C-\><C-N><C-w>k]])
 set({ "n", "i", "t" }, "<A-l>", [[<C-\><C-N><C-w>l]])
 
 -- telescope
-local ts_builtin = require "telescope.builtin"
-local my_finders = require "fds.plugins.telescope.finders"
+local ts_builtin = setmetatable({}, {
+  __index = function(_, key)
+    return function(topts)
+      topts = topts or {}
+      local builtin = require "telescope.builtin"
+      builtin[key](topts)
+    end
+  end,
+})
+-- local my_finders = require "fds.plugins.telescope.finders"
 local ts_leader = "<space><space>"
 
 set("n", ts_leader .. "f", ts_builtin.find_files, opts)
 set("n", ts_leader .. "rs", ts_builtin.grep_string, opts)
--- vnoremap {
---   ts_leader .. "rg",
---   partial(ts_builtin.grep_string, { default_text = require("utils").visual_selection() }),
---   opts,
--- }
 
 set("n", ts_leader .. "bb", ts_builtin.buffers, opts)
 -- nnoremap { ts_leader .. "bf", require("telescope").extensions.file_browser.file_browser, opts }
-set("n", ts_leader .. "bf", "<cmd>lua require('telescope').extensions.file_browser.file_browser()<CR>", opts)
+set("n", ts_leader .. "bf", function()
+  require("telescope").extensions.file_browser.file_browser()
+end, opts)
+set("n", ts_leader .. "bF", function()
+  require("telescope").extensions.file_browser.file_browser { path = "%:p:h", select_buffer = true }
+end, opts)
 set("n", ts_leader .. "bi", ts_builtin.builtin, opts)
 set("n", ts_leader .. "gS", ts_builtin.git_stash, opts)
 set("n", ts_leader .. "gb", ts_builtin.git_branches, opts)
@@ -74,12 +82,12 @@ set("n", ts_leader .. "gs", ts_builtin.git_status, opts)
 set("n", ts_leader .. "help", ts_builtin.help_tags, opts)
 set("n", ts_leader .. "jl", ts_builtin.jumplist, opts)
 set("n", ts_leader .. "man", ts_builtin.man_pages, opts)
-set("n", ts_leader .. "nf", my_finders.neorg_files, opts)
-set("n", ts_leader .. "ng", my_finders.neorg_grep, opts)
-set("n", ts_leader .. "pp", my_finders.papers, opts)
 set("n", ts_leader .. "re", ts_builtin.resume, opts)
 set("n", ts_leader .. "rb", ts_builtin.current_buffer_fuzzy_find, opts)
 set("n", ts_leader .. "rg", ts_builtin.live_grep, opts)
+set("v", ts_leader .. "rg", function()
+  ts_builtin.live_grep { default_text = table.concat(require("fds.utils").visual_selection(), "") }
+end, opts)
 set("n", ts_leader .. "ts", ts_builtin.treesitter, opts)
 set("n", "gD", vim.lsp.buf.declaration, opts)
 set("n", "gi", vim.lsp.buf.implementation, opts)
@@ -109,7 +117,9 @@ end, opts)
 set("n", "<space>D", vim.lsp.buf.type_definition, opts)
 set("n", "<space>wa", vim.lsp.buf.add_workspace_folder, opts)
 set("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, opts)
-set("n", "<space>f", vim.lsp.buf.formatting, opts)
+set("n", "<space>f", function()
+  vim.lsp.buf.format { async = true }
+end, opts)
 
 -- norg
 set("n", "<leader>otc", [[<cmd>Neorg gtd capture<CR>]], opts)
@@ -118,7 +128,9 @@ set("n", "<leader>ote", [[<cmd>Neorg gtd edit<CR>]], opts)
 
 -- luasnip
 --
-set("i", "<C-u>", require "luasnip.extras.select_choice")
+set("i", "<C-u>", function()
+  require "luasnip.extras.select_choice"
+end)
 set("i", "<c-l>", function()
   if require("luasnip").choice_active() then
     require("luasnip").change_choice(1)
