@@ -9,9 +9,9 @@ set("n", "oo", [[m`o<Esc>``]], { desc = "Insert line below" })
 set("n", "OO", [[m`O<Esc>``]], { desc = "Insert line above" })
 
 -- enter lines above/below
-set("n", "Y", "y$") -- emulate other uppercase variants
-set("n", [[<Leader>y]], [['+y']]) -- Copy to global clipboard with leader prefix
-set("n", [[<Leader>p]], [['+p']]) -- Copp to global clipboard with leader prefix
+set("n", "Y", "y$", { desc = "Yank to end of line" }) -- emulate other uppercase variants
+set("n", [[<Leader>y]], [['+y']], { desc = "Yank to global register" }) -- Copy to global clipboard with leader prefix
+set("n", [[<Leader>p]], [['+p']], { desc = "Paste from global register" }) -- Copp to global clipboard with leader prefix
 -- emulate tmux
 set("n", "<A-p>", utils.tabedit)
 set("n", "<A-o>", utils.tabclose)
@@ -64,6 +64,8 @@ local ts_builtin = setmetatable({}, {
 local ts_leader = "<space><space>"
 
 set("n", ts_leader .. "f", ts_builtin.find_files, opts)
+set("i", "<C-f>", ts_builtin.find_files, opts)
+set("i", "<C-s>", ts_builtin.symbols)
 set("n", ts_leader .. "rs", ts_builtin.grep_string, opts)
 
 set("n", ts_leader .. "bb", ts_builtin.buffers, opts)
@@ -85,6 +87,9 @@ set("n", ts_leader .. "man", ts_builtin.man_pages, opts)
 set("n", ts_leader .. "re", ts_builtin.resume, opts)
 set("n", ts_leader .. "rb", ts_builtin.current_buffer_fuzzy_find, opts)
 set("n", ts_leader .. "rg", ts_builtin.live_grep, opts)
+set("n", ts_leader .. "rG", function()
+  ts_builtin.live_grep { default_text = vim.fn.expand "<cword>" }
+end, opts)
 set("v", ts_leader .. "rg", function()
   ts_builtin.live_grep { default_text = table.concat(require("fds.utils").visual_selection(), "") }
 end, opts)
@@ -110,7 +115,7 @@ set("n", "[d", vim.diagnostic.goto_prev, opts)
 set("n", "]d", vim.diagnostic.goto_next, opts)
 set("n", "<space>rn", vim.lsp.buf.rename, opts)
 set("n", "K", vim.lsp.buf.hover, opts)
-set("n", "gs", vim.lsp.buf.signature_help, opts)
+-- set("i", "gs", vim.lsp.buf.signature_help, opts)
 set("n", "<space>wl", function()
   P(vim.lsp.buf.list_workspace_folders())
 end, opts)

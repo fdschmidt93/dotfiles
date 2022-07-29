@@ -1,11 +1,11 @@
+local lsp = vim.lsp
 local null_ls = require "null-ls"
 local nvim_lsp = require "lspconfig"
-local lsp = vim.lsp
 
 local capabilities = lsp.protocol.make_client_capabilities()
 capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
 
-local on_attach = function()
+local on_attach = function(client)
   vim.cmd [[autocmd ColorScheme * :lua require('vim.lsp.diagnostic')._define_default_signs_and_highlights()]]
 end
 
@@ -18,7 +18,7 @@ local luadev = require("lua-dev").setup {
   },
 }
 
-nvim_lsp.texlab.setup{}
+nvim_lsp.texlab.setup {}
 nvim_lsp.sumneko_lua.setup(luadev)
 
 nvim_lsp.pyright.setup {
@@ -41,7 +41,6 @@ null_ls.setup {
   on_attach = on_attach,
   capabilities = capabilities,
 }
-
 
 -- setup handlers accordingly
 pcall(require, "fds.plugins.lspconfig.handlers")

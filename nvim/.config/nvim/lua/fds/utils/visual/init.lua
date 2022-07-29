@@ -16,7 +16,7 @@ function M.convert_reg_to_pos(reg1, reg2)
   local pos1 = vim.fn.getpos(reg1)
   local pos2 = vim.fn.getpos(reg2)
   -- (0, 1)-indexed
-  return {pos1[2] - 1, pos1[3] + pos1[4]}, { pos2[2] - 1, pos2[3] + pos2[4]}
+  return { pos1[2] - 1, pos1[3] + pos1[4] }, { pos2[2] - 1, pos2[3] + pos2[4] }
 end
 
 function M.get_wincol(win, pos)
@@ -60,7 +60,7 @@ function M.convert_wincol_to_byteindex(win, row, wincol, last)
   end
   -- (1, 0) indexed
   local max_wincol = M.get_max_wincol(win, row + 1)
-  P {"row=", row, "wincol=",wincol, "max_wincol=", max_wincol}
+  P { "row=", row, "wincol=", wincol, "max_wincol=", max_wincol }
   -- P { "win=", win, "row=", row, "max_wincol=", max_wincol}
   -- P { "row=", row, "len=", len, "line=", line, "max_wincol=", max_wincol }
   local byte_wincol
@@ -72,7 +72,7 @@ function M.convert_wincol_to_byteindex(win, row, wincol, last)
     for byte = len, 1, -1 do
       -- convert to (1, 0) indexing
       local byte_wincol = M.get_wincol(win, { row + 1, byte - 1 })
-      
+
       if byte_wincol <= wincol then
         -- return byte 1-indexed
         return byte, byte_wincol
@@ -112,15 +112,15 @@ function visual_selection()
   local mode = vim.api.nvim_get_mode().mode
   -- (0, 1)-indexed
   local pos1, pos2 = M.convert_reg_to_pos("v", ".")
-  
+
   -- convert to (1, 0)-indexing
-  local wincol1 = M.get_wincol(0, {pos1[1] + 1, pos1[2] - 1})
-  local wincol2 = M.get_wincol(0, {pos2[1] + 1, pos2[2] - 1})
+  local wincol1 = M.get_wincol(0, { pos1[1] + 1, pos1[2] - 1 })
+  local wincol2 = M.get_wincol(0, { pos2[1] + 1, pos2[2] - 1 })
   -- P { "start_wincol1=", wincol1, "start_wincol2=", wincol2, pos1, pos2 }
 
   local row_flip = pos1[1] > pos2[1]
   local col_flip = wincol1 > wincol2
-  
+
   -- the starting points
   --[[  ┌───────┐
         │s      │  s: resolve to left     row_flip: false
@@ -145,7 +145,7 @@ function visual_selection()
   local _, wincol1 = M.convert_wincol_to_byteindex(0, pos1[1], wincol1, col_flip)
   local _, wincol2 = M.convert_wincol_to_byteindex(0, pos2[1], wincol2, col_flip)
   local min_wincol = M.get_min_wincol(0)
-  P { "Resolved wincol1=", wincol1, "wincol2=", wincol2}
+  P { "Resolved wincol1=", wincol1, "wincol2=", wincol2 }
 
   if row_flip then
     pos1[1], pos2[1] = pos2[1], pos1[1]
@@ -172,16 +172,26 @@ function visual_selection()
   local lines = api.nvim_buf_get_lines(0, start_row, end_row + 1, true)
   local i = 1
   local start_index, end_index
-  P { "start_row=", start_row, "end_row=", end_row, "start_wincol=", start_wincol, "end_wincol=", end_wincol, "min_wincol=", min_wincol}
+  P {
+    "start_row=",
+    start_row,
+    "end_row=",
+    end_row,
+    "start_wincol=",
+    start_wincol,
+    "end_wincol=",
+    end_wincol,
+    "min_wincol=",
+    min_wincol,
+  }
   for r = start_row, end_row do
-
     local begin_wincol = (i == 1 or mode == "") and start_wincol or min_wincol
     local ending_wincol = (r == end_row or mode == "") and end_wincol or M.get_max_wincol(0, r + 1)
     -- start_index = M.wincol_byteindex(0, r - 1, begin_wincol, false, true)
     -- end_index = M.wincol_byteindex(0, r - 1, ending_wincol, false, false)
     start_index = M.convert_wincol_to_byteindex(0, r, begin_wincol, false)
     end_index = M.convert_wincol_to_byteindex(0, r, ending_wincol, true)
-    P({r, start_wincol, ending_wincol, begin_wincol, ending_wincol, start_index, end_index})
+    P { r, start_wincol, ending_wincol, begin_wincol, ending_wincol, start_index, end_index }
     P { "start_index=", start_index, "end_index=", end_index }
     table.insert(out, lines[i]:sub(start_index, end_index))
     i = i + 1

@@ -1,9 +1,10 @@
 acpi
 acpid
 act-bin
-adwaita-qt
+adwaita-qt5
 amd-ucode
 arandr
+astroid
 autoconf
 automake
 avahi
@@ -16,6 +17,7 @@ blueman
 bluez
 bluez-utils
 btrfs-progs
+caffeine-ng
 canon-maxify-mb5100-complete
 catimg
 chromium
@@ -27,7 +29,6 @@ discord
 docker
 dunst
 efibootmgr
-efm-langserver
 element-desktop
 emacs-pgtk-native-comp-git
 evince
@@ -42,9 +43,11 @@ flex
 fzf
 gawk
 gcc
+gdu
 gettext
 gimp
 git
+git-delta-git
 github-cli
 gitui
 gnome-screenshot
@@ -57,13 +60,16 @@ gvfs
 gvfs-smb
 gzip
 helix-bin
-himalaya-git
 htop
 i3-gaps
 i3lock-fancy-rapid-git
+inkscape
+iw
+jedi-language-server
 keepassxc
 keychain
 kitty
+kodi-addon-inputstream-adaptive
 lazygit
 libtool
 libva-mesa-driver
@@ -97,6 +103,7 @@ nodejs
 nodejs-neovim
 noto-fonts
 noto-fonts-emoji
+nss-mdns
 ntfs-3g
 ocl-icd
 onlyoffice-bin
@@ -115,12 +122,14 @@ pipewire
 pipewire-pulse
 pkgconf
 polybar
+pycharm-community-edition
 pyright
 python-black
 python-isort
 python-pip
 python-virtualenv
 qt5ct
+radeontop
 redshift
 reflector
 ripgrep
@@ -135,7 +144,7 @@ simplescreenrecorder
 slack-desktop
 sshfs
 stow
-stylua-bin
+stylua
 sudo
 svp
 teams
@@ -159,7 +168,9 @@ timeshift-autosnap
 tmux
 tree
 ttf-dejavu
+ttf-devicons
 ttf-fantasque-sans-mono
+ttf-inconsolata
 udisks2
 ueberzug
 unrar
@@ -168,6 +179,7 @@ vim
 visidata
 visual-studio-code-bin
 vulkan-radeon
+wezterm
 wget
 which
 xclip

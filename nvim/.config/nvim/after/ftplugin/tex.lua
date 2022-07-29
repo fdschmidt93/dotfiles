@@ -1,4 +1,9 @@
-local cmp = require "cmp"
+local has_cmp, cmp = pcall(require, "cmp")
+if not has_cmp then
+  require("packer").loader "nvim-cmp"
+  cmp = require "cmp"
+end
+
 cmp.setup.buffer {
   sources = {
     { name = "omni" },
@@ -8,8 +13,10 @@ cmp.setup.buffer {
   },
 }
 
+-- nicer vimtex live-preview
 vim.api.nvim_create_autocmd("InsertLeave", {
   callback = function()
-    vim.cmd [[:w! ]]
+    vim.cmd [[write! ]]
   end,
+  buffer = vim.api.nvim_get_current_buf(),
 })

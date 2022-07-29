@@ -9,10 +9,10 @@ require("nvim-treesitter.configs").setup {
     enable = true,
     disable = {},
     keymaps = {
-      init_selection = "<enter>", -- maps in normal mode to init the node/scope selection
-      node_incremental = "<enter>", -- increment to the upper named parent
-      scope_incremental = "Ts", -- increment to the upper scope
-      node_decremental = "grm",
+      init_selection = "<S-Right>", -- maps in normal mode to init the node/scope selection
+      node_incremental = "<S-Right>", -- increment to the upper named parent
+      scope_incremental = "<S-Up>", -- increment to the upper scope
+      node_decremental = "<S-Left>",
     },
   },
   node_movement = {
@@ -39,8 +39,8 @@ require("nvim-treesitter.configs").setup {
       keymaps = {
         ["af"] = "@function.outer",
         ["if"] = "@function.inner",
-        ["aC"] = "@class.outer",
-        ["iC"] = "@class.inner",
+        ["ao"] = "@class.outer",
+        ["io"] = "@class.inner",
         ["ac"] = "@conditional.outer",
         ["ic"] = "@conditional.inner",
         ["ae"] = "@block.outer",
@@ -68,3 +68,7 @@ require("nvim-treesitter.configs").setup {
   },
   ensure_installed = "all",
 }
+
+-- ensure python vi[f,o] selection is line-wise for repl
+vim.keymap.set("o", "iF", ":normal Vif<CR>")
+vim.keymap.set("o", "iO", ":normal Vio<CR>")

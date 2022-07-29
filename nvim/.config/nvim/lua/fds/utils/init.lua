@@ -10,8 +10,8 @@ local d = "hallääääääääää"
 
 -- neither wqa nor wqa! work nicely with terminal buffer opened
 M.write_close_all = function()
-  vim.cmd [[wa]]
-  vim.cmd [[qa]]
+  vim.cmd [[wa!]]
+  vim.cmd [[qa!]]
 end
 
 M.hl_lines = function(expr, opts)
@@ -26,7 +26,7 @@ M.hl_lines = function(expr, opts)
         ns,
         i - 1,
         0,
-        { end_row = i, hl_eol = true, hl_group = opts.hl_group, hl_mode = "combine" }
+        { end_row = i, hl_eol = true, hl_group = opts.hl_group, hl_mode = "replace" }
       )
     end
   end
@@ -35,13 +35,6 @@ end
 M.clear_hl_lines = function()
   local ns = api.nvim_create_namespace "HLLINES"
   api.nvim_buf_clear_namespace(0, ns, 0, -1)
-end
-
-M.list_filenames = function()
-  local buffers = api.nvim_list_bufs()
-  for _, buf in ipairs(buffers) do
-    P(api.nvim_buf_get_name(buf))
-  end
 end
 
 M.toggle_qf = function()

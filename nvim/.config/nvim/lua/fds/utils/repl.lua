@@ -32,34 +32,8 @@ function M.shell(cmd, side, listed)
   vim.api.nvim_buf_delete(buf, { force = true })
   vim.cmd [[set winhighlight=Normal:TelescopeNormal]]
   vim.fn.termopen(cmd)
-  M.set_slime_config(vim.b.terminal_job_id)
   vim.api.nvim_set_current_win(cur_win)
   return termbuf
-end
-
--- Apply slime config to all buffers
--- Assumes a single, unique repl instance
--- @param term_id number
-M.set_slime_config = function(term_id)
-  -- resolve with best effort
-  if term_id == nil then
-    -- find unique term buf
-    local buf = vim.tbl_filter(buf_is_term, vim.api.nvim_list_bufs())
-    if vim.tbl_isempty(buf) then
-      return
-    end
-    if #buf > 1 then
-      print "Too many terminals open"
-      return
-    end
-    buf = buf[1]
-    term_id = vim.api.nvim_buf_get_var(buf, "terminal_job_id")
-  end
-  vim.tbl_map(function(bufnr)
-    if api.nvim_buf_is_loaded(bufnr) then
-      api.nvim_buf_set_var(bufnr, "slime_config", { jobid = term_id })
-    end
-  end, vim.api.nvim_list_bufs())
 end
 
 M.conda_env_prefix = function(cmd)
@@ -98,7 +72,6 @@ M.toggle_termwin = function(side, buf)
     end
     vim.api.nvim_set_current_buf(buf)
     win = vim.api.nvim_get_current_win()
-    M.set_slime_config(vim.b.terminal_job_id)
   else
     vim.api.nvim_win_close(win, true)
     win = nil

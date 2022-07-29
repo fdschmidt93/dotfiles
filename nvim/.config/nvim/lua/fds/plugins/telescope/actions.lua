@@ -6,48 +6,6 @@ local ts_utils = require "telescope.utils"
 
 local M = {}
 
--- insert mode in picker
-M.insert_relative_path = function(prompt_bufnr)
-  local symbol = fds_ts_utils.get_relative_path(prompt_bufnr)
-  local mode = vim.api.nvim_get_mode().mode
-  -- adapted actions.insert_symbol_i and actions.insert_symbol
-  -- from $PLUGIN_FOLDER/lua/telescope/actions/init.lua
-  if mode == "i" then
-    actions.close(prompt_bufnr)
-    local cursor = vim.api.nvim_win_get_cursor(0)
-    vim.api.nvim_buf_set_text(0, cursor[1] - 1, cursor[2], cursor[1] - 1, cursor[2], { symbol })
-    vim.schedule(function()
-      vim.api.nvim_win_set_cursor(0, { cursor[1], cursor[2] + #symbol })
-    end)
-  else
-    actions.close(prompt_bufnr)
-    vim.api.nvim_put({ symbol }, "", true, true)
-  end
-end
-
--- neorg
-M.append_task = function(prompt_bufnr)
-  local current_picker = action_state.get_current_picker(prompt_bufnr)
-  local original_win_id = current_picker.original_win_id
-  local original_buf_nr = vim.api.nvim_win_get_buf(original_win_id)
-
-  local node_range = fds_ts_utils.get_node_recursively { win_id = original_win_id, type = "carryover_tag_set" }
-
-  local task_lines = vim.api.nvim_buf_get_lines(
-    original_buf_nr,
-    node_range["start"].line,
-    node_range["end"].line + 1,
-    false
-  )
-  local filename = vim.loop.cwd() .. "/" .. action_state.get_selected_entry().value:sub(3, -1)
-  local buf_nr = fds_ts_utils.load_file(filename)
-  fds_ts_utils.append_lines_to_buf(task_lines, buf_nr)
-
-  vim.api.nvim_buf_call(original_buf_nr, function()
-    vim.cmd(string.format("%s,%sdelete", node_range["start"].line + 1, node_range["end"].line + 1))
-  end)
-end
-
 M.diffview_relative = function(prompt_bufnr)
   actions.close(prompt_bufnr)
   local value = action_state.get_selected_entry().value
@@ -122,6 +80,12 @@ M.delete_stash = function(prompt_bufnr)
       vim.log.levels.WARN
     )
   end
+end
+
+M.open_entry_in_qf = function(prompt_buf)
+  local entry = action_state.get_selected_entry()
+  actions.close(prompt_buf)
+  vim.cmd(string.format("%schistory | copen", entry.nr))
 end
 
 return action_mt.transform_mod(M)

@@ -82,7 +82,7 @@ floating_modifier $mod
 # start applications
 # bindsym $mod+Return exec alacritty
 bindsym $mod+Return exec kitty
-bindsym $mod+t exec chromium 
+bindsym $mod+t exec firefox 
 bindsym $mod+Shift+t exec thunderbird-beta
 bindsym $mod+Shift+z exec kitty fish -c zp
 

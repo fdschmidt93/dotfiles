@@ -1,12 +1,12 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
-SETUVAR --export SSH_AGENT_PID:707
-SETUVAR --export SSH_AUTH_SOCK:/tmp/ssh\x2dXXXXXXe2UKG2/agent\x2e706
+SETUVAR --export SSH_AGENT_PID:709
+SETUVAR --export SSH_AUTH_SOCK:/tmp/ssh\x2dXXXXXXpjJ9ns/agent\x2e708
 SETUVAR __fish_initialized:3400
 SETUVAR _fish_abbr_bm:bashmount
 SETUVAR _fish_abbr_ca:conda\x20activate
 SETUVAR _fish_abbr_pbar:/home/fdschmidt/\x2econfig/polybar/launch\x2esh
-SETUVAR _fish_abbr_ssh:kitty\x20\x2bkitten\x20ssh
+SETUVAR _fish_abbr_tnd:tmux\x20new\x20\x2ds\x20trident\x2dxtreme
 SETUVAR _fish_abbr_z:zathura
 SETUVAR fish_color_autosuggestion:555\x1ebrblack
 SETUVAR fish_color_cancel:\x2dr

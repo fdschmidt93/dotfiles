@@ -8,13 +8,15 @@ end
 local action_state = require "telescope.actions.state"
 local action_utils = require "telescope.actions.utils"
 local actions = require "telescope.actions"
-local fds_ts_actions = require "fds.plugins.telescope.actions"
+local fds_tele_actions = require "fds.plugins.telescope.actions"
+local fds_tele_utils = require "fds.plugins.telescope.utils"
 local ts_state = require "telescope.state"
 local ts_utils = require "telescope.utils"
 
 -- global short hands for telescope.nvim development
 TA, TS, TU, ST, UT = actions, action_state, action_utils, ts_state, ts_utils
 FBA = require("telescope").extensions.file_browser.actions
+-- find and get prompt buffer
 TP = function()
   local prompt_buf = vim.tbl_filter(function(b)
     return vim.bo[b].filetype == "TelescopePrompt"
@@ -59,20 +61,41 @@ telescope.setup {
     file_browser = {
       grouped = true,
       previewer = false,
+      hijack_netrw = true,
     },
     fzf = {
-      fuzzy = true, -- false will only do exact matching
+      fuzzy = false, -- false will only do exact matching
       override_generic_sorter = true, -- override the generic sorter
       override_file_sorter = true, -- override the file sorter
       case_mode = "smart_case", -- or "ignore_case" or "respect_case"
     },
   },
   pickers = {
+    grep_string = {
+      -- only sort top 50 entries
+      temp__scrolling_limit = 50,
+    },
     live_grep = {
       on_input_filter_cb = function(prompt)
         -- AND operator for live_grep like how fzf handles spaces
         return { prompt = prompt:gsub("%s", ".*") }
       end,
+      mappings = {
+        i = {
+          -- toggle input filter cb
+          ["<C-a>"] = function(prompt_bufnr)
+            local current_picker = action_state.get_current_picker(prompt_bufnr)
+            if current_picker._on_input_filter_cb_cached then
+              current_picker._on_input_filter_cb = current_picker._on_input_filter_cb_cached
+              current_picker._on_input_filter_cb_cached = nil
+            else
+              current_picker._on_input_filter_cb_cached = current_picker._on_input_filter_cb
+              current_picker._on_input_filter_cb = function() end
+            end
+            current_picker:refresh()
+          end,
+        },
+      },
     },
     find_files = {
       find_command = { "fd", "--type", "f", "--strip-cwd-prefix" },
@@ -98,10 +121,10 @@ telescope.setup {
     git_commits = {
       mappings = {
         i = {
-          ["<C-l>r"] = fds_ts_actions.diffview_relative,
-          ["<C-l>a"] = fds_ts_actions.diffview_absolute,
-          ["<C-l>u"] = fds_ts_actions.diffview_upstream_master,
-          ["<C-r>r"] = fds_ts_actions.revert_commit,
+          ["<C-l>r"] = fds_tele_actions.diffview_relative,
+          ["<C-l>a"] = fds_tele_actions.diffview_absolute,
+          ["<C-l>u"] = fds_tele_actions.diffview_upstream_master,
+          ["<C-r>r"] = fds_tele_actions.revert_commit,
         },
       },
     },
@@ -143,28 +166,27 @@ telescope.setup {
         },
       },
     },
+    current_buffer_fuzzy_find = {
+      tiebreak = fds_tele_utils.line_tiebreak,
+    },
     git_status = {
       mappings = {
         i = {
-          ["<C-r>"] = fds_ts_actions.reset_to_head,
+          ["<C-r>"] = fds_tele_actions.reset_to_head,
         },
       },
     },
     git_stash = {
       mappings = {
         i = {
-          ["<C-d>"] = fds_ts_actions.delete_stash,
+          ["<C-d>"] = fds_tele_actions.delete_stash,
         },
       },
     },
     quickfixhistory = {
       mappings = {
         i = {
-          ["<C-s>"] = function(prompt_buf)
-            local entry = action_state.get_selected_entry()
-            actions.close(prompt_buf)
-            vim.cmd(string.format("%schistory | copen", entry.nr))
-          end,
+          ["<C-s>"] = fds_tele_actions.open_entry_in_qf,
         },
       },
     },

@@ -46,8 +46,27 @@ function M.jump_to_ipy_error()
   api.nvim_win_set_cursor(0, { buf_linenr, 0 })
 end
 
+local function get_term_buf()
+  local buf = vim.tbl_filter(function(buf)
+    return vim.bo[buf].buftype == "terminal"
+  end, vim.api.nvim_list_bufs())
+  if #buf > 1 then
+    print "Too many terminals open"
+    return
+  end
+  return buf[1]
+end
+
 -- WIP
 M.send_to_ipython = function(job_id, data)
+  if job_id == nil then
+    -- find unique term buf
+    local buf = get_term_buf()
+    if not buf then
+      return
+    end
+    job_id = vim.b[buf].terminal_job_id
+  end
   local header = "cpaste -q\n"
   api.nvim_chan_send(job_id, header)
   vim.wait(50) -- cpaste otherwise doesn't properly work
@@ -56,11 +75,18 @@ end
 
 -- WIP
 M.inspect_python_var = function()
-  local mode = vim.api.nvim_get_mode().mode
   local variable = vim.fn.expand "<cword>"
-  M.send_to_ipython(316, string.format([[print(%s.shape if not hasattr(%s, "shape") else len(%s));]], variable))
-  local line_count = api.nvim_buf_line_count(api.nvim_win_get_buf(1702))
-  api.nvim_win_set_cursor(1702, { line_count, 0 })
+  print(variable)
+  M.send_to_ipython(
+    nil,
+    string.format([[print(%s.shape if hasattr(%s, "shape") else len(%s));]], variable, variable, variable)
+  )
+  local buf = get_term_buf()
+  local line_count = api.nvim_buf_line_count(buf)
+  local winid = vim.tbl_filter(function(win)
+    return api.nvim_win_get_buf(win) == buf
+  end, api.nvim_list_wins())[1]
+  api.nvim_win_set_cursor(winid, { line_count, 0 })
 end
 
 function M.init_repl()
@@ -70,7 +96,6 @@ function M.init_repl()
 end
 
 api.nvim_create_autocmd("FileType", { pattern = "python", once = true, callback = M.init_repl })
-api.nvim_create_autocmd("FileType", { pattern = "python", callback = require("fds.utils.repl").set_slime_config })
 
 -- open unlisted toggleable terminal automatically upon entering python
 -- vim.cmd [[

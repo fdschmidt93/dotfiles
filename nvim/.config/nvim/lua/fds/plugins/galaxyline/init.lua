@@ -9,7 +9,7 @@ vim.opt.laststatus = 3
 local conditions = require "fds.plugins.galaxyline.conditions"
 local utils = require "fds.plugins.galaxyline.utils"
 
-local fileinfo = require "galaxyline.providers.fileinfo"
+local fileinfo = require "galaxyline.provider_fileinfo"
 local gls = gl.section
 local colors = require "fds.highlights.gruvbox"
 local api = vim.api
