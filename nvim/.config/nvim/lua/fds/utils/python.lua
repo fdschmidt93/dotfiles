@@ -46,49 +46,6 @@ function M.jump_to_ipy_error()
   api.nvim_win_set_cursor(0, { buf_linenr, 0 })
 end
 
-local function get_term_buf()
-  local buf = vim.tbl_filter(function(buf)
-    return vim.bo[buf].buftype == "terminal"
-  end, vim.api.nvim_list_bufs())
-  if #buf > 1 then
-    print "Too many terminals open"
-    return
-  end
-  return buf[1]
-end
-
--- WIP
-M.send_to_ipython = function(job_id, data)
-  if job_id == nil then
-    -- find unique term buf
-    local buf = get_term_buf()
-    if not buf then
-      return
-    end
-    job_id = vim.b[buf].terminal_job_id
-  end
-  local header = "cpaste -q\n"
-  api.nvim_chan_send(job_id, header)
-  vim.wait(50) -- cpaste otherwise doesn't properly work
-  api.nvim_chan_send(job_id, data .. "\n--\n")
-end
-
--- WIP
-M.inspect_python_var = function()
-  local variable = vim.fn.expand "<cword>"
-  print(variable)
-  M.send_to_ipython(
-    nil,
-    string.format([[print(%s.shape if hasattr(%s, "shape") else len(%s));]], variable, variable, variable)
-  )
-  local buf = get_term_buf()
-  local line_count = api.nvim_buf_line_count(buf)
-  local winid = vim.tbl_filter(function(win)
-    return api.nvim_win_get_buf(win) == buf
-  end, api.nvim_list_wins())[1]
-  api.nvim_win_set_cursor(winid, { line_count, 0 })
-end
-
 function M.init_repl()
   local repl = require "fds.utils.repl"
   local termbuf = repl.shell(repl.conda_env_prefix "ipython", "below", false)
@@ -97,10 +54,19 @@ end
 
 api.nvim_create_autocmd("FileType", { pattern = "python", once = true, callback = M.init_repl })
 
--- open unlisted toggleable terminal automatically upon entering python
--- vim.cmd [[
---   autocmd FileType python ++once lua
---   autocmd FileType python lua require'fds.utils.repl'.set_slime_config()
--- ]]
+api.nvim_create_autocmd("FileType", {
+  pattern = "python",
+  once = true,
+  callback = function(args)
+    vim.keymap.set({ "n", "x" }, "<C-s>", function()
+      require("resin").send {
+        on_before_send = function(_, data)
+          assert(#data == 1, "Cannot inspect shape for multiline statement")
+          data[1] = string.format([[print(%s.shape if hasattr(%s, "shape") else len(%s));]], data[1], data[1], data[1])
+        end,
+      }
+    end, { buffer = args.buf })
+  end,
+})
 
 return M

@@ -5,7 +5,7 @@ require("resin").setup {
   },
   filetype = {
     python = {
-      setup_receiver = function(sender)
+      setup_receiver = function()
         local bufnr = vim.tbl_filter(function(b)
           return vim.bo[b].buftype == "terminal"
         end, vim.api.nvim_list_bufs())
@@ -17,10 +17,12 @@ require("resin").setup {
           bufnr = bufnr[1]
           return require "resin.receiver.neovim_terminal" {
             bufnr = bufnr,
-            filetype = sender.filetype,
           }
         end
       end,
     },
   },
 }
+
+-- vim.keymap.set("<C-c>S", function()
+-- end)

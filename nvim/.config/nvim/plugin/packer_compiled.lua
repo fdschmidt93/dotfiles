@@ -11,7 +11,7 @@ local no_errors, error_msg = pcall(function()
 
   local time
   local profile_info
-  local should_profile = true
+  local should_profile = false
   if should_profile then
     local hrtime = vim.loop.hrtime
     profile_info = {}
@@ -492,8 +492,8 @@ time([[Defining lazy-load commands]], false)
 
 -- Keymap lazy-loads
 time([[Defining lazy-load keymaps]], true)
-vim.cmd [[noremap <silent> <A-n> <cmd>lua require("packer.load")({'neogit'}, { keys = "<lt>A-n>", prefix = "" }, _G.packer_plugins)<cr>]]
-vim.cmd [[noremap <silent> <A-N> <cmd>lua require("packer.load")({'vim-fugitive'}, { keys = "<lt>A-N>", prefix = "" }, _G.packer_plugins)<cr>]]
+vim.api.nvim_set_keymap("", "<A-N>", "<cmd>lua require('packer.load')({'vim-fugitive'}, { keys = [=[<lt>A-N>]=], prefix = '' }, _G.packer_plugins)<cr>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("", "<A-n>", "<cmd>lua require('packer.load')({'neogit'}, { keys = [=[<lt>A-n>]=], prefix = '' }, _G.packer_plugins)<cr>", { noremap = true, silent = true })
 time([[Defining lazy-load keymaps]], false)
 
 vim.cmd [[augroup packer_load_aucmds]]

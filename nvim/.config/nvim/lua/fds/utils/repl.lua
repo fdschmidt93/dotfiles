@@ -117,7 +117,6 @@ M.restart_term = function(cmd, side, listed)
 
     -- apply config
     local term_id = api.nvim_buf_get_var(new_termbuf, "terminal_job_id")
-    M.set_slime_config(term_id)
     api.nvim_set_current_win(cur_win)
   else
     M.shell(cmd, side, listed)

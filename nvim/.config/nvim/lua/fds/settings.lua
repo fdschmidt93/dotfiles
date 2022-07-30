@@ -22,7 +22,7 @@ vim.cmd [[set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case]]
 vim.cmd [[set grepformat=%f:%l:%c:%m,%f:%l:%m]]
 
 -- disable flickering for lazyloading galaxyline/gitsigns/lsp
--- opt.laststatus = 0
+opt.laststatus = 0
 
 -- at least 1 signcolumn to reduce flicker, up to 4 for nvim-dap
 -- "yes" does not adequately expand in case of multiple signs for eg nvim-dap
