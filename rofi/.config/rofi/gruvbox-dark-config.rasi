@@ -45,10 +45,6 @@ message {
     background-color: @alternative-background;
 }
 
-textbox {
-    background-color: @entry-background;
-}
-
 listview {
     fixed-height: 0;
     spacing: 2;

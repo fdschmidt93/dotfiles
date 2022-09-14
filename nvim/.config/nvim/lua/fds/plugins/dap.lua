@@ -1,4 +1,3 @@
-local opts = { silent = true }
 local set = vim.keymap.set
 
 local dap = require "dap"
@@ -25,15 +24,15 @@ local send_to_repl = function(text)
   end, 50)
 end
 
-set("n", "<space>Dc", dap.continue, opts)
-set("n", "<F10>", dap.step_over, opts)
-set("n", "<F11>", dap.step_into, opts)
-set("n", "<F12>", dap.step_out, opts)
-set("n", "<space>Db", dap.toggle_breakpoint, opts)
-set("n", "<space>De", dap.repl.open, opts)
-set("n", "<space>Dr", dap.run_to_cursor, opts)
-set("n", "<space>Dl", dap.run_last, opts)
-set("n", "<space>Dt", dap.terminate, opts)
+set("n", "<space>Dc", dap.continue, { desc = "DAP: continue" })
+set("n", "<F10>", dap.step_over, { desc = "DAP: step over" })
+set("n", "<F11>", dap.step_into, { desc = "DAP: step into" })
+set("n", "<F12>", dap.step_out, { desc = "DAP: step out" })
+set("n", "<space>Db", dap.toggle_breakpoint, { desc = "DAP: toggle breakpoint" })
+set("n", "<space>De", dap.repl.open, { desc = "DAP: open repl" })
+set("n", "<space>Dr", dap.run_to_cursor, { desc = "DAP: run to cursor" })
+set("n", "<space>Dl", dap.run_last, { desc = "DAP: run last" })
+set("n", "<space>Dt", dap.terminate, { desc = "DAP: terminate" })
 -- send to dap repl ala vim-slime
 set("v", "<C-r><C-r>", function()
   local selection = table.concat(require("fds.utils").visual_selection(), "\n")

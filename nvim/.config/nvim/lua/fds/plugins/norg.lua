@@ -32,7 +32,6 @@ require("neorg").setup {
         neorg_leader = "<Leader>o",
       },
     },
-    ["core.integrations.telescope"] = {},
     ["core.norg.completion"] = {
       config = {
         engine = "nvim-cmp",

@@ -62,6 +62,11 @@ telescope.setup {
       grouped = true,
       previewer = false,
       hijack_netrw = true,
+      mappings = {
+        ["n"] = {
+          ["o"] = require "telescope.actions".select_default,
+        }
+      }
     },
     fzf = {
       fuzzy = false, -- false will only do exact matching

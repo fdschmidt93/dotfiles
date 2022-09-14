@@ -1,6 +1,5 @@
 acpi
 acpid
-act-bin
 adwaita-qt5
 amd-ucode
 arandr
@@ -29,7 +28,6 @@ discord
 docker
 dunst
 efibootmgr
-element-desktop
 emacs-pgtk-native-comp-git
 evince
 fakeroot
@@ -49,7 +47,6 @@ gimp
 git
 git-delta-git
 github-cli
-gitui
 gnome-screenshot
 gparted
 grep
@@ -59,7 +56,7 @@ grub-btrfs
 gvfs
 gvfs-smb
 gzip
-helix-bin
+helix
 htop
 i3-gaps
 i3lock-fancy-rapid-git
@@ -70,7 +67,6 @@ keepassxc
 keychain
 kitty
 kodi-addon-inputstream-adaptive
-lazygit
 libtool
 libva-mesa-driver
 libvterm-0.1

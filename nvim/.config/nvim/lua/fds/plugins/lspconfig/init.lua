@@ -9,7 +9,7 @@ local on_attach = function(client)
   vim.cmd [[autocmd ColorScheme * :lua require('vim.lsp.diagnostic')._define_default_signs_and_highlights()]]
 end
 
-nvim_lsp.rust_analyzer.setup { on_attach = on_attach, capabilities = capabilities }
+-- nvim_lsp.rust_analyzer.setup { on_attach = on_attach, capabilities = capabilities }
 
 local luadev = require("lua-dev").setup {
   lspconfig = {

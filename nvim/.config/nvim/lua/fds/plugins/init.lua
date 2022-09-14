@@ -31,7 +31,7 @@ local modules = {
       require "fds.plugins.dressing"
     end,
   },
-  { "nanotee/luv-vimdocs" },
+  { "kevinhwang91/nvim-hlslens" },
   { "romainl/vim-cool" },
   {
     "antoinemadec/FixCursorHold.nvim",
@@ -55,14 +55,12 @@ local modules = {
     "kylechui/nvim-surround",
     event = "InsertEnter",
     config = function()
-      require("nvim-surround").setup {
-        delimiters = {
-          pairs = {
-            ["*"] = { "*", "*" },
-            ["_"] = { "_", "_" },
-          },
-        },
-      }
+      -- require("nvim-surround").setup {
+      --   surrounds = {
+      --     ["*"] = { "*", "*" },
+      --     ["_"] = { "_", "_" },
+      --   },
+      -- }
     end,
   },
   {
@@ -86,7 +84,7 @@ local modules = {
       vim.cmd [[silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)]]
     end,
   },
---}}}
+  --}}}
   --- Theme, Status- & Bufferline{{{
   {
     "morhetz/gruvbox",
@@ -108,17 +106,38 @@ local modules = {
     config = function()
       require "fds.plugins.bufferline"
     end,
-  },--}}}
+  }, --}}}
   --- Filetype{{{
   { "chrisbra/csv.vim", ft = "csv" },
   {
     "simrat39/rust-tools.nvim",
     ft = "rust",
     config = function()
-      require("rust-tools").setup {}
+      local capabilities = vim.lsp.protocol.make_client_capabilities()
+      capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
+      require("rust-tools").setup {
+        server = {
+          capabilities = capabilities,
+          settings = {
+            ["rust-analyzer"] = {
+              checkOnSave = {
+                allFeatures = true,
+                overrideCommand = {
+                  "cargo",
+                  "clippy",
+                  "--workspace",
+                  "--message-format=json",
+                  "--all-targets",
+                  "--all-features",
+                },
+              },
+            },
+          },
+        },
+      }
     end,
     requires = "plenary.nvim",
-  },--}}}
+  }, --}}}
   --- Git{{{
   {
     "lewis6991/gitsigns.nvim",
@@ -151,7 +170,7 @@ local modules = {
       vim.keymap.set("n", "<A-n>", [[<cmd>Neogit<CR>]], { silent = true })
     end,
     requires = { "sindrets/diffview.nvim", "plenary.nvim" },
-  },--}}}
+  }, --}}}
   --- Treesitter{{{
   {
     "nvim-treesitter/nvim-treesitter",
@@ -170,7 +189,7 @@ local modules = {
       require "fds.plugins.resin"
     end,
   },
---}}}
+  --}}}
   --- Telescope{{{
   {
     use_local("~/repos/lua/telescope.nvim", "nvim-telescope/telescope.nvim"),
@@ -185,7 +204,7 @@ local modules = {
       require "fds.plugins.telescope"
     end,
   },
---}}}
+  --}}}
   --- LSP & Autocompletion{{{
   {
     "neovim/nvim-lspconfig",
@@ -221,7 +240,7 @@ local modules = {
       require "fds.plugins.cmp"
     end,
   },
---}}}
+  --}}}
   --- Programming{{{
   {
     "mfussenegger/nvim-dap",
@@ -250,14 +269,11 @@ local modules = {
       require "fds.plugins.indentline"
     end,
   },
---}}}
+  --}}}
   --- Writing{{{
   {
     "lervag/vimtex",
     ft = "tex",
-    config = function()
-      require "fds.plugins.norg"
-    end,
   },
   {
     "nvim-neorg/neorg",
@@ -272,7 +288,7 @@ local modules = {
     "iamcco/markdown-preview.nvim",
     run = "cd app && yarn install",
     ft = "markdown",
-  },--}}}
+  }, --}}}
 }
 
 require("packer").startup { modules }

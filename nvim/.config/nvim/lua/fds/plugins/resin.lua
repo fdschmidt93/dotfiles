@@ -23,6 +23,3 @@ require("resin").setup {
     },
   },
 }
-
--- vim.keymap.set("<C-c>S", function()
--- end)

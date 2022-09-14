@@ -1,125 +1,138 @@
--- wrappers around vim-slime
 local api = vim.api
-
-local function buf_is_term(buf)
-  return vim.api.nvim_buf_get_option(buf, "buftype") == "terminal"
-end
 
 local M = {}
 
-M.get_term_buf = function()
+local function get_terminal_buffers()
   return vim.tbl_filter(function(bufnr)
-    return buf_is_term(bufnr)
-  end, vim.api.nvim_list_bufs())
+    return vim.bo[bufnr].buftype == "terminal"
+  end, api.nvim_list_bufs())
 end
 
-function M.shell(cmd, side, listed)
-  listed = vim.F.if_nil(listed, true)
-  side = side or "right" -- default to 'right'
-  cmd = cmd and string.format('$SHELL -C "%s"', cmd) or "$SHELL"
-
-  local cur_win = vim.api.nvim_get_current_win()
+local function open_term_split(side)
+  local original_winid = api.nvim_get_current_win()
   if side == "below" then
     vim.cmd [[ botright split new]]
     api.nvim_win_set_height(0, 12) -- set the window height
-  elseif side == "right" then
+  else
     vim.cmd [[ botright vsplit new ]]
   end
-
-  local buf = vim.api.nvim_get_current_buf()
-  local termbuf = vim.api.nvim_create_buf(listed, listed and true or false)
-  vim.api.nvim_set_current_buf(termbuf)
-  vim.api.nvim_buf_delete(buf, { force = true })
-  vim.cmd [[set winhighlight=Normal:TelescopeNormal]]
-  vim.fn.termopen(cmd)
-  vim.api.nvim_set_current_win(cur_win)
-  return termbuf
+  local new_winid = api.nvim_get_current_win()
+  local new_bufnr = api.nvim_win_get_buf(new_winid)
+  api.nvim_win_call(new_winid, function()
+    vim.cmd [[set winhighlight=Normal:TelescopeNormal]]
+  end)
+  api.nvim_set_current_win(original_winid)
+  return { bufnr = new_bufnr, winid = new_winid }
 end
 
-M.conda_env_prefix = function(cmd)
+-- Open a (fish-)shell in a new win-split with opts.
+-- @param opts table
+-- @field cmd string: cmd to open shell with
+-- @field side string: side to open shell on ("right" or "below")
+-- @field listed boolean: whether terminal buffer is listed (default: true)
+function M.shell(opts)
+  opts = opts or {}
+  opts.listed = vim.F.if_nil(opts.listed, true)
+  opts.side = vim.F.if_nil(opts.side, "right") -- default to 'right'
+  opts.cmd = opts.cmd and string.format('$SHELL -C "%s"', opts.cmd) or "$SHELL"
+
+  local split = open_term_split(opts.side)
+  if not opts.listed then
+    vim.bo[split.bufnr].buflisted = false
+  end
+  api.nvim_buf_call(split.bufnr, function()
+    vim.fn.termopen(opts.cmd)
+  end)
+  return split
+end
+
+-- Ensure cmd is launched in appropriate conda environment (eg remote tmux).
+M.wrap_conda_env = function(cmd)
   local conda_env = os.getenv "CONDA_PROMPT_MODIFIER"
   conda_env = conda_env and conda_env:sub(2, -3) or "base"
   return "conda activate " .. conda_env .. " && " .. cmd
 end
 
-M.toggle_termwin = function(side, buf)
-  buf = vim.F.if_nil(buf, M.get_term_buf())
-  local cur_win = vim.api.nvim_get_current_win()
-
-  if type(buf) == "table" then
-    if vim.tbl_isempty(buf) then
+-- Toggle single existing terminal window.
+-- Note:
+--  - Does nothing if more than one terminal buffer or window exists,
+-- @param side string: side to open terminal on (one of "right", "below")
+-- @param opts table
+-- @field bufnr number: optional bufnr to pass, otherwise deduced
+function M.toggle_termwin(side, opts)
+  opts = opts or {}
+  if opts.bufnr == nil then
+    local termbufs = get_terminal_buffers()
+    if vim.tbl_isempty(termbufs) then
       print "No terminals yet open"
       return
     end
-    if #buf > 1 then
+    if #termbufs > 1 then
       print "Too many terminal buffers open"
       return
     end
-    buf = buf[1]
+    opts.bufnr = termbufs[1]
   end
-  local win = vim.fn.win_findbuf(buf)
-  if #win > 1 then
+
+  local cur_win = api.nvim_get_current_win()
+  local winid = vim.fn.win_findbuf(opts.bufnr)
+  if #winid > 1 then
     print "Too many terminal windows open"
     return
   end
-  win = win[1]
-  if win == nil then
-    if side == "right" then
-      vim.cmd [[botright vsplit]]
-    else
-      vim.cmd [[botright split]]
-      vim.api.nvim_win_set_height(0, 12)
-    end
-    vim.api.nvim_set_current_buf(buf)
-    win = vim.api.nvim_get_current_win()
+  winid = winid[1]
+  if winid == nil then
+    local split = open_term_split(side)
+    api.nvim_win_set_buf(split.winid, opts.bufnr)
+    api.nvim_buf_delete(split.bufnr, { force = true })
   else
-    vim.api.nvim_win_close(win, true)
-    win = nil
+    api.nvim_win_close(winid, true)
+    winid = nil
   end
-  if win ~= cur_win then
-    vim.api.nvim_set_current_win(cur_win)
+  if winid ~= cur_win then
+    api.nvim_set_current_win(cur_win)
   end
-  return win
+  return winid
 end
 
-M.restart_term = function(cmd, side, listed)
-  side = vim.F.if_nil(side, "right")
-  listed = vim.F.if_nil(listed, true)
-
-  local cur_win = api.nvim_get_current_win()
+-- Starts or restarts a termbuf launched comprising `cmd`
+-- - Note:
+--      - cmd is found in the name of the terminal buffer
+-- @param cmd string: command to (re-)start shell with
+-- @param opts table
+-- @field side string: side to open terminal on (one of "right", "below")
+-- @field listed boolean: whether terminal buffer is listed or not
+function M.restart_term(cmd, opts)
+  opts = opts or {}
+  opts.side = vim.F.if_nil(opts.side, "right")
+  opts.listed = vim.F.if_nil(opts.listed, true)
   local term_buf = vim.tbl_filter(function(buf)
-    return string.find(vim.api.nvim_buf_get_name(buf), cmd)
-  end, M.get_term_buf())
+    return string.find(api.nvim_buf_get_name(buf), cmd)
+  end, get_terminal_buffers())
   if #term_buf > 1 then
     print "Too many terminals open"
   end
   term_buf = term_buf[1]
 
-  -- find term buf, if nil create shell
-  -- local win, buf_nr, buf_name = M.term_contains_cmd(cmd, side)
   if term_buf ~= nil then
-    -- create new buf and assume window
-    local new_termbuf = api.nvim_create_buf(listed, listed and true or false)
-    local term_win = vim.fn.win_findbuf(term_buf)[1]
-    if term_win == nil then
-      term_win = M.toggle_termwin(side, term_win)
-    end
-    api.nvim_win_set_buf(term_win, new_termbuf)
-    api.nvim_set_current_win(term_win)
+    opts.listed = vim.bo[term_buf].buflisted
+    local new_termbuf = api.nvim_create_buf(opts.listed, opts.listed and true or false)
+    local winid = vim.fn.win_findbuf(term_buf)
 
     -- get command and open new terminal buffer in termwin
-    local term_buf_name = vim.api.nvim_buf_get_name(term_buf)
+    local term_buf_name = api.nvim_buf_get_name(term_buf)
     local term_cmd = table.remove(vim.split(term_buf_name, ":"))
-    vim.fn.termopen(term_cmd)
+    vim.api.nvim_buf_call(new_termbuf, function()
+      vim.fn.termopen(term_cmd)
+    end)
 
-    -- kill old buf
+    for _, win in ipairs(winid) do
+      api.nvim_win_set_buf(win, new_termbuf)
+    end
     api.nvim_buf_delete(term_buf, { force = true })
-
-    -- apply config
-    local term_id = api.nvim_buf_get_var(new_termbuf, "terminal_job_id")
-    api.nvim_set_current_win(cur_win)
   else
-    M.shell(cmd, side, listed)
+    opts.cmd = cmd
+    M.shell(opts)
   end
 end
 

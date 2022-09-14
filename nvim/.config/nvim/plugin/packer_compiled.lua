@@ -9,23 +9,26 @@ vim.api.nvim_command('packadd packer.nvim')
 
 local no_errors, error_msg = pcall(function()
 
-  local time
-  local profile_info
-  local should_profile = false
-  if should_profile then
-    local hrtime = vim.loop.hrtime
-    profile_info = {}
-    time = function(chunk, start)
-      if start then
-        profile_info[chunk] = hrtime()
-      else
-        profile_info[chunk] = (hrtime() - profile_info[chunk]) / 1e6
-      end
+_G._packer = _G._packer or {}
+_G._packer.inside_compile = true
+
+local time
+local profile_info
+local should_profile = false
+if should_profile then
+  local hrtime = vim.loop.hrtime
+  profile_info = {}
+  time = function(chunk, start)
+    if start then
+      profile_info[chunk] = hrtime()
+    else
+      profile_info[chunk] = (hrtime() - profile_info[chunk]) / 1e6
     end
-  else
-    time = function(chunk, start) end
   end
-  
+else
+  time = function(chunk, start) end
+end
+
 local function save_profiles(threshold)
   local sorted_times = {}
   for chunk_name, time_taken in pairs(profile_info) do
@@ -38,8 +41,10 @@ local function save_profiles(threshold)
       results[i] = elem[1] .. ' took ' .. elem[2] .. 'ms'
     end
   end
+  if threshold then
+    table.insert(results, '(Only showing plugins that took longer than ' .. threshold .. ' ms ' .. 'to load)')
+  end
 
-  _G._packer = _G._packer or {}
   _G._packer.profile_output = results
 end
 
@@ -190,11 +195,6 @@ _G.packer_plugins = {
     path = "/home/fdschmidt/.local/share/nvim/site/pack/packer/start/lua-dev.nvim",
     url = "https://github.com/folke/lua-dev.nvim"
   },
-  ["luv-vimdocs"] = {
-    loaded = true,
-    path = "/home/fdschmidt/.local/share/nvim/site/pack/packer/start/luv-vimdocs",
-    url = "https://github.com/nanotee/luv-vimdocs"
-  },
   ["markdown-preview.nvim"] = {
     loaded = false,
     needs_bufread = false,
@@ -269,6 +269,11 @@ _G.packer_plugins = {
     path = "/home/fdschmidt/.local/share/nvim/site/pack/packer/opt/nvim-dap-ui",
     url = "https://github.com/rcarriga/nvim-dap-ui"
   },
+  ["nvim-hlslens"] = {
+    loaded = true,
+    path = "/home/fdschmidt/.local/share/nvim/site/pack/packer/start/nvim-hlslens",
+    url = "https://github.com/kevinhwang91/nvim-hlslens"
+  },
   ["nvim-lspconfig"] = {
     config = { "\27LJ\2\0025\0\0\2\0\2\0\0046\0\0\0'\1\1\0B\0\2\1K\0\1\0\26fds.plugins.lspconfig\frequire\0" },
     loaded = true,
@@ -282,7 +287,7 @@ _G.packer_plugins = {
     url = "https://github.com/rcarriga/nvim-notify"
   },
   ["nvim-surround"] = {
-    config = { "\27LJ\2\2ç\1\0\0\5\0\f\0\0156\0\0\0'\1\1\0B\0\2\0029\0\2\0005\1\n\0005\2\b\0005\3\4\0005\4\3\0=\4\5\0035\4\6\0=\4\a\3=\3\t\2=\2\v\1B\0\2\1K\0\1\0\15delimiters\1\0\0\npairs\1\0\0\6_\1\3\0\0\6_\6_\6*\1\0\0\1\3\0\0\6*\6*\nsetup\18nvim-surround\frequire\0" },
+    config = { "\27LJ\2\2\v\0\0\1\0\0\0\1K\0\1\0\0" },
     loaded = false,
     needs_bufread = false,
     only_cond = false,
@@ -332,7 +337,7 @@ _G.packer_plugins = {
     url = "/home/fdschmidt/repos/lua/resin.nvim/"
   },
   ["rust-tools.nvim"] = {
-    config = { "\27LJ\2\2<\0\0\2\0\3\0\a6\0\0\0'\1\1\0B\0\2\0029\0\2\0004\1\0\0B\0\2\1K\0\1\0\nsetup\15rust-tools\frequire\0" },
+    config = { "\27LJ\2\2ñ\3\0\0\b\0\21\0\0306\0\0\0009\0\1\0009\0\2\0009\0\3\0B\0\1\0026\1\4\0'\2\5\0B\1\2\0029\1\6\1\18\2\0\0B\1\2\2\18\0\1\0006\1\4\0'\2\a\0B\1\2\0029\1\b\0015\2\19\0005\3\t\0=\0\n\0035\4\16\0005\5\14\0005\6\v\0005\a\f\0=\a\r\6=\6\15\5=\5\17\4=\4\18\3=\3\20\2B\1\2\1K\0\1\0\vserver\1\0\0\rsettings\18rust-analyzer\1\0\0\16checkOnSave\1\0\0\20overrideCommand\1\a\0\0\ncargo\vclippy\16--workspace\26--message-format=json\18--all-targets\19--all-features\1\0\1\16allFeatures\2\17capabilities\1\0\0\nsetup\15rust-tools\24update_capabilities\17cmp_nvim_lsp\frequire\29make_client_capabilities\rprotocol\blsp\bvim\0" },
     loaded = false,
     needs_bufread = true,
     only_cond = false,
@@ -404,7 +409,6 @@ _G.packer_plugins = {
     url = "https://github.com/tpope/vim-repeat"
   },
   vimtex = {
-    config = { "\27LJ\2\0020\0\0\2\0\2\0\0046\0\0\0'\1\1\0B\0\2\1K\0\1\0\21fds.plugins.norg\frequire\0" },
     loaded = false,
     needs_bufread = true,
     only_cond = false,
@@ -438,18 +442,18 @@ time([[Config for vim-doge]], false)
 time([[Config for resin.nvim]], true)
 try_loadstring("\27LJ\2\0021\0\0\2\0\2\0\0046\0\0\0'\1\1\0B\0\2\1K\0\1\0\22fds.plugins.resin\frequire\0", "config", "resin.nvim")
 time([[Config for resin.nvim]], false)
--- Config for: telescope.nvim
-time([[Config for telescope.nvim]], true)
-try_loadstring("\27LJ\2\0025\0\0\2\0\2\0\0046\0\0\0'\1\1\0B\0\2\1K\0\1\0\26fds.plugins.telescope\frequire\0", "config", "telescope.nvim")
-time([[Config for telescope.nvim]], false)
+-- Config for: FixCursorHold.nvim
+time([[Config for FixCursorHold.nvim]], true)
+try_loadstring("\27LJ\2\0027\0\0\2\0\3\0\0056\0\0\0009\0\1\0)\1Ù\1=\1\2\0K\0\1\0\26cursorhold_updatetime\6g\bvim\0", "config", "FixCursorHold.nvim")
+time([[Config for FixCursorHold.nvim]], false)
 -- Config for: gitsigns.nvim
 time([[Config for gitsigns.nvim]], true)
 try_loadstring("\27LJ\2\0024\0\0\2\0\2\0\0046\0\0\0'\1\1\0B\0\2\1K\0\1\0\25fds.plugins.gitsigns\frequire\0", "config", "gitsigns.nvim")
 time([[Config for gitsigns.nvim]], false)
--- Config for: nvim-lspconfig
-time([[Config for nvim-lspconfig]], true)
-try_loadstring("\27LJ\2\0025\0\0\2\0\2\0\0046\0\0\0'\1\1\0B\0\2\1K\0\1\0\26fds.plugins.lspconfig\frequire\0", "config", "nvim-lspconfig")
-time([[Config for nvim-lspconfig]], false)
+-- Config for: telescope.nvim
+time([[Config for telescope.nvim]], true)
+try_loadstring("\27LJ\2\0025\0\0\2\0\2\0\0046\0\0\0'\1\1\0B\0\2\1K\0\1\0\26fds.plugins.telescope\frequire\0", "config", "telescope.nvim")
+time([[Config for telescope.nvim]], false)
 -- Config for: galaxyline.nvim
 time([[Config for galaxyline.nvim]], true)
 try_loadstring("\27LJ\2\0026\0\0\2\0\2\0\0046\0\0\0'\1\1\0B\0\2\1K\0\1\0\27fds.plugins.galaxyline\frequire\0", "config", "galaxyline.nvim")
@@ -458,14 +462,14 @@ time([[Config for galaxyline.nvim]], false)
 time([[Config for nvim-notify]], true)
 try_loadstring("\27LJ\2\0022\0\0\3\0\3\0\0066\0\0\0006\1\2\0'\2\1\0B\1\2\2=\1\1\0K\0\1\0\frequire\vnotify\bvim\0", "config", "nvim-notify")
 time([[Config for nvim-notify]], false)
--- Config for: FixCursorHold.nvim
-time([[Config for FixCursorHold.nvim]], true)
-try_loadstring("\27LJ\2\0027\0\0\2\0\3\0\0056\0\0\0009\0\1\0)\1Ù\1=\1\2\0K\0\1\0\26cursorhold_updatetime\6g\bvim\0", "config", "FixCursorHold.nvim")
-time([[Config for FixCursorHold.nvim]], false)
 -- Config for: nvim-treesitter
 time([[Config for nvim-treesitter]], true)
 try_loadstring("\27LJ\2\0026\0\0\2\0\2\0\0046\0\0\0'\1\1\0B\0\2\1K\0\1\0\27fds.plugins.treesitter\frequire\0", "config", "nvim-treesitter")
 time([[Config for nvim-treesitter]], false)
+-- Config for: nvim-lspconfig
+time([[Config for nvim-lspconfig]], true)
+try_loadstring("\27LJ\2\0025\0\0\2\0\2\0\0046\0\0\0'\1\1\0B\0\2\1K\0\1\0\26fds.plugins.lspconfig\frequire\0", "config", "nvim-lspconfig")
+time([[Config for nvim-lspconfig]], false)
 -- Load plugins in order defined by `after`
 time([[Sequenced loading]], true)
 vim.cmd [[ packadd nvim-cmp ]]
@@ -492,8 +496,8 @@ time([[Defining lazy-load commands]], false)
 
 -- Keymap lazy-loads
 time([[Defining lazy-load keymaps]], true)
-vim.api.nvim_set_keymap("", "<A-N>", "<cmd>lua require('packer.load')({'vim-fugitive'}, { keys = [=[<lt>A-N>]=], prefix = '' }, _G.packer_plugins)<cr>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap("", "<A-n>", "<cmd>lua require('packer.load')({'neogit'}, { keys = [=[<lt>A-n>]=], prefix = '' }, _G.packer_plugins)<cr>", { noremap = true, silent = true })
+vim.cmd [[noremap <silent> <A-N> <cmd>lua require("packer.load")({'vim-fugitive'}, { keys = "<lt>A-N>", prefix = "" }, _G.packer_plugins)<cr>]]
+vim.cmd [[noremap <silent> <A-n> <cmd>lua require("packer.load")({'neogit'}, { keys = "<lt>A-n>", prefix = "" }, _G.packer_plugins)<cr>]]
 time([[Defining lazy-load keymaps]], false)
 
 vim.cmd [[augroup packer_load_aucmds]]
@@ -530,6 +534,13 @@ time([[Sourcing ftdetect script at: /home/fdschmidt/.local/share/nvim/site/pack/
 vim.cmd [[source /home/fdschmidt/.local/share/nvim/site/pack/packer/opt/vimtex/ftdetect/tikz.vim]]
 time([[Sourcing ftdetect script at: /home/fdschmidt/.local/share/nvim/site/pack/packer/opt/vimtex/ftdetect/tikz.vim]], false)
 vim.cmd("augroup END")
+
+_G._packer.inside_compile = false
+if _G._packer.needs_bufread == true then
+  vim.cmd("doautocmd BufRead")
+end
+_G._packer.needs_bufread = false
+
 if should_profile then save_profiles() end
 
 end)
