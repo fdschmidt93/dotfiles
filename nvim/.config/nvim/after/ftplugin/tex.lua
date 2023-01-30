@@ -1,8 +1,4 @@
-local has_cmp, cmp = pcall(require, "cmp")
-if not has_cmp then
-  require("packer").loader "nvim-cmp"
-  cmp = require "cmp"
-end
+local _, cmp = pcall(require, "cmp")
 
 cmp.setup.buffer {
   sources = {
@@ -20,3 +16,8 @@ vim.api.nvim_create_autocmd("InsertLeave", {
   end,
   buffer = vim.api.nvim_get_current_buf(),
 })
+
+vim.cmd [[
+  inoremap <C-f> <Esc>: silent exec '.!inkscape-figures create "'.getline('.').'" "'.b:vimtex.root.'/figures/"'<CR><CR>:w<CR>
+  nnoremap <C-f> : silent exec '!inkscape-figures edit "'.b:vimtex.root.'/figures/" > /dev/null 2>&1 &'<CR><CR>:redraw!<CR>
+]]

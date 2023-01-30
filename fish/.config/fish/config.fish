@@ -14,6 +14,8 @@ set -gx MANPAGER 'nvim +Man!'
 set -gx MANWIDTH 999
 set -gx NVIM_LISTEN_ADDRESS "/tmp/nvimsocket"
 alias vi=nvim
+alias vip="nvim '+PythonTerm'"
 source /home/fdschmidt/miniconda3/etc/fish/conf.d/conda.fish
 eval (keychain --eval --agents ssh -Q --quiet id_rsa --nogui --noask)
 fish_vi_key_bindings
+set PYDEVD_IPYTHON_COMPATIBLE_DEBUGGING 1

@@ -1,7 +1,7 @@
 local lsp = vim.lsp
 
 lsp.handlers["textDocument/publishDiagnostics"] = lsp.with(lsp.diagnostic.on_publish_diagnostics, {
-  underline = false, -- disable virtual text
+  underline = true, -- disable virtual text
   virtual_text = true,
   -- show signs
   signs = true,

@@ -2,25 +2,26 @@ local fn = vim.fn
 local HOME = vim.loop.os_homedir()
 
 -- attempt to find local repo, otherwise fallback to git
-local use_local = function(path, fallback)
+local use_local = function(path, fallback, opts)
+  opts = opts or {}
   if path:sub(1, 1) == "~" then
     path = HOME .. path:sub(2, -1)
   end
   if fn.isdirectory(path) == 1 then
-    return path
+    opts.dir = path
   else
-    return fallback
+    opts[1] = fallback
   end
+  return opts
 end
 
 local modules = {
-  { "wbthomason/packer.nvim" },
-  { use_local("~/repos/lua/plenary.nvim", "nvim-lua/plenary.nvim") },
+  use_local("~/repos/lua/plenary.nvim", "nvim-lua/plenary.nvim"),
   --- Utilities{{{
-  { "lewis6991/impatient.nvim" },
+  { "jbyuki/venn.nvim", event = "ModeChanged" },
   {
     "rcarriga/nvim-notify",
-    requires = "plenary.nvim",
+    dependencies = "plenary.nvim",
     config = function()
       vim.notify = require "notify"
     end,
@@ -31,14 +32,13 @@ local modules = {
       require "fds.plugins.dressing"
     end,
   },
-  { "kevinhwang91/nvim-hlslens" },
-  { "romainl/vim-cool" },
   {
-    "antoinemadec/FixCursorHold.nvim",
+    "kevinhwang91/nvim-hlslens",
     config = function()
-      vim.g.cursorhold_updatetime = 500
+      require("hlslens").setup()
     end,
   },
+  { "romainl/vim-cool" },
   {
     "numToStr/Comment.nvim",
     config = function()
@@ -47,27 +47,53 @@ local modules = {
   },
   {
     "glacambre/firenvim",
-    run = function()
+    build = function()
       vim.fn["firenvim#install"](0)
     end,
   },
   {
-    "kylechui/nvim-surround",
+    "tpope/vim-surround",
     event = "InsertEnter",
-    config = function()
-      -- require("nvim-surround").setup {
-      --   surrounds = {
-      --     ["*"] = { "*", "*" },
-      --     ["_"] = { "_", "_" },
-      --   },
-      -- }
-    end,
   },
   {
     "ggandor/leap.nvim",
-    after = "gruvbox",
+    keys = { "s", "S" },
+    dependencies = "gruvbox",
     config = function()
       require("leap").set_default_keymaps()
+    end,
+  },
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    dependencies = {
+      "plenary.nvim",
+      "nvim-web-devicons",
+      "MunifTanjim/nui.nvim",
+    },
+    config = function()
+      require("neo-tree").setup {
+        window = {
+          mappings = {
+            ["A"] = { "expand_all_nodes" },
+          },
+        },
+      }
+    end,
+  },
+  {
+    "ggandor/flit.nvim",
+    keys = { "f", "F", "t", "T" },
+    dependencies = { "leap.nvim" },
+    config = function()
+      require("flit").setup {
+        keys = { f = "f", F = "F", t = "t", T = "T" },
+        -- A string like "nv", "nvo", "o", etc.
+        labeled_modes = "nv",
+        multiline = true,
+        -- Like `leap`s similar argument (call-specific overrides).
+        -- E.g.: opts = { equivalence_classes = {} }
+        opts = {},
+      }
     end,
   },
   {
@@ -102,7 +128,7 @@ local modules = {
   },
   {
     "akinsho/nvim-bufferline.lua",
-    after = "gruvbox",
+    dependencies = "gruvbox",
     config = function()
       require "fds.plugins.bufferline"
     end,
@@ -136,12 +162,12 @@ local modules = {
         },
       }
     end,
-    requires = "plenary.nvim",
+    dependencies = "plenary.nvim",
   }, --}}}
   --- Git{{{
   {
     "lewis6991/gitsigns.nvim",
-    requires = { "plenary.nvim" },
+    dependencies = { "plenary.nvim" },
     config = function()
       require "fds.plugins.gitsigns"
     end,
@@ -169,35 +195,46 @@ local modules = {
       }
       vim.keymap.set("n", "<A-n>", [[<cmd>Neogit<CR>]], { silent = true })
     end,
-    requires = { "sindrets/diffview.nvim", "plenary.nvim" },
+    dependencies = { "sindrets/diffview.nvim", "plenary.nvim" },
   }, --}}}
   --- Treesitter{{{
   {
     "nvim-treesitter/nvim-treesitter",
-    run = ":TSUpdate",
-    requires = {
+    build = ":TSUpdate",
+    dependencies = {
       "nvim-treesitter/nvim-treesitter-textobjects",
     },
     config = function()
       require "fds.plugins.treesitter"
     end,
   },
-  { "nvim-treesitter/playground", cmd = "TSPlaygroundToggle", requires = { "nvim-treesitter" } },
-  {
-    use_local("~/repos/lua/resin.nvim/", "fdschmidt93/resin.nvim"),
+  { "nvim-treesitter/playground", cmd = "TSPlaygroundToggle", dependencies = { "nvim-treesitter" } },
+  use_local("~/repos/lua/resin.nvim/", "fdschmidt93/resin.nvim", {
     config = function()
       require "fds.plugins.resin"
     end,
-  },
+  }),
   --}}}
   --- Telescope{{{
   {
-    use_local("~/repos/lua/telescope.nvim", "nvim-telescope/telescope.nvim"),
-    requires = {
+    "ibhagwan/fzf-lua",
+    setup = function()
+      require("fzf-lua").setup {
+        preview = {
+          layout = "horizontal",
+        },
+      }
+    end,
+  },
+  {
+    dir = "/home/fdschmidt/repos/lua/telescope.nvim",
+    -- cmd = "Telescope",
+    -- keys = "<Space>",
+    dependencies = {
       "plenary.nvim",
-      { "nvim-telescope/telescope-fzf-native.nvim", run = "make" },
+      { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
       { "nvim-telescope/telescope-symbols.nvim" },
-      { "nvim-telescope/telescope-smart-history.nvim", requires = "kkharji/sqlite.lua" },
+      { "nvim-telescope/telescope-smart-history.nvim", dependencies = "kkharji/sqlite.lua" },
       use_local("~/repos/lua/telescope-file-browser.nvim", "nvim-telescope/telescope-file-browser.nvim"),
     },
     config = function()
@@ -208,25 +245,29 @@ local modules = {
   --- LSP & Autocompletion{{{
   {
     "neovim/nvim-lspconfig",
-    requires = {
-      "folke/lua-dev.nvim",
+    dependencies = {
+      "folke/neodev.nvim",
     },
     config = function()
       require "fds.plugins.lspconfig"
     end,
   },
-  { "jose-elias-alvarez/null-ls.nvim", requires = { "plenary.nvim", "neovim/nvim-lspconfig" } },
+  {
+    "jose-elias-alvarez/null-ls.nvim",
+    dependencies = { "plenary.nvim", "neovim/nvim-lspconfig" },
+  },
   {
     "L3MON4D3/LuaSnip",
-    opt = true,
+    lazy = true,
     config = function()
       require "fds.plugins.luasnip"
     end,
   },
   {
     "hrsh7th/nvim-cmp",
-    after = "gruvbox",
-    requires = {
+    event = "InsertEnter",
+    dependencies = {
+      "gruvbox",
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
       "hrsh7th/cmp-nvim-lsp",
@@ -234,9 +275,9 @@ local modules = {
       "hrsh7th/cmp-omni",
       "saadparwaiz1/cmp_luasnip",
       "lukas-reineke/cmp-rg",
+      "L3MON4D3/LuaSnip",
     },
     config = function()
-      require("packer").loader "LuaSnip"
       require "fds.plugins.cmp"
     end,
   },
@@ -244,20 +285,19 @@ local modules = {
   --- Programming{{{
   {
     "mfussenegger/nvim-dap",
-    ft = { "python", "rust", "lua" },
-    requires = {
+    keys = "<space>D",
+    dependencies = {
       "nvim-telescope/telescope-dap.nvim",
-      { "rcarriga/nvim-dap-ui", opt = true },
-      { "mfussenegger/nvim-dap-python", opt = true },
+      { "rcarriga/nvim-dap-ui" },
+      { "mfussenegger/nvim-dap-python" },
     },
     config = function()
-      require("packer").loader("nvim-dap-ui", "nvim-dap-python")
       require "fds.plugins.dap"
     end,
   },
   {
     "kkoomen/vim-doge",
-    run = ":call doge#install()",
+    build = ":call doge#install()",
     config = function()
       vim.g.doge_enable_mappings = 1
       vim.g.doge_doc_standard_python = "google"
@@ -278,19 +318,18 @@ local modules = {
   {
     "nvim-neorg/neorg",
     ft = "norg",
-    after = "nvim-treesitter",
+    dependencies = { "nvim-treesitter", "plenary.nvim", "nvim-cmp" },
     config = function()
       require "fds.plugins.norg"
     end,
-    requires = { "plenary.nvim" },
   },
   {
     "iamcco/markdown-preview.nvim",
-    run = "cd app && yarn install",
+    build = "cd app && yarn install",
     ft = "markdown",
   }, --}}}
 }
 
-require("packer").startup { modules }
+require("lazy").setup(modules)
 
 -- vim:ts=4:sw=4:ai:foldmethod=marker:foldlevel=0:

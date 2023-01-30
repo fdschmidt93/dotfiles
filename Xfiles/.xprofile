@@ -1,4 +1,5 @@
 xrdb -merge ~/.Xresources
+setxkbmap -layout us -variant altgr-intl
 xmodmap ~/.Xmodmap
 mons -e right
 pacman -Qqe > ~/dotfiles/paru/pkglist.txt

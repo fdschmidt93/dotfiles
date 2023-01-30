@@ -104,6 +104,7 @@ telescope.setup {
     },
     find_files = {
       find_command = { "fd", "--type", "f", "--strip-cwd-prefix" },
+      __scrolling_limit = 30,
       mappings = {
         i = {
           ["<C-a>"] = require("fds.plugins.telescope.actions").append_task,
@@ -130,6 +131,13 @@ telescope.setup {
           ["<C-l>a"] = fds_tele_actions.diffview_absolute,
           ["<C-l>u"] = fds_tele_actions.diffview_upstream_master,
           ["<C-r>r"] = fds_tele_actions.revert_commit,
+        },
+      },
+    },
+    treesitter = {
+      mappings = {
+        ["i"] = {
+          ["<C-s>"] = require("fds.plugins.telescope.treesitter").send_to_repl,
         },
       },
     },
