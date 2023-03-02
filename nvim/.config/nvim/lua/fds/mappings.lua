@@ -8,8 +8,6 @@ set("i", "jk", "<ESC>", { desc = "Exit insert mode" })
 set("n", "oo", [[m`o<Esc>``]], { desc = "Insert line below" })
 set("n", "OO", [[m`O<Esc>``]], { desc = "Insert line above" })
 
--- enter lines above/below
-set("n", "Y", "y$", { desc = "Yank to end of line" }) -- emulate other uppercase variants
 set("n", [[<Leader>y]], [['+y']], { desc = "Yank to global register" }) -- Copy to global clipboard with leader prefix
 set("n", [[<Leader>p]], [['+p']], { desc = "Paste from global register" }) -- Copp to global clipboard with leader prefix
 -- emulate tmux
@@ -38,7 +36,6 @@ end, { desc = "Terminal: (re-)start ipython below" })
 set("n", "<A-u>", partial(repl.toggle_termwin, "right"), { desc = "Terminal: toggle right" })
 set("n", "<A-i>", partial(repl.toggle_termwin, "below"), { desc = "Terminal: toggle below" })
 -- misc
-set("n", "<Leader><Leader>p", [[<cmd>PackerCompile<CR><cmd>PackerSync<CR>]])
 set("n", "<Leader><Leader>l", [[<cmd>luafile %<CR>]], { desc = "Lua: run current file" })
 set("n", "<Leader><Leader>swap", [[!rm ~/.local/nvim/swap/*]], { desc = "Clear swap" })
 set("n", "<A-q>", require("fds.utils").write_close_all, { desc = "Save and close buffers" })
@@ -71,6 +68,7 @@ set("n", ts_leader .. "f", ts_builtin.find_files, { silent = true, desc = "Teles
 set("i", "<C-f>", ts_builtin.find_files, { silent = true, desc = "Telescope: Find Files" })
 set("i", "<C-s>", ts_builtin.symbols, { silent = true, desc = "Telescope: Symbols" })
 set("n", ts_leader .. "rs", ts_builtin.grep_string, { silent = true, desc = "Telescope: Grep String" })
+set("v", ts_leader .. "rs", ts_builtin.grep_string, { silent = true, desc = "Telescope: Grep String" })
 set("n", ts_leader .. "bb", ts_builtin.buffers, { silent = true, desc = "Telescope: Buffers" })
 -- nnoremap { ts_leader .. "bf", require("telescope").extensions.file_browser.file_browser, {silent = true, } }
 set("n", ts_leader .. "bf", function()
@@ -107,6 +105,7 @@ set("n", "gi", vim.lsp.buf.implementation, { silent = true, desc = "Telescope: L
 set("n", "gd", ts_builtin.lsp_definitions, { silent = true, desc = "Telescope: LSP Definitions" })
 set("n", "gr", ts_builtin.lsp_references, { silent = true, desc = "Telescope: LSP References" })
 set("n", "<space>ds", ts_builtin.lsp_document_symbols, { silent = true, desc = "Telescope: LSP Document Symbols" })
+set("v", "<space>x", R "fds.utils".get_selection)
 set(
   "n",
   "<space>fs",
@@ -152,10 +151,6 @@ set("n", "<space>f", function()
   vim.lsp.buf.format { async = true }
 end, { desc = "LSP: format async" })
 
--- norg
-set("n", "<leader>otc", [[<cmd>Neorg gtd capture<CR>]], opts)
-set("n", "<leader>otv", [[<cmd>Neorg gtd views<CR>]], opts)
-set("n", "<leader>ote", [[<cmd>Neorg gtd edit<CR>]], opts)
 
 -- luasnip
 --
@@ -179,8 +174,12 @@ end, { silent = true })
 -- this always moves to the previous item within the snippet
 set({ "i", "s" }, "<C-j>", function()
   if require("luasnip").expand_or_jumpable() then
-    require("luasnip").jump(-1)
+    require("luasnip").jump( -1)
   end
 end, { silent = true })
 
-set("n", "<leader><leader>K", [[<cmd>source ~/.config/nvim/lua/fds/mappings.lua<CR>|<cmd>echo "sourced mappings"<CR>]])
+set(
+  "n",
+  "<leader><leader>K",
+  [[<cmd>source ~/.config/nvim/lua/fds/mappings.lua<CR>|<cmd>echo "sourced mappings"<CR>]]
+)

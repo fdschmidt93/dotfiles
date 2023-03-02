@@ -13,7 +13,7 @@ end
 vim.opt.runtimepath:prepend(lazypath)
 
 require "fds.settings"
-require "fds.plugins"
+require("lazy").setup "plugins"
 require "fds.globals"
 require "fds.mappings"
 require "fds.commands"
@@ -47,7 +47,7 @@ vim.api.nvim_create_autocmd("User", {
           while true do
             local name = uv.fs_scandir_next(iter_dir)
             -- make sure we are deleting lockfiles
-            if name and name:sub(- #suffix, -1) == suffix then
+            if name and name:sub(-#suffix, -1) == suffix then
               table.insert(backups, string.format("%s/%s", LOCKFILES_DIR, name))
             end
             if name == nil then

@@ -1,7 +1,6 @@
 local action_mt = require "telescope.actions.mt"
 local action_state = require "telescope.actions.state"
 local actions = require "telescope.actions"
-local fds_ts_utils = require "fds.plugins.telescope.utils"
 local ts_utils = require "telescope.utils"
 
 local M = {}

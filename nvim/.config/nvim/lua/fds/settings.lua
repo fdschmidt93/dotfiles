@@ -4,7 +4,7 @@ local opt = vim.opt
 -- \ 'content': 'text',
 vim.cmd [[set guifont=JetBrainsMono_Nerd_Font_Mono:h18]]
 vim.cmd [[
-let g:firenvim_config = { 
+let g:firenvim_config = {
     \ 'globalSettings': {
         \ 'alt': 'all',
     \  },
