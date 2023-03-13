@@ -1,11 +1,12 @@
 return {
   "hrsh7th/nvim-cmp",
-  event = "InsertEnter",
+  event = { "InsertEnter", "CmdlineEnter" },
   dependencies = {
     "gruvbox",
     "hrsh7th/cmp-buffer",
     "hrsh7th/cmp-path",
     "hrsh7th/cmp-nvim-lsp",
+    "hrsh7th/cmp-cmdline",
     "hrsh7th/cmp-nvim-lsp-signature-help",
     "hrsh7th/cmp-omni",
     "saadparwaiz1/cmp_luasnip",
@@ -81,6 +82,9 @@ return {
           return vim_item
         end,
       },
+      completion = {
+        completeopt = "menu,menuone", -- remove `noselect`.
+      },
       snippet = {
         expand = function(args)
           luasnip.lsp_expand(args.body)
@@ -116,9 +120,26 @@ return {
         ["<ESC>"] = cmp.mapping.close(),
         ["<CR>"] = cmp.mapping.confirm {
           behavior = cmp.ConfirmBehavior.Replace,
-          select = false,
+          select = true,
         },
       },
     }
+    -- `:` cmdline setup.
+    cmp.setup.cmdline(":", {
+      completion = {
+        completeopt = "menu,menuone", -- remove `noselect`.
+      },
+      mapping = cmp.mapping.preset.cmdline(),
+      sources = cmp.config.sources({
+        { name = "path" },
+      }, {
+        {
+          name = "cmdline",
+          option = {
+            ignore_cmds = { "Man", "!" },
+          },
+        },
+      }),
+    })
   end,
 }

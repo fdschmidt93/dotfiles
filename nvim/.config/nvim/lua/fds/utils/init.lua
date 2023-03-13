@@ -22,22 +22,12 @@ M.write_close_all = function()
 end
 
 M.get_selection = function()
-  local rv = vim.fn.getreg '"'
-  local rt = vim.fn.getregtype '"'
-  local mode = vim.api.nvim_get_mode().mode
-  local cmd
-  if mode == "v" then
-    cmd = "normal! `<v`>y"
-  elseif mode == "V" then
-    cmd = "normal! '[V']y"
-  elseif mode == "" then
-    cmd = [[normal! `[\<C-V>`]\y]]
-  end
-  vim.cmd(string.format([[noautocmd silent exe "%s"]], cmd))
-  local selection = vim.fn.getreg '"'
-  vim.pretty_print(selection)
-  vim.fn.setreg('"', rv, rt)
-  return ret
+  local rv = vim.fn.getreg "v"
+  local rt = vim.fn.getregtype "v"
+  vim.cmd [[noautocmd silent normal! "vy]]
+  local selection = vim.fn.getreg "v"
+  vim.fn.setreg("v", rv, rt)
+  return vim.split(selection, "\n")
 end
 
 M.hl_lines = function(expr, opts)

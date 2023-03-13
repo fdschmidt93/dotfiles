@@ -6,6 +6,11 @@ require("nvim-web-devicons").setup()
 
 vim.cmd [[hi clear StatusLine]]
 
+-- Hide all semantic highlights
+for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do
+  vim.api.nvim_set_hl(0, group, {})
+end
+
 local highlight_groups = {
   -- tree-sitter
   -- Misc {{{

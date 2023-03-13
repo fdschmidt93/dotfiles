@@ -4,6 +4,7 @@
 local utils = require "fds.utils"
 
 return utils.use_local("~/repos/lua/telescope.nvim", "nvim-telescope/telescope.nvim", {
+  event = "VeryLazy",
   dependencies = {
     "plenary.nvim",
     { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
@@ -41,9 +42,10 @@ return utils.use_local("~/repos/lua/telescope.nvim", "nvim-telescope/telescope.n
         borderchars = { " ", " ", " ", " ", " ", " ", " ", " " },
         layout_strategy = "vertical",
         layout_config = {
-          height = 0.90,
+          height = 0.999,
+          width = 0.999,
           prompt_position = "top",
-          preview_height = 15,
+          preview_height = 0.40,
         },
         prompt_prefix = " ",
         sorting_strategy = "ascending",
@@ -131,6 +133,11 @@ return utils.use_local("~/repos/lua/telescope.nvim", "nvim-telescope/telescope.n
           },
           -- trigger current_buffer_fuzzy_find in currently selected file with appending "@"
           on_input_filter_cb = function(prompt)
+            prompt = vim.split(prompt, " ")
+            for i, token in ipairs(prompt) do
+              prompt[i] = string.format("'%s", token)
+            end
+            prompt = table.concat(prompt, " ")
             if prompt:sub(#prompt) == "@" then
               vim.schedule(function()
                 local prompt_bufnr = vim.api.nvim_get_current_buf()

@@ -55,7 +55,11 @@ set({ "n", "i", "t" }, "<A-l>", [[<C-\><C-N><C-w>l]])
 local ts_builtin = setmetatable({}, {
   __index = function(_, key)
     return function(topts)
+      local mode = vim.api.nvim_get_mode().mode
       topts = topts or {}
+      if mode == "v" or mode == "V" or mode == "" then
+        topts.default_text = table.concat(require("fds.utils").get_selection())
+      end
       local builtin = require "telescope.builtin"
       builtin[key](topts)
     end
@@ -65,6 +69,7 @@ local ts_builtin = setmetatable({}, {
 local ts_leader = "<space><space>"
 
 set("n", ts_leader .. "f", ts_builtin.find_files, { silent = true, desc = "Telescope: Find Files" })
+set("n", "<M-x>", ts_builtin.commands, { silent = true, desc = "Telescope: Commands" })
 set("i", "<C-f>", ts_builtin.find_files, { silent = true, desc = "Telescope: Find Files" })
 set("i", "<C-s>", ts_builtin.symbols, { silent = true, desc = "Telescope: Symbols" })
 set("n", ts_leader .. "rs", ts_builtin.grep_string, { silent = true, desc = "Telescope: Grep String" })
@@ -97,7 +102,7 @@ set("n", ts_leader .. "rG", function()
   ts_builtin.live_grep { default_text = vim.fn.expand "<cword>" }
 end, { silent = true, desc = "Telescope: Live Grep (cword)" })
 set("v", ts_leader .. "rg", function()
-  ts_builtin.live_grep { default_text = table.concat(require("fds.utils").visual_selection(), "") }
+  ts_builtin.live_grep { default_text = table.concat(require("fds.utils").get_selection(), "") }
 end, { silent = true, desc = "Telescope: Live Grep (visual selection)" })
 set("n", ts_leader .. "ts", ts_builtin.treesitter, { silent = true, desc = "Telescope: Treesitter" })
 set("n", "gD", vim.lsp.buf.declaration, { silent = true, desc = "Telescope: LSP Declaration" })
@@ -105,7 +110,7 @@ set("n", "gi", vim.lsp.buf.implementation, { silent = true, desc = "Telescope: L
 set("n", "gd", ts_builtin.lsp_definitions, { silent = true, desc = "Telescope: LSP Definitions" })
 set("n", "gr", ts_builtin.lsp_references, { silent = true, desc = "Telescope: LSP References" })
 set("n", "<space>ds", ts_builtin.lsp_document_symbols, { silent = true, desc = "Telescope: LSP Document Symbols" })
-set("v", "<space>x", R "fds.utils".get_selection)
+set("v", "<space>x", R("fds.utils").get_selection)
 set(
   "n",
   "<space>fs",
@@ -150,8 +155,9 @@ set("n", "K", vim.lsp.buf.hover, { desc = "LSP: hover" })
 set("n", "<space>f", function()
   vim.lsp.buf.format { async = true }
 end, { desc = "LSP: format async" })
-
-
+set("n", "<space><space>", function()
+  require "fds.utils.test"()
+end)
 -- luasnip
 --
 set("i", "<C-u>", function()
@@ -174,12 +180,8 @@ end, { silent = true })
 -- this always moves to the previous item within the snippet
 set({ "i", "s" }, "<C-j>", function()
   if require("luasnip").expand_or_jumpable() then
-    require("luasnip").jump( -1)
+    require("luasnip").jump(-1)
   end
 end, { silent = true })
 
-set(
-  "n",
-  "<leader><leader>K",
-  [[<cmd>source ~/.config/nvim/lua/fds/mappings.lua<CR>|<cmd>echo "sourced mappings"<CR>]]
-)
+set("n", "<leader><leader>K", [[<cmd>source ~/.config/nvim/lua/fds/mappings.lua<CR>|<cmd>echo "sourced mappings"<CR>]])
