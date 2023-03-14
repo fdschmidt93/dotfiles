@@ -155,9 +155,6 @@ set("n", "K", vim.lsp.buf.hover, { desc = "LSP: hover" })
 set("n", "<space>f", function()
   vim.lsp.buf.format { async = true }
 end, { desc = "LSP: format async" })
-set("n", "<space><space>", function()
-  require "fds.utils.test"()
-end)
 -- luasnip
 --
 set("i", "<C-u>", function()

@@ -3,7 +3,7 @@ A = vim.api
 F = vim.fn
 B = vim.api.nvim_get_current_buf
 W = vim.api.nvim_get_current_win
-P = vim.pretty_print
+P = vim.print
 
 -- partial function for mapping keys
 partial = function(f, ...)
