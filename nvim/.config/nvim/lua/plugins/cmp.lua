@@ -3,6 +3,12 @@ return {
   event = { "InsertEnter", "CmdlineEnter" },
   dependencies = {
     "gruvbox",
+    {
+      "github/copilot.vim",
+      config = function()
+        vim.g.copilot_filetypes = { TelescopePrompt = false }
+      end,
+    },
     "hrsh7th/cmp-buffer",
     "hrsh7th/cmp-path",
     "hrsh7th/cmp-nvim-lsp",
