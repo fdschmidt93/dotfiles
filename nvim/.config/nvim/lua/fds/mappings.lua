@@ -52,7 +52,7 @@ set({ "n", "i", "t" }, "<A-k>", [[<C-\><C-N><C-w>k]])
 set({ "n", "i", "t" }, "<A-l>", [[<C-\><C-N><C-w>l]])
 
 -- telescope
-local ts_builtin = setmetatable({}, {
+local ts = setmetatable({}, {
   __index = function(_, key)
     return function(topts)
       local mode = vim.api.nvim_get_mode().mode
@@ -60,21 +60,25 @@ local ts_builtin = setmetatable({}, {
       if mode == "v" or mode == "V" or mode == "" then
         topts.default_text = table.concat(require("fds.utils").get_selection())
       end
-      local builtin = require "telescope.builtin"
-      builtin[key](topts)
+      if key == "grep" then
+        require("telescope").extensions.egrepify.egrepify(topts)
+      else
+        local builtin = require "telescope.builtin"
+        builtin[key](topts)
+      end
     end
   end,
 })
 -- local my_finders = require "fds.plugins.telescope.finders"
 local ts_leader = "<space><space>"
 
-set("n", ts_leader .. "f", ts_builtin.find_files, { silent = true, desc = "Telescope: Find Files" })
-set("n", "<M-x>", ts_builtin.commands, { silent = true, desc = "Telescope: Commands" })
-set("i", "<C-f>", ts_builtin.find_files, { silent = true, desc = "Telescope: Find Files" })
-set("i", "<C-s>", ts_builtin.symbols, { silent = true, desc = "Telescope: Symbols" })
-set("n", ts_leader .. "rs", ts_builtin.grep_string, { silent = true, desc = "Telescope: Grep String" })
-set("v", ts_leader .. "rs", ts_builtin.grep_string, { silent = true, desc = "Telescope: Grep String" })
-set("n", ts_leader .. "bb", ts_builtin.buffers, { silent = true, desc = "Telescope: Buffers" })
+set("n", ts_leader .. "f", ts.find_files, { silent = true, desc = "Telescope: Find Files" })
+set("n", "<M-x>", ts.commands, { silent = true, desc = "Telescope: Commands" })
+set("i", "<C-f>", ts.find_files, { silent = true, desc = "Telescope: Find Files" })
+set("i", "<C-s>", ts.symbols, { silent = true, desc = "Telescope: Symbols" })
+set("n", ts_leader .. "rs", ts.grep_string, { silent = true, desc = "Telescope: Grep String" })
+set("v", ts_leader .. "rs", ts.grep_string, { silent = true, desc = "Telescope: Grep String" })
+set("n", ts_leader .. "bb", ts.buffers, { silent = true, desc = "Telescope: Buffers" })
 -- nnoremap { ts_leader .. "bf", require("telescope").extensions.file_browser.file_browser, {silent = true, } }
 set("n", ts_leader .. "bf", function()
   require("telescope").extensions.file_browser.file_browser()
@@ -82,39 +86,39 @@ end, { silent = true, desc = "Telescope: File Browser" })
 set("n", ts_leader .. "bF", function()
   require("telescope").extensions.file_browser.file_browser { path = "%:p:h", select_buffer = true }
 end, { silent = true, desc = "Telescope: File Browser (current buffer)" })
-set("n", ts_leader .. "bi", ts_builtin.builtin, { silent = true, desc = "Telescope: Builtins" })
-set("n", ts_leader .. "gS", ts_builtin.git_stash, { silent = true, desc = "Telescope: Git Stash" })
-set("n", ts_leader .. "gb", ts_builtin.git_branches, { silent = true, desc = "Telescope: Git Branches" })
-set("n", ts_leader .. "gc", ts_builtin.git_commits, { silent = true, desc = "Telescope: Git Commits" })
-set("n", ts_leader .. "gs", ts_builtin.git_status, { silent = true, desc = "Telescope: Git Status" })
-set("n", ts_leader .. "help", ts_builtin.help_tags, { silent = true, desc = "Telescope: Help Tags" })
-set("n", ts_leader .. "jl", ts_builtin.jumplist, { silent = true, desc = "Telescope: Jumplist " })
-set("n", ts_leader .. "man", ts_builtin.man_pages, { silent = true, desc = "Telescope: Man Pages " })
-set("n", ts_leader .. "re", ts_builtin.resume, { silent = true, desc = "Telescope: Resume " })
+set("n", ts_leader .. "bi", ts.builtin, { silent = true, desc = "Telescope: Builtins" })
+set("n", ts_leader .. "gS", ts.git_stash, { silent = true, desc = "Telescope: Git Stash" })
+set("n", ts_leader .. "gb", ts.git_branches, { silent = true, desc = "Telescope: Git Branches" })
+set("n", ts_leader .. "gc", ts.git_commits, { silent = true, desc = "Telescope: Git Commits" })
+set("n", ts_leader .. "gs", ts.git_status, { silent = true, desc = "Telescope: Git Status" })
+set("n", ts_leader .. "help", ts.help_tags, { silent = true, desc = "Telescope: Help Tags" })
+set("n", ts_leader .. "jl", ts.jumplist, { silent = true, desc = "Telescope: Jumplist " })
+set("n", ts_leader .. "man", ts.man_pages, { silent = true, desc = "Telescope: Man Pages " })
+set("n", ts_leader .. "re", ts.resume, { silent = true, desc = "Telescope: Resume " })
 set(
   "n",
   ts_leader .. "rb",
-  ts_builtin.current_buffer_fuzzy_find,
+  ts.current_buffer_fuzzy_find,
   { silent = true, desc = "Telescope: Current Buffer Fuzzy Find " }
 )
-set("n", ts_leader .. "rg", ts_builtin.live_grep, { silent = true, desc = "Telescope: Live Grep " })
+set("n", ts_leader .. "rg", ts.grep, { silent = true, desc = "Telescope: Live Grep " })
 set("n", ts_leader .. "rG", function()
-  ts_builtin.live_grep { default_text = vim.fn.expand "<cword>" }
+  ts.grep { default_text = vim.fn.expand "<cword>" }
 end, { silent = true, desc = "Telescope: Live Grep (cword)" })
 set("v", ts_leader .. "rg", function()
-  ts_builtin.live_grep { default_text = table.concat(require("fds.utils").get_selection(), "") }
+  ts.grep { default_text = table.concat(require("fds.utils").get_selection(), "") }
 end, { silent = true, desc = "Telescope: Live Grep (visual selection)" })
-set("n", ts_leader .. "ts", ts_builtin.treesitter, { silent = true, desc = "Telescope: Treesitter" })
+set("n", ts_leader .. "ts", ts.treesitter, { silent = true, desc = "Telescope: Treesitter" })
 set("n", "gD", vim.lsp.buf.declaration, { silent = true, desc = "Telescope: LSP Declaration" })
 set("n", "gi", vim.lsp.buf.implementation, { silent = true, desc = "Telescope: LSP Implementation" })
-set("n", "gd", ts_builtin.lsp_definitions, { silent = true, desc = "Telescope: LSP Definitions" })
-set("n", "gr", ts_builtin.lsp_references, { silent = true, desc = "Telescope: LSP References" })
-set("n", "<space>ds", ts_builtin.lsp_document_symbols, { silent = true, desc = "Telescope: LSP Document Symbols" })
+set("n", "gd", ts.lsp_definitions, { silent = true, desc = "Telescope: LSP Definitions" })
+set("n", "gr", ts.lsp_references, { silent = true, desc = "Telescope: LSP References" })
+set("n", "<space>ds", ts.lsp_document_symbols, { silent = true, desc = "Telescope: LSP Document Symbols" })
 set("v", "<space>x", R("fds.utils").get_selection)
 set(
   "n",
   "<space>fs",
-  partial(ts_builtin.lsp_document_symbols, { symbols = { "function", "method" } }),
+  partial(ts.lsp_document_symbols, { symbols = { "function", "method" } }),
   { silent = true, desc = "Telescope: LSP Function Symbols" }
 )
 
@@ -122,28 +126,28 @@ set(
 set(
   "n",
   "<space>db",
-  partial(ts_builtin.diagnostics, { prompt_title = "Document Diagnostics", bufnr = 0 }),
+  partial(ts.diagnostics, { prompt_title = "Document Diagnostics", bufnr = 0 }),
   { silent = true, desc = "Telescope: LSP Document Diagnostics" }
 )
 set(
   "n",
   "<space>dw",
-  partial(ts_builtin.diagnostics, { prompt_title = "Workspace Diagnostics" }),
+  partial(ts.diagnostics, { prompt_title = "Workspace Diagnostics" }),
   { silent = true, desc = "Telescope: LSP Workspace Diagnostics" }
 )
 set(
   "n",
   "<space>cs",
-  partial(ts_builtin.lsp_document_symbols, { symbols = "class" }),
+  partial(ts.lsp_document_symbols, { symbols = "class" }),
   { silent = true, desc = "Telescope: LSP Class Symbols" }
 )
 set("n", "<space>ws", function()
-  ts_builtin.lsp_workspace_symbols { query = vim.fn.input "> " }
+  ts.lsp_workspace_symbols { query = vim.fn.input "> " }
 end, opts)
 set(
   "n",
   "<space>wsd",
-  ts_builtin.lsp_dynamic_workspace_symbols,
+  ts.lsp_dynamic_workspace_symbols,
   { silent = true, desc = "Telescope: LSP Dynamic Workspace Symbols " }
 )
 

@@ -7,8 +7,12 @@ return utils.use_local("~/repos/lua/telescope.nvim", "nvim-telescope/telescope.n
   event = "VeryLazy",
   dependencies = {
     "plenary.nvim",
-    { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+    {
+      "nvim-telescope/telescope-fzf-native.nvim",
+      build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
+    },
     { "nvim-telescope/telescope-symbols.nvim" },
+    { utils.use_local("~/repos/lua/telescope-egrepify.nvim/", "fdschmidt93/telescope-egrepify.nvim")},
     { "nvim-telescope/telescope-smart-history.nvim", dependencies = "kkharji/sqlite.lua" },
     utils.use_local("~/repos/lua/telescope-file-browser.nvim", "nvim-telescope/telescope-file-browser.nvim"),
   },
@@ -72,6 +76,20 @@ return utils.use_local("~/repos/lua/telescope.nvim", "nvim-telescope/telescope.n
         },
       },
       extensions = {
+        egrepify = {
+          lnum = true, -- default, not required
+          lnum_hl = "EgrepifyLnum", -- default, not required
+          col = false, -- default, not required
+          col_hl = "EgrepifyCol", -- default, not required
+          title_hl = "@title.emphasis",
+          title_suffix_hl = "Comment",
+          -- EXAMPLE PREFIX!
+          prefixes = {
+            ["!"] = {
+              flag = "invert-match",
+            },
+          },
+        },
         file_browser = {
           -- initial_mode = "normal",
           -- cwd_to_path = true,
@@ -234,6 +252,7 @@ return utils.use_local("~/repos/lua/telescope.nvim", "nvim-telescope/telescope.n
 
     telescope.load_extension "fzf"
     telescope.load_extension "file_browser"
+    telescope.load_extension "egrepify"
 
     if require("ffi").load "libsqlite3" then
       telescope.load_extension "smart_history"
