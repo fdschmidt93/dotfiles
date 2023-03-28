@@ -20,7 +20,7 @@ local highlight_groups = {
   { "@preproc", { link = "PreProc" } },
   { "@define", { link = "Define" } },
   { "@operator", { fg = "fg" } },
-  { "@text.strong.emphasis", { fg = "fg", bold = true, italic = true } },
+  { "@title.emphasis", { fg = palette.bright_green, bold = true, italic = true } },
   -- }}}
 
   -- Punctuation {{{

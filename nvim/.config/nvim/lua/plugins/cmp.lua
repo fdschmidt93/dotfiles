@@ -128,6 +128,10 @@ return {
           behavior = cmp.ConfirmBehavior.Replace,
           select = true,
         },
+        ["<C-y>"] = cmp.mapping.confirm {
+          behavior = cmp.ConfirmBehavior.Replace,
+          select = true,
+        },
       },
     }
     -- `:` cmdline setup.

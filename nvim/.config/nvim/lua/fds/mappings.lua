@@ -39,8 +39,8 @@ set("n", "<A-i>", partial(repl.toggle_termwin, "below"), { desc = "Terminal: tog
 set("n", "<Leader><Leader>l", [[<cmd>luafile %<CR>]], { desc = "Lua: run current file" })
 set("n", "<Leader><Leader>swap", [[!rm ~/.local/nvim/swap/*]], { desc = "Clear swap" })
 set("n", "<A-q>", require("fds.utils").write_close_all, { desc = "Save and close buffers" })
-set("n", "<Space><Space>2", [[<cmd>:diffget 2<CR>]])
-set("n", "<Space><Space>3", [[<cmd>:diffget 3<CR>]])
+set("n", "<Space><Space>2", [[<cmd>:diffget //2<CR>]])
+set("n", "<Space><Space>3", [[<cmd>:diffget //3<CR>]])
 
 -- replace word under cursor with last yanked word
 set("n", "<Leader>z", ":%s/<C-R><C-W>/<C-R>0/g<CR>")
@@ -102,6 +102,9 @@ set(
   { silent = true, desc = "Telescope: Current Buffer Fuzzy Find " }
 )
 set("n", ts_leader .. "rg", ts.grep, { silent = true, desc = "Telescope: Live Grep " })
+set("n", ts_leader .. "RG", function()
+  ts.grep { grep_open_files = true }
+end, { silent = true, desc = "Telescope: Live Grep " })
 set("n", ts_leader .. "rG", function()
   ts.grep { default_text = vim.fn.expand "<cword>" }
 end, { silent = true, desc = "Telescope: Live Grep (cword)" })

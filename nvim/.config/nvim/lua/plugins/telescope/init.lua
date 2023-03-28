@@ -77,6 +77,7 @@ return utils.use_local("~/repos/lua/telescope.nvim", "nvim-telescope/telescope.n
       },
       extensions = {
         egrepify = {
+          AND = true,
           lnum = true, -- default, not required
           lnum_hl = "EgrepifyLnum", -- default, not required
           col = false, -- default, not required
@@ -91,19 +92,14 @@ return utils.use_local("~/repos/lua/telescope.nvim", "nvim-telescope/telescope.n
           },
         },
         file_browser = {
-          -- initial_mode = "normal",
-          -- cwd_to_path = true,
-          -- grouped = true,
-          -- grouped = true,
-          -- initial_browser = "tree",
-          -- auto_depth = true,
-          -- previewer = false,
-          -- path_display = { "tail" },
-          -- hijack_netrw = true,
-          -- mappings = {
-          --   ["n"] = {
-          --     ["o"] = require("telescope.actions").select_default,
-          --   },
+          grouped = true,
+          initial_browser = "tree",
+          auto_depth = true,
+          depth = 1,
+          -- browser_opts = {
+          --   tree = {
+          --     only_dirs = true
+          --   }
           -- },
         },
         fzf = {
