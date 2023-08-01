@@ -27,11 +27,11 @@ set("n", [[<Leader><C-t>]], function()
 end, { desc = "Terminal: open below" })
 
 set("n", [[<Leader>ti]], function()
-  repl.restart_term(repl.wrap_conda_env "ipython", { side = "right" })
-end, { desc = "Terminal: (re-)start ipython to right" })
+  repl.restart_term(repl.wrap_conda_env "ptpython", { side = "right" })
+end, { desc = "Terminal: (re-)start ptpython to right" })
 set("n", [[<Leader><C-t>i]], function()
-  repl.restart_term(repl.wrap_conda_env "ipython", { side = "below" })
-end, { desc = "Terminal: (re-)start ipython below" })
+  repl.restart_term(repl.wrap_conda_env "ptpython", { side = "below" })
+end, { desc = "Terminal: (re-)start ptpython below" })
 -- toggle terminal
 set("n", "<A-u>", partial(repl.toggle_termwin, "right"), { desc = "Terminal: toggle right" })
 set("n", "<A-i>", partial(repl.toggle_termwin, "below"), { desc = "Terminal: toggle below" })
@@ -165,8 +165,11 @@ end, { desc = "LSP: format async" })
 -- luasnip
 --
 set("i", "<C-u>", function()
-  require "luasnip.extras.select_choice"
+  if require("luasnip").choice_active() then
+    require "luasnip.extras.select_choice"()
+  end
 end)
+
 set("i", "<c-l>", function()
   if require("luasnip").choice_active() then
     require("luasnip").change_choice(1)
@@ -175,17 +178,13 @@ end)
 -- <c-k> is my expansion key
 -- this will expand the current item or jump to the next item within the snippet.
 set({ "i", "s" }, "<C-k>", function()
-  if require("luasnip").expand_or_jumpable() then
-    require("luasnip").expand_or_jump()
-  end
+  require("luasnip").jump(1)
 end, { silent = true })
 
 -- <c-j> is my jump backwards key.
 -- this always moves to the previous item within the snippet
 set({ "i", "s" }, "<C-j>", function()
-  if require("luasnip").expand_or_jumpable() then
-    require("luasnip").jump(-1)
-  end
+  require("luasnip").jump(-1)
 end, { silent = true })
 
 set("n", "<leader><leader>K", [[<cmd>source ~/.config/nvim/lua/fds/mappings.lua<CR>|<cmd>echo "sourced mappings"<CR>]])

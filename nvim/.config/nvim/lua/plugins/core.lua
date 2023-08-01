@@ -8,6 +8,7 @@ return {
       require "fds.highlights"
     end,
   },
+  { "dhruvasagar/vim-table-mode",  ft = "markdown" },
   {
     "iamcco/markdown-preview.nvim",
     build = "cd app && yarn install",
@@ -43,12 +44,6 @@ return {
     "numToStr/Comment.nvim",
     config = function()
       require("Comment").setup()
-    end,
-  },
-  {
-    "glacambre/firenvim",
-    build = function()
-      vim.fn["firenvim#install"](0)
     end,
   },
   {

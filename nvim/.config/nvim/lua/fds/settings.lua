@@ -1,23 +1,5 @@
 local opt = vim.opt
 
--- for firenvim
--- \ 'content': 'text',
-vim.cmd [[set guifont=JetBrainsMono_Nerd_Font_Mono:h18]]
-vim.cmd [[
-let g:firenvim_config = {
-    \ 'globalSettings': {
-        \ 'alt': 'all',
-    \  },
-    \ 'localSettings': {
-        \ '.*': {
-            \ 'cmdline': 'firenvim',
-            \ 'priority': 0,
-            \ 'takeover': 'never',
-        \ },
-    \ }
-\ }
-]]
-
 vim.cmd [[set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case]]
 vim.cmd [[set grepformat=%f:%l:%c:%m,%f:%l:%m]]
 

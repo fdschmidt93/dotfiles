@@ -3,7 +3,7 @@ local set = vim.keymap.set
 
 local bufnr = api.nvim_get_current_buf()
 
--- initialize ipython terminal with shell's conda environment
+-- initialize ptpython terminal with shell's conda environment
 local has_term = false
 for _, chan in ipairs(api.nvim_list_chans()) do
   if chan.mode == "terminal" then
@@ -13,7 +13,7 @@ for _, chan in ipairs(api.nvim_list_chans()) do
 end
 if not has_term then
   local repl = require "fds.utils.repl"
-  local termbuf = repl.shell { cmd = repl.wrap_conda_env "ipython", side = "below", listed = false }
+  local termbuf = repl.shell { cmd = repl.wrap_conda_env "ptpython", side = "below", listed = false }
   repl.toggle_termwin("below", termbuf)
   -- vim.defer_fn(function()
   --   local imports = {

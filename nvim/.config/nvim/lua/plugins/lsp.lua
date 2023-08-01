@@ -1,3 +1,10 @@
+local ok, wf = pcall(require, "vim.lsp._watchfiles")
+if ok then
+  -- disable lsp watcher. Too slow on linux
+  wf._watchfunc = function()
+    return function() end
+  end
+end
 return {
   "neovim/nvim-lspconfig",
   dependencies = {
@@ -9,8 +16,6 @@ return {
   config = function()
     local lsp = vim.lsp
     local null_ls = require "null-ls"
-
-    require("neodev").setup()
 
     local nvim_lsp = require "lspconfig"
 

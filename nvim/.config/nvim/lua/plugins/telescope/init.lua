@@ -5,6 +5,7 @@ local utils = require "fds.utils"
 
 return utils.use_local("~/repos/lua/telescope.nvim", "nvim-telescope/telescope.nvim", {
   event = "VeryLazy",
+  cmd = "Telescope",
   dependencies = {
     "plenary.nvim",
     {
@@ -12,8 +13,11 @@ return utils.use_local("~/repos/lua/telescope.nvim", "nvim-telescope/telescope.n
       build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
     },
     { "nvim-telescope/telescope-symbols.nvim" },
-    { utils.use_local("~/repos/lua/telescope-egrepify.nvim/", "fdschmidt93/telescope-egrepify.nvim")},
-    { "nvim-telescope/telescope-smart-history.nvim", dependencies = "kkharji/sqlite.lua" },
+    { utils.use_local("~/repos/lua/telescope-egrepify.nvim/", "fdschmidt93/telescope-egrepify.nvim") },
+    {
+      "nvim-telescope/telescope-smart-history.nvim",
+      dependencies = "kkharji/sqlite.lua",
+    },
     utils.use_local("~/repos/lua/telescope-file-browser.nvim", "nvim-telescope/telescope-file-browser.nvim"),
   },
   config = function()
@@ -46,8 +50,12 @@ return utils.use_local("~/repos/lua/telescope.nvim", "nvim-telescope/telescope.n
         borderchars = { " ", " ", " ", " ", " ", " ", " ", " " },
         layout_strategy = "vertical",
         layout_config = {
-          height = 0.999,
-          width = 0.999,
+          height = function(_, _, l)
+            return l
+          end,
+          width = function(_, c, _)
+            return c
+          end,
           prompt_position = "top",
           preview_height = 0.40,
         },
@@ -80,7 +88,7 @@ return utils.use_local("~/repos/lua/telescope.nvim", "nvim-telescope/telescope.n
           AND = true,
           lnum = true, -- default, not required
           lnum_hl = "EgrepifyLnum", -- default, not required
-          col = false, -- default, not required
+          -- col = true, -- default, not required
           col_hl = "EgrepifyCol", -- default, not required
           title_hl = "@title.emphasis",
           title_suffix_hl = "Comment",
@@ -93,14 +101,10 @@ return utils.use_local("~/repos/lua/telescope.nvim", "nvim-telescope/telescope.n
         },
         file_browser = {
           grouped = true,
+          previewer = false,
           initial_browser = "tree",
           auto_depth = true,
           depth = 1,
-          -- browser_opts = {
-          --   tree = {
-          --     only_dirs = true
-          --   }
-          -- },
         },
         fzf = {
           fuzzy = false, -- false will only do exact matching
@@ -181,7 +185,6 @@ return utils.use_local("~/repos/lua/telescope.nvim", "nvim-telescope/telescope.n
           },
         },
         buffers = {
-          initial_mode = "normal",
           sort_mru = true,
           sort_lastused = true,
           mappings = {
