@@ -4,6 +4,32 @@ local utils = require "telescope.utils"
 local conf = require("telescope.config").values
 local sorters = require "telescope.sorters"
 
+local prompt_tokens = {}
+
+-- `rg` highlighting with `AND` can be too greedy
+local function find_all_offsets(line, matches)
+  local offsets = {}
+  for _, match in ipairs(matches) do
+    local match_
+    if match:sub(-1, -1) == "$" then
+      match_ = match:sub(1, -2)
+    else
+      match_ = match
+    end
+    local start = 1
+    while start do
+      local s, e = string.find(line, match_, start, true) -- true makes the search plain (no pattern matching)
+      if s then
+        table.insert(offsets, { start = s - 1, end_ = e })
+        start = e + 1
+      else
+        break
+      end
+    end
+  end
+  return offsets
+end
+
 --- Tokenizes the `prompt` into space-separated tokens (i.e. words)
 --- @param prompt string: the prompt to tokenize
 --- @return table: the tokens in the prompt
@@ -16,15 +42,14 @@ local function tokenize(prompt)
 end
 
 -- Sorter function for telescope
--- Prefers shorter matches for staged fd.
+-- Activate the sorter
 local sort_fn = sorters.Sorter:new {
   discard = true,
-  scoring_function = function(_, prompt, _)
-    local score = prompt:len()
-    if score == 0 then
+  scoring_function = function(_, _, line)
+    if not line then
       return -1
     else
-      return 1 / score
+      return 0.99
     end
   end,
 }
@@ -71,14 +96,18 @@ local function gen_from_file(opts)
   mt_file_entry.cwd = cwd
   mt_file_entry.display = function(entry)
     local hl_group, icon
-    local display = utils.transform_path(opts, entry[1])
-    display, hl_group, icon = utils.transform_devicons(entry[1], display, disable_devicons)
+    local display = utils.transform_path(opts, entry.value)
+    display, hl_group, icon = utils.transform_devicons(entry.value, display, disable_devicons)
     if hl_group then
       local begin = #icon
       local highlights = { { { 0, begin }, hl_group } }
+      local offsets = find_all_offsets(entry.value, prompt_tokens)
       begin = begin + 1 -- space between icon and filename
-      for _, match in ipairs(entry["submatches"]) do
-        highlights[#highlights + 1] = { { match["start"] + begin, match["end"] + begin }, "TelescopeMatching" }
+      -- for _, match in ipairs(entry["submatches"]) do
+      --   highlights[#highlights + 1] = { { match["start"] + begin, match["end"] + begin }, "TelescopeMatching" }
+      -- end
+      for _, match in ipairs(offsets) do
+        highlights[#highlights + 1] = { { match["start"] + begin, match["end_"] + begin }, "TelescopeMatching" }
       end
       return display, highlights
     else
@@ -111,6 +140,7 @@ local function gen_from_file(opts)
     local line = json_line["data"]["lines"]["text"]:sub(1, -2) -- trim \n
     local entry = {
       [1] = line,
+      len = line:len(),
     }
     entry.submatches = json_line["data"]["submatches"]
     return setmetatable(entry, mt_file_entry)
@@ -133,18 +163,12 @@ return function(opts)
   local cache = vim.fs.joinpath(vim.fn.stdpath "cache", "telescope-staged-fd")
   if vim.fn.isdirectory(cache) == 0 then
     vim.fn.mkdir(cache)
-    for p in vim.fs.dir(cache) do
-      -- remove dead entries
-      if vim.fn.filereadable(p) == 1 then
-        vim.fn.delete(p)
-      end
-    end
   end
   local cwd = vim.uv.cwd()
   local filename = os.time() -- store each search by lua timestamp
   local path = vim.fs.joinpath(cache, filename)
 
-  -- launch `fd` and output result to $NVIM_CACHE/telescope-fd/$TIMESTAMP
+  -- launch `fd` and output result to $NVIM_CACHE/telescope-staged-fd/$TIMESTAMP
   vim.fn.jobstart(string.format("fd -t=f --base-directory=%s > %s", cwd, path))
 
   vim.api.nvim_create_autocmd("FileType", {
@@ -166,11 +190,25 @@ return function(opts)
     end,
   })
 
+  local file_exists = false
+  local picker
   local find_command = finders.new_job(function(prompt)
+    if not file_exists then
+      file_exists = vim.wait(10, function()
+        local stat = vim.uv.fs_stat(path)
+        local ret = stat and stat.size > 10 or false
+        return ret
+      end, 1, true)
+      if not file_exists then
+        picker:refresh()
+      end
+    end
+
     if not prompt or prompt == "" then
-      return { "rg", "-N", "--color=never", "--smart-case", "--json", "--", ".", path }
+      return { "rg", "-N", "--color=never", "--smart-case", "--json", "--", "^", path }
     end
     local tokens = tokenize(prompt)
+    prompt_tokens = vim.deepcopy(tokens)
     local file_ext_ids = {}
     local file_ext = {}
 
@@ -197,17 +235,20 @@ return function(opts)
     return { "rg", "-N", "--color=never", "--smart-case", "--json", "--", prompt, path }
   end, gen_from_file(opts), opts.max_results, cwd)
 
-  _ = pickers
-      .new(opts, {
-        prompt_title = "Find Files",
-        finder = find_command,
-        previewer = conf.file_previewer(opts),
-        sorter = sort_fn,
-        -- on_input_filter_cb = function(prompt)
-        --   if prompt == nil or prompt == "" then
-        --     return { prompt = "" }
-        --   end
-        -- end,
-      })
-      :find()
+  picker = pickers.new(opts, {
+    prompt_title = "Find Files",
+    finder = find_command,
+    previewer = conf.file_previewer(opts),
+    sorter = sort_fn,
+    tiebreak = function(current_entry, existing_entry)
+      return current_entry.len < existing_entry.len
+    end,
+    on_input_filter_cb = function(prompt)
+      if prompt == nil or prompt == "" then
+        return { prompt = "^" }
+      end
+    end,
+  })
+  picker:find()
+  return picker
 end
