@@ -3,12 +3,72 @@ return {
     "romainl/vim-cool",
   },
   {
+    "simrat39/rust-tools.nvim",
+    ft = "rust",
+    config = function()
+      require("rust-tools").setup {}
+    end,
+  },
+  {
+    "kevinhwang91/nvim-ufo",
+    dependencies = { "kevinhwang91/promise-async", "nvim-treesitter" },
+    ft = { "markdown", "norg" },
+    config = function()
+      vim.o.foldcolumn = "1" -- '0' is not bad
+      vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+      vim.o.foldlevelstart = 99
+      vim.o.foldenable = true
+
+      -- Using ufo provider need remap `zR` and `zM`. If Neovim is 0.6.1, remap yourself
+      vim.keymap.set("n", "zR", require("ufo").openAllFolds)
+      vim.keymap.set("n", "zM", require("ufo").closeAllFolds)
+
+      require("ufo").setup {
+        provider_selector = function(_, filetype, _)
+          if filetype ~= "markdown" then
+            return ""
+          end
+          return { "treesitter", "indent" }
+        end,
+      }
+    end,
+  },
+  {
+    "jakewvincent/mkdnflow.nvim",
+    ft = "markdown",
+
+    config = function()
+      require("mkdnflow").setup {
+        mappings = {
+          MkdEnter = false,
+          MkdnCreateLink = { "n", "<leader>cl" },
+          MkdnFollowLink = { "n", "<leader>fl" },
+        },
+      }
+      local links = require "mkdnflow.links"
+      local followLink = links.followLink
+      links.followLink = function(path, anchor)
+        if path or anchor then
+          path, anchor = path, anchor
+        else
+          path, anchor, _ = links.getLinkPart(links.getLinkUnderCursor(), "source")
+        end
+        local uri = "phd://"
+        if path:find(uri) then
+          vim.system { "xdg-open", path }
+          return
+        end
+        followLink(path, anchor)
+      end
+    end,
+  },
+  {
     "morhetz/gruvbox",
     config = function()
       require "fds.highlights"
     end,
   },
-  { "dhruvasagar/vim-table-mode",  ft = "markdown" },
+  { "dhruvasagar/vim-table-mode", ft = "markdown" },
   {
     "iamcco/markdown-preview.nvim",
     build = "cd app && yarn install",

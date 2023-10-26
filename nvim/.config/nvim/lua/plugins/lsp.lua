@@ -9,14 +9,12 @@ return {
   "neovim/nvim-lspconfig",
   dependencies = {
     "plenary.nvim",
-    "jose-elias-alvarez/null-ls.nvim",
+    "stevearc/conform.nvim",
     "folke/neodev.nvim",
     "jose-elias-alvarez/typescript.nvim",
   },
   config = function()
     local lsp = vim.lsp
-    local null_ls = require "null-ls"
-
     local nvim_lsp = require "lspconfig"
 
     local capabilities = lsp.protocol.make_client_capabilities()
@@ -26,10 +24,38 @@ return {
       vim.cmd [[autocmd ColorScheme * :lua require('vim.lsp.diagnostic')._define_default_signs_and_highlights()]]
     end
 
+    require("conform").setup {
+      formatters_by_ft = {
+        lua = { "stylua" },
+      },
+    }
+
     -- nvim_lsp.rust_analyzer.setup { on_attach = on_attach, capabilities = capabilities }
 
     nvim_lsp.texlab.setup {}
-    nvim_lsp.lua_ls.setup {}
+    nvim_lsp.lua_ls.setup {
+      settings = {
+        Lua = {
+          runtime = {
+            -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+            version = "LuaJIT",
+          },
+          diagnostics = {
+            -- Get the language server to recognize the `vim` global
+            globals = { "vim" },
+          },
+          workspace = {
+            -- Make the server aware of Neovim runtime files
+            library = vim.api.nvim_get_runtime_file("", true),
+            checkThirdParty = false,
+          },
+          -- Do not send telemetry data containing a randomized but unique identifier
+          telemetry = {
+            enable = false,
+          },
+        },
+      },
+    }
     --
     nvim_lsp.pyright.setup {
       on_attach = on_attach,
@@ -40,17 +66,43 @@ return {
         },
       },
     }
-
-    local b = null_ls.builtins
-    null_ls.setup {
-      sources = {
-        vim.fn.executable "black" == 1 and b.formatting.black or nil,
-        vim.fn.executable "isort" == 1 and b.formatting.isort or nil,
-        b.formatting.stylua,
-      },
-      on_attach = on_attach,
+    nvim_lsp.ruff_lsp.setup {
+      on_attach = function(client)
+        on_attach(client)
+        -- Disable hover in favor of Pyright
+        client.server_capabilities.hoverProvider = false
+      end,
       capabilities = capabilities,
     }
+    nvim_lsp.rust_analyzer.setup {}
+    -- require('lspconfig').fennel_ls.setup{
+    --   root_dir = nvim_lsp.util.root_pattern "fnl",
+    -- }
+    require("lspconfig.configs").fennel_language_server = {
+      default_config = {
+        -- replace it with true path
+        cmd = { "/home/fdschmidt/.cargo/bin/fennel-language-server" },
+        filetypes = { "fennel" },
+        single_file_support = true,
+        -- source code resides in directory `fnl/`
+        root_dir = nvim_lsp.util.root_pattern "fnl",
+        settings = {
+          fennel = {
+            workspace = {
+              -- If you are using hotpot.nvim or aniseed,
+              -- make the server aware of neovim runtime files.
+              library = vim.api.nvim_list_runtime_paths(),
+            },
+            diagnostics = {
+              globals = { "vim" },
+            },
+          },
+        },
+      },
+    }
+    nvim_lsp.fennel_language_server.setup {}
+
+    require("lspconfig").marksman.setup {}
 
     lsp.handlers["textDocument/publishDiagnostics"] = lsp.with(lsp.diagnostic.on_publish_diagnostics, {
       underline = true, -- disable virtual text

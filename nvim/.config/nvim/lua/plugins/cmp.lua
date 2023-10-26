@@ -3,12 +3,6 @@ return {
   event = { "InsertEnter", "CmdlineEnter" },
   dependencies = {
     "gruvbox",
-    {
-      "github/copilot.vim",
-      config = function()
-        vim.g.copilot_filetypes = { TelescopePrompt = false }
-      end,
-    },
     "hrsh7th/cmp-buffer",
     "hrsh7th/cmp-path",
     "hrsh7th/cmp-nvim-lsp",
@@ -60,18 +54,6 @@ return {
       Operator = "",
       TypeParameter = "",
     }
-
-    local neorg = require "neorg"
-    local function load_completion()
-      neorg.modules.load_module("core.norg.completion", nil, {
-        engine = "nvim-cmp",
-      })
-    end
-    if neorg.is_loaded() then
-      load_completion()
-    else
-      neorg.callbacks.on_event("core.started", load_completion)
-    end
 
     cmp.setup {
       experimental = {

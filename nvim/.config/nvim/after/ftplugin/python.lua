@@ -1,9 +1,7 @@
 local api = vim.api
 local set = vim.keymap.set
 
-local bufnr = api.nvim_get_current_buf()
-
--- initialize ptpython terminal with shell's conda environment
+-- initialize ipython terminal with shell's conda environment
 local has_term = false
 for _, chan in ipairs(api.nvim_list_chans()) do
   if chan.mode == "terminal" then
@@ -11,27 +9,11 @@ for _, chan in ipairs(api.nvim_list_chans()) do
     break
   end
 end
+
 if not has_term then
   local repl = require "fds.utils.repl"
-  local termbuf = repl.shell { cmd = repl.wrap_conda_env "ptpython", side = "below", listed = false }
+  local termbuf = repl.shell { cmd = repl.wrap_conda_env "ipython", side = "below", listed = false }
   repl.toggle_termwin("below", termbuf)
-  -- vim.defer_fn(function()
-  --   local imports = {
-  --     "from transformers import AutoModel, AutoTokenizer",
-  --     "import torch",
-  --     "import torch.nn as nn",
-  --     "import torch.nn.functional as F",
-  --   }
-  --   local data = {}
-  --   for _, line in ipairs(imports) do
-  --     table.insert(data, "try:")
-  --     table.insert(data, "    " .. line)
-  --     table.insert(data, "except:")
-  --     table.insert(data, "    pass")
-  --   end
-  --   table.insert(data, "%clear")
-  --   require("resin.api").send { data = data, history = false }
-  -- end, 2000)
 end
 
 -- Send ranges of treesitter query to resin receiver of current buffer.
@@ -75,14 +57,14 @@ set({ "n", "x" }, "<C-s>", function()
       data[1] = string.format([[print(%s.shape if hasattr(%s, "shape") else len(%s));]], data[1], data[1], data[1])
     end,
   }
-end, { buffer = bufnr, desc = "resin.python: print len/shape of selection" })
+end, { buffer = 0, desc = "resin.python: print len/shape of selection" })
 set("n", "<C-c><C-i>", function()
   send_treesitter_query [[((import_statement) @i (#not-has-parent? @i "block"))
 ((import_from_statement) @i (#not-has-parent? @i "block"))
 ((expression_statement) @expr (#not-has-parent? @expr "block"))
 ]]
-end, { buffer = bufnr, desc = "resin.python: send all import statements" })
+end, { buffer = 0, desc = "resin.python: send all import statements" })
 
 set("n", "<C-c><C-f>", function()
   send_treesitter_query [[(function_definition) @include]]
-end, { buffer = bufnr, desc = "resin.python: send all function definitions" })
+end, { buffer = 0, desc = "resin.python: send all function definitions" })

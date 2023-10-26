@@ -27,11 +27,11 @@ set("n", [[<Leader><C-t>]], function()
 end, { desc = "Terminal: open below" })
 
 set("n", [[<Leader>ti]], function()
-  repl.restart_term(repl.wrap_conda_env "ptpython", { side = "right" })
-end, { desc = "Terminal: (re-)start ptpython to right" })
+  repl.restart_term(repl.wrap_conda_env "ipython", { side = "right" })
+end, { desc = "Terminal: (re-)start ipython to right" })
 set("n", [[<Leader><C-t>i]], function()
-  repl.restart_term(repl.wrap_conda_env "ptpython", { side = "below" })
-end, { desc = "Terminal: (re-)start ptpython below" })
+  repl.restart_term(repl.wrap_conda_env "ipython", { side = "below" })
+end, { desc = "Terminal: (re-)start ipython below" })
 -- toggle terminal
 set("n", "<A-u>", partial(repl.toggle_termwin, "right"), { desc = "Terminal: toggle right" })
 set("n", "<A-i>", partial(repl.toggle_termwin, "below"), { desc = "Terminal: toggle below" })
@@ -114,6 +114,7 @@ set("v", ts_leader .. "rg", function()
   ts.grep { default_text = table.concat(require("fds.utils").get_selection(), "") }
 end, { silent = true, desc = "Telescope: Live Grep (visual selection)" })
 set("n", ts_leader .. "ts", ts.treesitter, { silent = true, desc = "Telescope: Treesitter" })
+set("n", "<space>", vim.lsp.buf.code_action, { silent = true, desc = "LSP Code Action" })
 set("n", "gD", vim.lsp.buf.declaration, { silent = true, desc = "Telescope: LSP Declaration" })
 set("n", "gi", vim.lsp.buf.implementation, { silent = true, desc = "Telescope: LSP Implementation" })
 set("n", "gd", ts.lsp_definitions, { silent = true, desc = "Telescope: LSP Definitions" })
@@ -162,7 +163,7 @@ set("n", "]d", vim.diagnostic.goto_next, { desc = "Diagnostics: go to next" })
 set("n", "<space>rn", vim.lsp.buf.rename, { desc = "LSP: rename" })
 set("n", "K", vim.lsp.buf.hover, { desc = "LSP: hover" })
 set("n", "<space>f", function()
-  vim.lsp.buf.format { async = true }
+  require("conform").format { bufnr = vim.api.nvim_get_current_buf(), async = true, lsp_fallback = true }
 end, { desc = "LSP: format async" })
 -- luasnip
 --

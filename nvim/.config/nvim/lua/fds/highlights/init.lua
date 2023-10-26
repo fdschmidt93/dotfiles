@@ -6,6 +6,32 @@ require("nvim-web-devicons").setup()
 
 vim.cmd [[hi clear StatusLine]]
 
+local function hex_to_rg(hex)
+  hex = hex:gsub("#", "")
+  return {
+    r = tonumber("0x" .. hex:sub(1, 2)),
+    g = tonumber("0x" .. hex:sub(3, 4)),
+    b = tonumber("0x" .. hex:sub(5, 6)),
+  }
+end
+
+local function rgb_to_hex(rgb)
+  return string.format("#%02X%02X%02X", rgb.r, rgb.g, rgb.b)
+end
+
+local function blend_colors(color1, color2, alpha)
+  local c1 = hex_to_rg(color1)
+  local c2 = hex_to_rg(color2)
+
+  local blended = {
+    r = math.floor(alpha * c1.r + (1 - alpha) * c2.r),
+    g = math.floor(alpha * c1.g + (1 - alpha) * c2.g),
+    b = math.floor(alpha * c1.b + (1 - alpha) * c2.b),
+  }
+
+  return rgb_to_hex(blended)
+end
+
 -- Hide all semantic highlights
 for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do
   vim.api.nvim_set_hl(0, group, {})
@@ -34,10 +60,8 @@ local highlight_groups = {
   { "@string.regex", { link = "String" } },
   { "@string.escape", { link = "SpecialChar" } },
   { "@string.special", { link = "SpecialChar" } },
-
   { "@character", { link = "Character" } },
   { "@character.special", { link = "SpecialChar" } },
-
   { "@boolean", { link = "Boolean" } },
   { "@number", { link = "Number" } },
   { "@float", { link = "Float" } },
@@ -48,10 +72,8 @@ local highlight_groups = {
   { "@function.call", { link = "Function" } },
   { "@function.builtin", { link = "Special" } },
   { "@function.macro", { link = "Macro" } },
-
   { "@method", { link = "Function" } },
   { "@method.call", { link = "Function" } },
-
   { "@constructor", { link = "Special" } },
   { "@parameter", { link = "Identifier" } },
   -- }}}
@@ -61,7 +83,6 @@ local highlight_groups = {
   { "@keyword.function", { link = "Keyword" } },
   { "@keyword.operator", { link = "Keyword" } },
   { "@keyword.return", { link = "Keyword" } },
-
   { "@conditional", { link = "Conditional" } },
   { "@repeat", { link = "Repeat" } },
   { "@debug", { link = "Debug" } },
@@ -75,7 +96,6 @@ local highlight_groups = {
   { "@type.builtin", { link = "Type" } },
   { "@type.qualifier", { link = "Type" } },
   { "@type.definition", { link = "Typedef" } },
-
   { "@storageclass", { link = "StorageClass" } },
   { "@attribute", { link = "PreProc" } },
   { "@field", { link = "Identifier" } },
@@ -85,11 +105,9 @@ local highlight_groups = {
   -- Identifiers {{{
   { "@variable", { fg = "fg", bg = "NONE" } },
   { "@variable.builtin", { link = "Special" } },
-
   { "@constant", { link = "Constant" } },
   { "@constant.builtin", { link = "Special" } },
   { "@constant.macro", { link = "Define" } },
-
   { "@namespace", { link = "Include" } },
   { "@symbol", { link = "Identifier" } },
   -- }}}
@@ -107,7 +125,6 @@ local highlight_groups = {
   { "@text.environment", { link = "Macro" } },
   { "@text.environment.name", { link = "Type" } },
   { "@text.reference", { link = "Constant" } },
-
   { "@text.todo", { link = "Todo" } },
   { "@text.note", { link = "SpecialComment" } },
   { "@text.warning", { link = "WarningMsg" } },
@@ -128,12 +145,13 @@ local highlight_groups = {
   { "FloatBorder", { fg = palette.dark4, bg = palette.dark0_soft } },
 
   -- telescope
+  { "TelescopeMatching", { fg = palette.bright_orange, underline = true } },
   { "TelescopeSelection", { bg = palette.dark1 } }, -- gitsigns
   { "TelescopeNormal", { fg = palette.light1, bg = palette.dark0_hard } },
   { "TelescopePromptNormal", { bg = palette.dark1 } }, -- gitsigns
-  { "TelescopeResultsBorder", { fg = palette.bright_aqua, bg = palette.dark0_hard } },
-  { "TelescopePreviewBorder", { fg = palette.bright_aqua, bg = palette.dark0_hard } },
-  { "TelescopePromptBorder", { fg = palette.bright_blue, bg = palette.dark1 } },
+  { "TelescopeResultsBorder", { fg = palette.dark0_hard, bg = palette.dark0_hard } },
+  { "TelescopePreviewBorder", { fg = palette.dark0_hard, bg = palette.dark0_hard } },
+  { "TelescopePromptBorder", { fg = palette.dark1, bg = palette.dark1 } },
   { "TelescopePromptTitle", { fg = palette.dark1, bg = palette.bright_blue } },
   { "TelescopeResultsTitle", { fg = palette.dark1, bg = palette.bright_aqua } },
   { "TelescopePreviewTitle", { fg = palette.dark1, bg = palette.bright_aqua } },
@@ -151,6 +169,18 @@ local highlight_groups = {
   { "GitSignsAdd", { fg = palette.bright_green, bg = "NONE" } },
   { "GitSignsChange", { fg = palette.bright_blue, bg = "NONE" } },
   { "GitSignsDelete", { fg = palette.bright_red, bg = "NONE" } },
+
+  { "NeogitDiffAdd", { fg = palette.bright_green, bg = blend_colors(palette.bright_green, palette.dark0, 0.1) } },
+  { "NeogitDiffDelete", { fg = palette.bright_red, bg = blend_colors(palette.bright_red, palette.dark0, 0.1) } },
+  {
+    "NeogitDiffAddHighlight",
+    { fg = palette.bright_green, bg = blend_colors(palette.bright_green, palette.dark0, 0.2), bold = true },
+  },
+  {
+    "NeogitDiffDeleteHighlight",
+    { fg = palette.bright_red, bg = blend_colors(palette.bright_red, palette.dark0, 0.2), bold = true },
+  },
+  { "NeogitCursorLine", { bold = true, bg = palette.dark0_soft } },
 
   -- lspconfig
   { "DiagnosticError", { fg = palette.bright_red } },

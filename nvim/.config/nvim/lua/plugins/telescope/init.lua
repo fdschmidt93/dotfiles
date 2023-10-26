@@ -6,6 +6,7 @@ local utils = require "fds.utils"
 return utils.use_local("~/repos/lua/telescope.nvim", "nvim-telescope/telescope.nvim", {
   event = "VeryLazy",
   cmd = "Telescope",
+  lazy = true,
   dependencies = {
     "plenary.nvim",
     {
@@ -47,7 +48,6 @@ return utils.use_local("~/repos/lua/telescope.nvim", "nvim-telescope/telescope.n
 
     telescope.setup {
       defaults = {
-        borderchars = { " ", " ", " ", " ", " ", " ", " ", " " },
         layout_strategy = "vertical",
         layout_config = {
           height = function(_, _, l)
@@ -85,12 +85,13 @@ return utils.use_local("~/repos/lua/telescope.nvim", "nvim-telescope/telescope.n
       },
       extensions = {
         egrepify = {
+          results_ts_hl = true,
           AND = true,
           lnum = true, -- default, not required
           lnum_hl = "EgrepifyLnum", -- default, not required
           -- col = true, -- default, not required
           col_hl = "EgrepifyCol", -- default, not required
-          title_hl = "@title.emphasis",
+          filename_hl = "@title.emphasis",
           title_suffix_hl = "Comment",
           -- EXAMPLE PREFIX!
           prefixes = {

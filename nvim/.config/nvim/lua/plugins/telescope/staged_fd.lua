@@ -168,7 +168,7 @@ return function(opts)
 
   local find_command = finders.new_job(function(prompt)
     if not prompt or prompt == "" then
-      return nil
+      return { "rg", "-N", "--color=never", "--smart-case", "--json", "--", ".", path }
     end
     local tokens = tokenize(prompt)
     local file_ext_ids = {}
@@ -203,6 +203,11 @@ return function(opts)
         finder = find_command,
         previewer = conf.file_previewer(opts),
         sorter = sort_fn,
+        -- on_input_filter_cb = function(prompt)
+        --   if prompt == nil or prompt == "" then
+        --     return { prompt = "" }
+        --   end
+        -- end,
       })
       :find()
 end
