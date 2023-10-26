@@ -63,7 +63,7 @@ local ts = setmetatable({}, {
       if key == "grep" then
         require("telescope").extensions.egrepify.egrepify(topts)
       elseif key == "find_files" then
-        require "plugins.telescope.staged_fd"(topts)
+        require("telescope").extensions.corrode.corrode(topts)
       else
         local builtin = require "telescope.builtin"
         builtin[key](topts)

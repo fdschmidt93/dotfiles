@@ -15,6 +15,7 @@ return utils.use_local("~/repos/lua/telescope.nvim", "nvim-telescope/telescope.n
     },
     { "nvim-telescope/telescope-symbols.nvim" },
     { utils.use_local("~/repos/lua/telescope-egrepify.nvim/", "fdschmidt93/telescope-egrepify.nvim") },
+    { "fdschmidt93/telescope-corrode.nvim" },
     {
       "nvim-telescope/telescope-smart-history.nvim",
       dependencies = "kkharji/sqlite.lua",
@@ -253,6 +254,7 @@ return utils.use_local("~/repos/lua/telescope.nvim", "nvim-telescope/telescope.n
     telescope.load_extension "fzf"
     telescope.load_extension "file_browser"
     telescope.load_extension "egrepify"
+    telescope.load_extension "corrode"
 
     if require("ffi").load "libsqlite3" then
       telescope.load_extension "smart_history"
