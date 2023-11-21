@@ -10,7 +10,7 @@ return {
     "hrsh7th/cmp-nvim-lsp-signature-help",
     "hrsh7th/cmp-omni",
     "saadparwaiz1/cmp_luasnip",
-    -- "lukas-reineke/cmp-rg",
+    "lukas-reineke/cmp-rg",
     "L3MON4D3/LuaSnip",
   },
   config = function()
@@ -55,15 +55,14 @@ return {
       TypeParameter = "",
     }
     local sources = {
-      -- { name = "nvim_lsp" },
-      -- { name = "nvim_lsp_signature_help" },
-      -- { name = "path" },
-      -- { name = "buffer" },
-      -- { name = "luasnip" },
+      { name = "nvim_lsp" },
+      { name = "nvim_lsp_signature_help" },
+      { name = "path" },
+      { name = "luasnip" },
     }
-    -- if vim.uv.cwd() ~= vim.uv.os_homedir() then
-    --   table.insert(sources, { name = "rg" })
-    -- end
+    if vim.uv.cwd() ~= vim.uv.os_homedir() then
+      table.insert(sources, { name = "rg" })
+    end
     cmp.setup {
       experimental = {
         ghost_text = true,
