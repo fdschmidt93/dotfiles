@@ -18,7 +18,7 @@ return {
       "nvim-telescope/telescope-smart-history.nvim",
       dependencies = "kkharji/sqlite.lua",
     },
-    { "nvim-telescope/telescope-file-browser.nvim", dev = true },
+    { "nvim-telescope/telescope-file-browser.nvim", branch = "feat/tree", dev = true },
     { "fdschmidt93/telescope-egrepify.nvim", dev = true },
     { "fdschmidt93/telescope-corrode.nvim", dev = true },
   },

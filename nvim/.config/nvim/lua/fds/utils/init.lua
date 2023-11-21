@@ -1,19 +1,5 @@
 local M = {}
 local api = vim.api
-local HOME = vim.loop.os_homedir()
-
-M.use_local = function(path, fallback, opts)
-  opts = opts or {}
-  if path:sub(1, 1) == "~" then
-    path = HOME .. path:sub(2, -1)
-  end
-  if vim.fn.isdirectory(path) == 1 then
-    opts.dir = path
-  else
-    opts[1] = fallback
-  end
-  return opts
-end
 
 -- neither wqa nor wqa! work nicely with terminal buffer opened
 M.write_close_all = function()

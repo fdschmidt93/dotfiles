@@ -1,6 +1,6 @@
-local utils = require "fds.utils"
-
-return utils.use_local("~/repos/lua/resin.nvim", "fdschmidt93/resin.nvim", {
+return {
+  "fdschmidt93/resin.nvim",
+  dev = true,
   event = "VeryLazy",
   config = function()
     require("resin").setup {
@@ -30,4 +30,4 @@ return utils.use_local("~/repos/lua/resin.nvim", "fdschmidt93/resin.nvim", {
       },
     }
   end,
-})
+}
