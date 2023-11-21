@@ -1,4 +1,4 @@
-set -gx PATH ~/.fzf/bin/ /home/fdschmidt/.cargo/bin $PATH
+set -gx PATH ~/.fzf/bin/ /home/fdschmidt/.cargo/bin /home/fdschmidt/.local/bin/ $PATH
 set -x LD_LIBRARY_PATH /usr/local/lib/ $LD_LIBRARY_PATH
 set -gx ALPHAVANTAGE_API_KEY "ZT0B722UX6NBPZME"
 set -gx EDITOR /usr/bin/nvim
@@ -15,7 +15,26 @@ set -gx MANWIDTH 999
 set -gx NVIM_LISTEN_ADDRESS "/tmp/nvimsocket"
 alias vi=nvim
 alias vip="nvim '+PythonTerm'"
-source /home/fdschmidt/miniconda3/etc/fish/conf.d/conda.fish
 eval (keychain --eval --agents ssh -Q --quiet id_rsa --nogui --noask)
 fish_vi_key_bindings
 set PYDEVD_IPYTHON_COMPATIBLE_DEBUGGING 1
+
+abbr ca conda activate
+abbr za zathura
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+if test -f $HOME/miniforge3/bin/conda
+    eval $HOME/miniforge3/bin/conda "shell.fish" "hook" $argv | source
+end
+
+if test -f "$HOME/miniforge3/etc/fish/conf.d/mamba.fish"
+    source "$HOME/miniforge3/etc/fish/conf.d/mamba.fish"
+end
+
+# <<< conda initialize <<<
+if status is-login
+    if test -z "$DISPLAY" -a "$XDG_VTNR" = 1
+        exec startx -- -keeptty
+    end
+end
