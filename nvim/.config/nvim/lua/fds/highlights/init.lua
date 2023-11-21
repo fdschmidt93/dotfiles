@@ -15,9 +15,7 @@ local function hex_to_rg(hex)
   }
 end
 
-local function rgb_to_hex(rgb)
-  return string.format("#%02X%02X%02X", rgb.r, rgb.g, rgb.b)
-end
+local function rgb_to_hex(rgb) return string.format("#%02X%02X%02X", rgb.r, rgb.g, rgb.b) end
 
 local function blend_colors(color1, color2, alpha)
   local c1 = hex_to_rg(color1)

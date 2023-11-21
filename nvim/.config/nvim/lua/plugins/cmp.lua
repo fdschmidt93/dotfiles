@@ -10,7 +10,7 @@ return {
     "hrsh7th/cmp-nvim-lsp-signature-help",
     "hrsh7th/cmp-omni",
     "saadparwaiz1/cmp_luasnip",
-    "lukas-reineke/cmp-rg",
+    -- "lukas-reineke/cmp-rg",
     "L3MON4D3/LuaSnip",
   },
   config = function()
@@ -54,7 +54,16 @@ return {
       Operator = "",
       TypeParameter = "",
     }
-
+    local sources = {
+      -- { name = "nvim_lsp" },
+      -- { name = "nvim_lsp_signature_help" },
+      -- { name = "path" },
+      -- { name = "buffer" },
+      -- { name = "luasnip" },
+    }
+    -- if vim.uv.cwd() ~= vim.uv.os_homedir() then
+    --   table.insert(sources, { name = "rg" })
+    -- end
     cmp.setup {
       experimental = {
         ghost_text = true,
@@ -74,9 +83,7 @@ return {
         completeopt = "menu,menuone", -- remove `noselect`.
       },
       snippet = {
-        expand = function(args)
-          luasnip.lsp_expand(args.body)
-        end,
+        expand = function(args) luasnip.lsp_expand(args.body) end,
       },
       window = {
         completion = {
@@ -90,14 +97,7 @@ return {
           winhighlight = "Normal:Pmenu,FloatBorder:FloatBorder,CursorLine:Visual,Search:None",
         },
       },
-      sources = {
-        { name = "nvim_lsp" },
-        { name = "nvim_lsp_signature_help" },
-        { name = "path" },
-        { name = "buffer" },
-        { name = "luasnip" },
-        { name = "neorg" },
-      },
+      sources = sources,
       mapping = {
         ["<C-p>"] = cmp.mapping.select_prev_item(),
         ["<C-n>"] = cmp.mapping.select_next_item(),

@@ -55,9 +55,7 @@ M.separate = function(opts)
   opts.hl = opts.hl or {}
   return {
     [opts.name] = {
-      provider = function()
-        return (opts.condition and opts.condition() or nil) and M.separators[opts.key]
-      end,
+      provider = function() return (opts.condition and opts.condition() or nil) and M.separators[opts.key] end,
       highlight = opts.hl,
     },
   }
@@ -68,9 +66,7 @@ M.line_column = function()
   return string.format("%3d:%2d", line, column + 1)
 end
 
-M.checkwidth = function(width)
-  return vim.fn.winwidth(0) / 2 > width
-end
+M.checkwidth = function(width) return vim.fn.winwidth(0) / 2 > width end
 
 function os.capture(cmd, raw)
   local f = assert(io.popen(cmd, "r"))

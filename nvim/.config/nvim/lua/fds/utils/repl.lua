@@ -3,9 +3,7 @@ local api = vim.api
 local M = {}
 
 local function get_terminal_buffers()
-  return vim.tbl_filter(function(bufnr)
-    return vim.bo[bufnr].buftype == "terminal"
-  end, api.nvim_list_bufs())
+  return vim.tbl_filter(function(bufnr) return vim.bo[bufnr].buftype == "terminal" end, api.nvim_list_bufs())
 end
 
 local function open_term_split(side)
@@ -18,9 +16,7 @@ local function open_term_split(side)
   end
   local new_winid = api.nvim_get_current_win()
   local new_bufnr = api.nvim_win_get_buf(new_winid)
-  api.nvim_win_call(new_winid, function()
-    vim.cmd [[set winhighlight=Normal:TelescopeNormal]]
-  end)
+  api.nvim_win_call(new_winid, function() vim.cmd [[set winhighlight=Normal:TelescopeNormal]] end)
   api.nvim_set_current_win(original_winid)
   return { bufnr = new_bufnr, winid = new_winid }
 end
@@ -40,9 +36,7 @@ function M.shell(opts)
   if not opts.listed then
     vim.bo[split.bufnr].buflisted = false
   end
-  api.nvim_buf_call(split.bufnr, function()
-    vim.fn.termopen(opts.cmd)
-  end)
+  api.nvim_buf_call(split.bufnr, function() vim.fn.termopen(opts.cmd) end)
   return split
 end
 
@@ -106,9 +100,10 @@ function M.restart_term(cmd, opts)
   opts = opts or {}
   opts.side = vim.F.if_nil(opts.side, "right")
   opts.listed = vim.F.if_nil(opts.listed, true)
-  local term_buf = vim.tbl_filter(function(buf)
-    return string.find(api.nvim_buf_get_name(buf), cmd)
-  end, get_terminal_buffers())
+  local term_buf = vim.tbl_filter(
+    function(buf) return string.find(api.nvim_buf_get_name(buf), cmd, 1, true) end,
+    get_terminal_buffers()
+  )
   if #term_buf > 1 then
     print "Too many terminals open"
   end
@@ -122,9 +117,7 @@ function M.restart_term(cmd, opts)
     -- get command and open new terminal buffer in termwin
     local term_buf_name = api.nvim_buf_get_name(term_buf)
     local term_cmd = table.remove(vim.split(term_buf_name, ":"))
-    vim.api.nvim_buf_call(new_termbuf, function()
-      vim.fn.termopen(term_cmd)
-    end)
+    vim.api.nvim_buf_call(new_termbuf, function() vim.fn.termopen(term_cmd) end)
 
     for _, win in ipairs(winid) do
       api.nvim_win_set_buf(win, new_termbuf)

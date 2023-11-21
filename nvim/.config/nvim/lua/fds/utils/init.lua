@@ -69,29 +69,45 @@ M.toggle_qf = function()
   end
 end
 
--- expand or minimize current buffer in "actual" direction
--- this is useful as mapping ":resize 2" stand-alone might otherwise not be in the right direction if mapped to ctrl-leftarrow or something related
--- use like this
+--- Resizes the current buffer in the specified direction by the given margin.
+--- The function conceptually works by first determining the direction of expansion or
+--- contraction (left/right for vertical, up/down for horizontal). It then attempts to
+--- move the window cursor to resize the current window. If the window cursor doesn't
+--- move, it means we're at the edge and thus it resizes in the opposite direction.
+---@param vertical boolean: If `true`, resize vertically, else horizontally.
+---@param margin integer: The integer of lines or columns to resize by.
 M.resize = function(vertical, margin)
-  local cur_win = vim.api.nvim_get_current_win()
-  -- go (possibly) right
-  vim.cmd(string.format("wincmd %s", vertical and "l" or "j"))
-  local new_win = vim.api.nvim_get_current_win()
+  -- Constants for window commands
+  local WINCMD_LEFT = "l"
+  local WINCMD_DOWN = "j"
+  local WINCMD_PREVIOUS = "p"
 
-  -- determine direction cond on increase and existing right-hand buffer
-  local not_last = not (cur_win == new_win)
-  local sign = margin > 0
-  -- go to previous window if required otherwise flip sign
-  if not_last == true then
-    vim.cmd [[wincmd p]]
+  -- Get the current active window.
+  local current_window = vim.api.nvim_get_current_win()
+
+  -- Move the cursor to the adjacent window in the specified direction.
+  local direction = vertical and WINCMD_LEFT or WINCMD_DOWN
+  vim.cmd("wincmd " .. direction)
+
+  -- Get the new active window after the cursor move.
+  local new_winind = vim.api.nvim_get_current_win()
+
+  -- If we're not at the last window, we'll have switched windows; otherwise, we'll invert the resize direction.
+  local expand_window = (current_window ~= new_winind)
+  if not expand_window then
+    -- If we didn't switch windows, invert the margin to shrink the current window.
+    margin = -margin
   else
-    sign = not sign
+    -- Move back to the original window.
+    vim.cmd("wincmd " .. WINCMD_PREVIOUS)
   end
 
-  sign = sign and "+" or "-"
-  local dir = vertical and "vertical " or ""
-  local cmd = dir .. "resize " .. sign .. math.abs(margin) .. "<CR>"
-  vim.cmd(cmd)
+  -- Construct the resize command based on the direction and margin.
+  local resize_sign = (margin > 0) and "+" or "-"
+  local resize_direction = vertical and "vertical " or ""
+  local resize_command = resize_direction .. "resize " .. resize_sign .. math.abs(margin)
+
+  vim.cmd(resize_command)
 end
 
 -- tmux like <C-b>z: focus on one buffer in extra tab
@@ -99,7 +115,7 @@ end
 M.tabedit = function()
   -- skip if there is only one window open
   if vim.tbl_count(vim.api.nvim_tabpage_list_wins(0)) == 1 then
-    print "Cannot expand single buffer"
+    vim.notify("Cannot expand single buffer", vim.log.levels.WARN)
     return
   end
 

@@ -2,10 +2,8 @@ return {
   "folke/noice.nvim",
   dependencies = {
     "MunifTanjim/nui.nvim",
-    "rcarriga/nvim-notify",
   },
   config = function()
-    require("notify").setup { top_down = false }
     require("noice").setup {
       lsp = {
         -- override markdown rendering so that **cmp** and other plugins use **Treesitter**

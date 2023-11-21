@@ -63,9 +63,7 @@ return {
 
     table.insert(gls.left, {
       ViModeSeparatorLeft = {
-        provider = function()
-          return utils.separators["left_rounded"]
-        end,
+        provider = function() return utils.separators["left_rounded"] end,
         highlight = "GalaxyViModeSep",
       },
     })
@@ -92,9 +90,7 @@ return {
 
     table.insert(gls.left, {
       ViModeSeparatorRight = {
-        provider = function()
-          return utils.separators["right_rounded"]
-        end,
+        provider = function() return utils.separators["right_rounded"] end,
         highlight = "GalaxyViModeSep",
       },
     })
@@ -104,17 +100,13 @@ return {
       utils.separate {
         name = "SpaceViMode",
         key = "space",
-        condition = function()
-          return true
-        end,
+        condition = function() return true end,
       }
     )
 
     table.insert(gls.left, {
       FileInfoIcon = {
-        provider = function()
-          return fileinfo.get_file_icon()
-        end,
+        provider = function() return fileinfo.get_file_icon() end,
         condition = conditions.buffer_not_empty,
         highlight = { fileinfo.get_file_icon_color, "NONE" },
       },
@@ -142,35 +134,27 @@ return {
 
     table.insert(gls.mid, {
       LSPActive = {
-        provider = function()
-          return conditions.is_lsp_attached() and " " or ""
-        end,
+        provider = function() return conditions.is_lsp_attached() and " " or "" end,
         highlight = { colors.bright_blue, lsp_bg },
       },
     })
     table.insert(gls.mid, {
       LSPError = {
-        provider = function()
-          return utils.get_diagnostic_count(0, { severity = vim.diagnostic.severity.ERROR }, "")
-        end,
+        provider = function() return utils.get_diagnostic_count(0, { severity = vim.diagnostic.severity.ERROR }, "") end,
         condition = conditions.buffer_not_empty,
         highlight = { colors.bright_red, lsp_bg },
       },
     })
     table.insert(gls.mid, {
       LSPWarn = {
-        provider = function()
-          return utils.get_diagnostic_count(0, { severity = vim.diagnostic.severity.WARN }, "")
-        end,
+        provider = function() return utils.get_diagnostic_count(0, { severity = vim.diagnostic.severity.WARN }, "") end,
         condition = conditions.buffer_not_empty,
         highlight = { colors.bright_yellow, lsp_bg },
       },
     })
     table.insert(gls.mid, {
       LSPInfo = {
-        provider = function()
-          return utils.get_diagnostic_count(0, { severity = vim.diagnostic.severity.INFO }, "")
-        end,
+        provider = function() return utils.get_diagnostic_count(0, { severity = vim.diagnostic.severity.INFO }, "") end,
         condition = conditions.buffer_not_empty,
         highlight = { colors.neutral_aqua, lsp_bg },
       },
@@ -199,9 +183,7 @@ return {
 
     table.insert(gls.right, {
       GitIcon = {
-        provider = function()
-          return "  "
-        end,
+        provider = function() return "  " end,
         condition = conditions.git_condition,
         highlight = { colors.bright_orange, git_bg, "bold" },
       },
@@ -230,9 +212,7 @@ return {
 
     table.insert(gls.right, {
       DiffAdd = {
-        provider = function()
-          return utils.checkwidth(40) and utils.gitsigns("added", "   %s")
-        end,
+        provider = function() return utils.checkwidth(40) and utils.gitsigns("added", "   %s") end,
         condition = conditions.git_condition,
         highlight = { colors.bright_green, git_bg },
       },
@@ -240,9 +220,7 @@ return {
 
     table.insert(gls.right, {
       DiffModified = {
-        provider = function()
-          return utils.checkwidth(40) and utils.gitsigns("changed", "   %s")
-        end,
+        provider = function() return utils.checkwidth(40) and utils.gitsigns("changed", "   %s") end,
         condition = conditions.git_condition,
         highlight = { colors.bright_blue, git_bg },
       },
@@ -250,9 +228,7 @@ return {
 
     table.insert(gls.right, {
       DiffRemove = {
-        provider = function()
-          return utils.checkwidth(40) and utils.gitsigns("removed", "   %s")
-        end,
+        provider = function() return utils.checkwidth(40) and utils.gitsigns("removed", "   %s") end,
         condition = conditions.git_condition,
         highlight = { colors.bright_red, git_bg },
       },
@@ -272,21 +248,15 @@ return {
       utils.separate {
         name = "SpaceGit",
         key = "space",
-        condition = function()
-          return true
-        end,
+        condition = function() return true end,
       }
     )
 
     table.insert(gls.right, {
       CondaEnv = {
-        provider = function()
-          return PythonEnv
-        end,
+        provider = function() return PythonEnv end,
         highlight = { colors.bright_green, "NONE", "bold" },
-        condition = function()
-          return vim.bo.filetype == "python"
-        end,
+        condition = function() return vim.bo.filetype == "python" end,
       },
     })
     table.insert(
@@ -294,17 +264,13 @@ return {
       utils.separate {
         name = "PythonSpace",
         key = "space",
-        condition = function()
-          return vim.bo.filetype == "python"
-        end,
+        condition = function() return vim.bo.filetype == "python" end,
       }
     )
 
     table.insert(gls.right, {
       FileEncode = {
-        provider = function()
-          return fileinfo.get_file_encode():lower()
-        end,
+        provider = function() return fileinfo.get_file_encode():lower() end,
         condition = conditions.buffer_not_empty,
         highlight = { colors.light4, "NONE", "bold" },
       },
@@ -314,9 +280,7 @@ return {
       utils.separate {
         name = "EncodeSpace",
         key = "space",
-        condition = function()
-          return true
-        end,
+        condition = function() return true end,
       }
     )
 
@@ -333,9 +297,7 @@ return {
 
     table.insert(gls.short_line_left, {
       FileInfoIcon = {
-        provider = function()
-          return fileinfo.get_file_icon()
-        end,
+        provider = function() return fileinfo.get_file_icon() end,
         condition = conditions.buffer_not_empty,
         highlight = { fileinfo.get_file_icon_color, "NONE" },
       },

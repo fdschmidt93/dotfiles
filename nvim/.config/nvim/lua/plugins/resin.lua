@@ -1,6 +1,7 @@
 local utils = require "fds.utils"
 
 return utils.use_local("~/repos/lua/resin.nvim", "fdschmidt93/resin.nvim", {
+  event = "VeryLazy",
   config = function()
     require("resin").setup {
       history = {
@@ -10,9 +11,10 @@ return utils.use_local("~/repos/lua/resin.nvim", "fdschmidt93/resin.nvim", {
       filetype = {
         python = {
           setup_receiver = function()
-            local bufnr = vim.tbl_filter(function(b)
-              return vim.bo[b].buftype == "terminal"
-            end, vim.api.nvim_list_bufs())
+            local bufnr = vim.tbl_filter(
+              function(b) return vim.bo[b].buftype == "terminal" end,
+              vim.api.nvim_list_bufs()
+            )
             if #bufnr > 1 then
               print "Too many terminals open"
               return

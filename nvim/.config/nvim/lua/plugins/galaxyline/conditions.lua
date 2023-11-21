@@ -7,8 +7,6 @@ M.git_condition = function()
   return condition.check_git_workspace() and condition.buffer_not_empty() and has_filetype
 end
 
-M.is_lsp_attached = function()
-  return not vim.tbl_isempty(vim.lsp.get_active_clients())
-end
+M.is_lsp_attached = function() return not vim.tbl_isempty(vim.lsp.get_active_clients()) end
 
 return M

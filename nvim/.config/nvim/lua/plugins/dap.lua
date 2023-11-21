@@ -2,7 +2,6 @@ return {
   "mfussenegger/nvim-dap",
   keys = "<space>D",
   dependencies = {
-    "nvim-telescope/telescope-dap.nvim",
     { "rcarriga/nvim-dap-ui" },
     { "mfussenegger/nvim-dap-python" },
   },
@@ -22,14 +21,11 @@ return {
       end)
       require("dap.repl").append(text)
       -- scroll dap repl to bottom
-      local repl_buf = vim.tbl_filter(function(b)
-        return vim.bo[b].filetype == "dap-repl"
-      end, vim.api.nvim_list_bufs())[1]
+      local repl_buf =
+        vim.tbl_filter(function(b) return vim.bo[b].filetype == "dap-repl" end, vim.api.nvim_list_bufs())[1]
       -- deferring since otherwise too early
       vim.defer_fn(function()
-        vim.api.nvim_buf_call(repl_buf, function()
-          vim.cmd [[normal! G]]
-        end)
+        vim.api.nvim_buf_call(repl_buf, function() vim.cmd [[normal! G]] end)
       end, 50)
     end
 
@@ -44,11 +40,11 @@ return {
     set("n", "<space>Dt", dap.terminate, { desc = "DAP: terminate" })
     -- send to dap repl ala vim-slime
     set("v", "<C-r><C-r>", function()
-      local selection = table.concat(require("fds.utils").visual_selection(), "\n")
+      local selection = table.concat(require("fds.utils").get_selection(), "\n")
       send_to_repl(selection)
     end)
     set("v", "<C-r>k", function()
-      local selection = table.concat(require("fds.utils").visual_selection(), "\n")
+      local selection = table.concat(require("fds.utils").get_selection(), "\n")
       if #selection > 1 then
         error "Inspecting variables only works with single lines"
       end
@@ -111,17 +107,14 @@ return {
     end)
     vim.fn.sign_define("DapBreakpoint", { text = "", texthl = "Breakpoint" })
     vim.fn.sign_define("DapStopped", { text = "", texthl = "Stopped" })
-    require("telescope").load_extension "dap"
 
     -- autocompletion
     vim.api.nvim_create_autocmd("FileType", {
       pattern = "dap-repl",
-      callback = function()
-        require("dap.ext.autocompl").attach()
-      end,
+      callback = function() require("dap.ext.autocompl").attach() end,
     })
 
-    local python_path = string.format("/home/%s/miniconda3/bin/python", vim.env.USER)
+    local python_path = vim.system({ "which", "python" }, { text = true }):wait().stdout:gsub("[\r\n]", "")
     require("dap-python").setup(python_path)
     require("dapui").setup()
   end,
