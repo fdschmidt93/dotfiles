@@ -69,6 +69,14 @@ return {
     event = "InsertEnter",
     config = function() vim.cmd [[silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)]] end,
   },
+  {
+    "lukas-reineke/indent-blankline.nvim",
+    config = function()
+      require("ibl").setup {
+        scope = { show_start = false },
+      }
+    end,
+  },
   -- {
   --   "tpope/vim-surround",
   --   event = "InsertEnter",
