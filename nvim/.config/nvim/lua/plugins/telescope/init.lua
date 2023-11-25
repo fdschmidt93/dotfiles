@@ -257,16 +257,16 @@ return {
     set("n", ts_leader .. "ts", ts.treesitter, { silent = true, desc = "Telescope: Treesitter" })
     set("n", "gd", ts.lsp_definitions, { silent = true, desc = "Telescope: LSP Definitions" })
     set("n", "gr", ts.lsp_references, { silent = true, desc = "Telescope: LSP References" })
-    set("n", ts_leader .. "sd", ts.lsp_document_symbols, { silent = true, desc = "Telescope: LSP Document Symbols" })
+    set("n", ts_leader .. "ds", ts.lsp_document_symbols, { silent = true, desc = "Telescope: LSP Document Symbols" })
     set(
       "n",
-      ts_leader .. "db",
+      ts_leader .. "bd",
       function() ts.diagnostics { prompt_title = "Document Diagnostics", bufnr = 0 } end,
       { silent = false, desc = "Telescope: Document Diagnostics" }
     )
     set(
       "n",
-      ts_leader .. "dw",
+      ts_leader .. "wd",
       function() ts.diagnostics { prompt_title = "Workspace Diagnostics" } end,
       { silent = true, desc = "Telescope: Workspace Diagnostics" }
     )
