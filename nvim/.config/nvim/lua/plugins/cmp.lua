@@ -60,9 +60,9 @@ return {
       { name = "path" },
       { name = "luasnip" },
     }
-    if vim.uv.cwd() ~= vim.uv.os_homedir() then
-      table.insert(sources, { name = "rg" })
-    end
+    -- if vim.uv.cwd() ~= vim.uv.os_homedir() then
+    --   table.insert(sources, { name = "rg" })
+    -- end
     cmp.setup {
       experimental = {
         ghost_text = true,

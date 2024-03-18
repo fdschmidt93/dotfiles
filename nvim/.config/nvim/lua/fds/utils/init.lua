@@ -7,14 +7,7 @@ M.write_close_all = function()
   vim.cmd [[qa!]]
 end
 
-M.get_selection = function()
-  local rv = vim.fn.getreg "v"
-  local rt = vim.fn.getregtype "v"
-  vim.cmd [[noautocmd silent normal! "vy]]
-  local selection = vim.fn.getreg "v"
-  vim.fn.setreg("v", rv, rt)
-  return vim.split(selection, "\n")
-end
+M.get_selection = function() return vim.fn.getregion(vim.fn.getpos ".", vim.fn.getpos "v", { mode = vim.fn.mode() }) end
 
 M.hl_lines = function(expr, opts)
   opts = opts or {}

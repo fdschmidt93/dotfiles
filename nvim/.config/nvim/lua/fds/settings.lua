@@ -59,7 +59,7 @@ vim.o.completeopt = "menuone,noselect"
 
 opt.cursorline = true
 opt.termguicolors = true
-opt.conceallevel = 3
+opt.conceallevel = 1
 
 -- python providers
 vim.g["python3_host_prog"] = string.format("/home/%s/miniconda3/bin/python", os.getenv "USER")

@@ -1,2 +1,2 @@
 #!/bin/sh
-# /usr/bin/feh --no-fehbg --bg-scale '/home/fdschmidt/.gruvbox_background.png' 
+feh --no-fehbg --bg-scale '/home/fdschmidt/dotfiles/fehbg/.gruvbox_background.png' 

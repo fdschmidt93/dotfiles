@@ -80,16 +80,6 @@ return {
         },
       },
       extensions = {
-        egrepify = {
-          results_ts_hl = true,
-          AND = true,
-          lnum = true, -- default, not required
-          lnum_hl = "EgrepifyLnum", -- default, not required
-          -- col = true, -- default, not required
-          col_hl = "EgrepifyCol", -- default, not required
-          filename_hl = "@title.emphasis",
-          title_suffix_hl = "Comment",
-        },
         file_browser = {
           grouped = true,
           previewer = false,

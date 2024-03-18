@@ -1,15 +1,6 @@
 return {
   {
-    "tpope/vim-fugitive",
-    event = "VeryLazy",
-    config = function()
-      vim.keymap.set("n", "<A-N>", [[<cmd>Git<CR>]], { silent = true })
-      vim.keymap.set("n", "<A-a>", [[<cmd>diffget //2<CR>]], { silent = true })
-      vim.keymap.set("n", "<A-d>", [[<cmd>diffget //3<CR>]], { silent = true })
-    end,
-  },
-  {
-    "TimUntersberger/neogit",
+    "NeogitOrg/neogit",
     event = "VeryLazy",
     config = function()
       require("neogit").setup {
