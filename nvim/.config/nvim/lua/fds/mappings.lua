@@ -56,7 +56,7 @@ set({ "n", "i", "t" }, "<A-j>", [[<C-\><C-N><C-w>j]])
 set({ "n", "i", "t" }, "<A-k>", [[<C-\><C-N><C-w>k]])
 set({ "n", "i", "t" }, "<A-l>", [[<C-\><C-N><C-w>l]])
 
-set("n", "<space>", vim.lsp.buf.code_action, { silent = true, desc = "LSP Code Action" })
+set("n", "<space>ca", vim.lsp.buf.code_action, { silent = true, desc = "LSP Code Action" })
 set("n", "gD", vim.lsp.buf.declaration, { silent = true, desc = "Telescope: LSP Declaration" })
 set("n", "gi", vim.lsp.buf.implementation, { silent = true, desc = "Telescope: LSP Implementation" })
 

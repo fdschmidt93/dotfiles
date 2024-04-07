@@ -29,7 +29,7 @@ local function send_treesitter_query(query, opts)
   local language_tree = vim.treesitter.get_parser(opts.bufnr, opts.filetype)
   local syntax_tree = language_tree:parse()[1]
   local root = syntax_tree:root()
-  local ts_query = vim.treesitter.parse_query(opts.filetype, query)
+  local ts_query = vim.treesitter.query.parse(opts.filetype, query)
 
   local data = {}
   for _, node, _ in ts_query:iter_captures(root, 1) do
@@ -58,13 +58,21 @@ set({ "n", "x" }, "<C-s>", function()
     end,
   }
 end, { buffer = 0, desc = "resin.python: print len/shape of selection" })
-set("n", "<C-c><C-i>", function()
-  send_treesitter_query [[((import_statement) @i (#not-has-parent? @i "block"))
+set(
+  "n",
+  "<C-c><C-i>",
+  function()
+    send_treesitter_query [[((import_statement) @i (#not-has-parent? @i "block"))
 ((import_from_statement) @i (#not-has-parent? @i "block"))
 ((expression_statement) @expr (#not-has-parent? @expr "block"))
 ]]
-end, { buffer = 0, desc = "resin.python: send all import statements" })
+  end,
+  { buffer = 0, desc = "resin.python: send all import statements" }
+)
 
-set("n", "<C-c><C-f>", function()
-  send_treesitter_query [[(function_definition) @include]]
-end, { buffer = 0, desc = "resin.python: send all function definitions" })
+set(
+  "n",
+  "<C-c><C-f>",
+  function() send_treesitter_query [[(function_definition) @include]] end,
+  { buffer = 0, desc = "resin.python: send all function definitions" }
+)

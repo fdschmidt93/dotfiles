@@ -1,8 +1,9 @@
 return {
   "mfussenegger/nvim-dap",
-  keys = "<space>D",
+  keys = "<space>d",
   dependencies = {
     { "rcarriga/nvim-dap-ui" },
+    { "nvim-neotest/nvim-nio" },
     { "mfussenegger/nvim-dap-python" },
   },
   config = function()
@@ -29,15 +30,15 @@ return {
       end, 50)
     end
 
-    set("n", "<space>Dc", dap.continue, { desc = "DAP: continue" })
-    set("n", "<F10>", dap.step_over, { desc = "DAP: step over" })
-    set("n", "<F11>", dap.step_into, { desc = "DAP: step into" })
-    set("n", "<F12>", dap.step_out, { desc = "DAP: step out" })
-    set("n", "<space>Db", dap.toggle_breakpoint, { desc = "DAP: toggle breakpoint" })
-    set("n", "<space>De", dap.repl.open, { desc = "DAP: open repl" })
-    set("n", "<space>Dr", dap.run_to_cursor, { desc = "DAP: run to cursor" })
-    set("n", "<space>Dl", dap.run_last, { desc = "DAP: run last" })
-    set("n", "<space>Dt", dap.terminate, { desc = "DAP: terminate" })
+    set("n", "<space>dc", dap.continue, { desc = "DAP: continue" })
+    set("n", "<space>dsv", dap.step_over, { desc = "DAP: step over" })
+    set("n", "<space>dsi", dap.step_into, { desc = "DAP: step into" })
+    set("n", "<space>dso", dap.step_out, { desc = "DAP: step out" })
+    set("n", "<space>db", dap.toggle_breakpoint, { desc = "DAP: toggle breakpoint" })
+    set("n", "<space>de", dap.repl.open, { desc = "DAP: open repl" })
+    set("n", "<space>dr", dap.run_to_cursor, { desc = "DAP: run to cursor" })
+    set("n", "<space>dl", dap.run_last, { desc = "DAP: run last" })
+    set("n", "<space>dt", dap.terminate, { desc = "DAP: terminate" })
     -- send to dap repl ala vim-slime
     set("v", "<C-r><C-r>", function()
       local selection = table.concat(require("fds.utils").get_selection(), "\n")
@@ -88,7 +89,7 @@ return {
 
     -- dapui panes don't readjust nicely in height and get distored easily
     -- this will ensure panes are always toggled with evenly spread height
-    set("n", "<space>Du", function()
+    set("n", "<space>du", function()
       require("dapui").toggle()
       vim.defer_fn(function()
         local dapui_wins = vim.tbl_filter(function(win)

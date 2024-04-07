@@ -6,10 +6,6 @@ return {
     config = function() require "fds.highlights" end,
   },
   {
-    "numToStr/Comment.nvim",
-    config = function() require("Comment").setup() end,
-  },
-  {
     "romainl/vim-cool",
   },
   {
@@ -32,7 +28,7 @@ return {
   },
   {
     "tpope/vim-repeat",
-    event = "InsertEnter",
+    event = "VeryLazy",
     config = function() vim.cmd [[silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)]] end,
   },
   {
@@ -43,9 +39,8 @@ return {
       }
     end,
   },
-  -- {
-  --   "tpope/vim-surround",
-  --   event = "InsertEnter",
-  -- },
-  { "jbyuki/venn.nvim", event = "ModeChanged" },
+  {
+    "tpope/vim-surround",
+    event = "VeryLazy",
+  },
 }
