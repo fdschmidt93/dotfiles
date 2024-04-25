@@ -61,26 +61,4 @@ end)
 
 vim.keymap.set("n", "<leader>lv", function() vim.cmd [[ MarkdownPreviewToggle]] end)
 
-vim.keymap.set("n", "gf", function()
-  -- TODO: work this in
-  --     links.followLink = function(path, anchor)
-  --       if path or anchor then
-  --         path, anchor = path, anchor
-  --       else
-  --         path, anchor, _ = links.getLinkPart(links.getLinkUnderCursor(), "source")
-  --       end
-  --       local uri = "phd://"
-  --       if path:find(uri) then
-  --         vim.system { "xdg-open", path }
-  --         return
-  --       end
-  --       followLink(path, anchor)
-  --     end
-  if require("obsidian").util.cursor_on_markdown_link() then
-    return "<cmd>ObsidianFollowLink<CR>"
-  else
-    return "gf"
-  end
-end, { buffer = 0, noremap = false, expr = true })
-
 vim.wo[0].conceallevel = 2

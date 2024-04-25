@@ -13,6 +13,7 @@ return {
 
     -- text str: lines concatenated with \n
     local send_to_repl = function(text)
+      text = text .. "\n"
       local session = dap.session()
       session:evaluate(text, function(err)
         if err then
@@ -58,7 +59,7 @@ return {
       if mode == "n" then
         selection = vim.fn.expand "<cword>"
       else
-        selection = table.concat(require("fds.utils").visual_selection(), "\n")
+        selection = table.concat(require("fds.utils").get_selection(), "\n")
         if type(selection) == "table" then
           if #selection > 1 then
             error "Inspecting variables only works with single lines"
@@ -75,7 +76,7 @@ return {
       if mode == "n" then
         selection = vim.fn.expand "<cword>"
       else
-        selection = table.concat(require("fds.utils").visual_selection(), "\n")
+        selection = table.concat(require("fds.utils").get_selection(), "\n")
         if type(selection) == "table" then
           if #selection > 1 then
             error "Inspecting variables only works with single lines"
