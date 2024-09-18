@@ -3,7 +3,7 @@ local api = vim.api
 local M = {}
 
 local function get_terminal_buffers()
-  return vim.tbl_filter(function(bufnr) return vim.bo[bufnr].buftype == "terminal" end, api.nvim_list_bufs())
+  return vim.iter(api.nvim_list_bufs()):filter(function(bufnr) return vim.bo[bufnr].buftype == "terminal" end):totable()
 end
 
 local function open_term_split(side)

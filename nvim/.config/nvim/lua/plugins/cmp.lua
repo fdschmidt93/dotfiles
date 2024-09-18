@@ -68,7 +68,7 @@ return {
         ghost_text = true,
       },
       performance = {
-        debounce = 10,
+        debounce = 0,
         throttle = 0,
       },
       formatting = {

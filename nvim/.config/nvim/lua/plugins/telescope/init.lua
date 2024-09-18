@@ -80,6 +80,9 @@ return {
         },
       },
       extensions = {
+        egrepify = {
+          results_ts_hl = true,
+        },
         file_browser = {
           grouped = true,
           previewer = false,

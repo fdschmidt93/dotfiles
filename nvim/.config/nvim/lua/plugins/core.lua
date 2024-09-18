@@ -9,6 +9,50 @@ return {
     "romainl/vim-cool",
   },
   {
+    "OXY2DEV/markview.nvim",
+    lazy = false, -- Recommended
+    -- ft = "markdown" -- If you decide to lazy-load anyway
+
+    config = function()
+      require("markview").setup {
+        list_items = {
+          enable = true,
+          shift_width = 2,
+          indent_size = 2,
+          marker_minus = { text = "•" },
+        },
+        modes = { "n", "no", "c" },
+        hybrid_modes = { "n" },
+
+        -- This is nice to have
+        callbacks = {
+          on_enable = function(_, win)
+            vim.wo[win].conceallevel = 2
+            vim.wo[win].concealcursor = "nc"
+          end,
+        },
+        html = {
+          enable = true,
+          tags = {
+            enable = true,
+            default = { conceal = true, hl = nil },
+            configs = {
+              u = { conceal = true, hl = "@markup.underline" },
+            },
+          },
+        },
+      }
+    end,
+  },
+  dependencies = {
+    -- You will not need this if you installed the
+    -- parsers manually
+    -- Or if the parsers are in your $RUNTIMEPATH
+    "nvim-treesitter/nvim-treesitter",
+
+    "nvim-tree/nvim-web-devicons",
+  },
+  {
     "iamcco/markdown-preview.nvim",
     build = "cd app && yarn install",
     ft = "markdown",

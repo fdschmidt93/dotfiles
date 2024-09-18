@@ -12,7 +12,6 @@ set -gx FZF_CTRL_T_COMMAND "fd --hidden --strip-cwd-prefix"
 set -gx FZF_ALT_C_COMMAND "fd --hidden -t d . $HOME"
 set -gx MANPAGER 'nvim +Man!'
 set -gx MANWIDTH 999
-set -gx NVIM_LISTEN_ADDRESS "/tmp/nvimsocket"
 alias vi=nvim
 alias vip="nvim '+PythonTerm'"
 eval (keychain --eval --agents ssh -Q --quiet id_rsa --nogui --noask)

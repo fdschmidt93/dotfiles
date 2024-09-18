@@ -2,6 +2,10 @@ local zathura = {}
 local enable_autocmd = false
 local api = vim.api
 
+vim.bo[0].shiftwidth = 2
+vim.bo[0].tabstop = 2
+vim.bo[0].expandtab = true
+
 local replace_extension = function(path, ext)
   local offset
   for i = #path, 1, -1 do

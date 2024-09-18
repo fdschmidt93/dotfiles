@@ -19,7 +19,6 @@ bluez
 bluez-utils
 broot
 btrfs-progs
-caffeine-ng
 canon-maxify-mb5100-complete
 catimg
 chafa
@@ -32,6 +31,7 @@ cpupower-gui
 ctags
 cups
 dhcpcd
+dialog
 diffpdf
 discord
 displaylink
@@ -52,6 +52,7 @@ firefox
 fish
 flex
 fnlfmt
+freerdp
 freerdp2
 fzf
 gawk
@@ -66,6 +67,7 @@ git-lfs
 github-cli
 gitui
 gnome-screenshot
+gnu-netcat
 gparted
 grep
 groff
@@ -97,7 +99,6 @@ light
 linux
 linux-firmware
 linux-lts
-linux-lts-headers
 lua-language-server
 luajit-2.1
 luarocks
@@ -210,6 +211,7 @@ thunderbird-beta-bin
 timeshift-autosnap
 tmux
 tree
+tree-sitter-cli
 ttf-cmu-sans-serif
 ttf-dejavu
 ttf-devicons

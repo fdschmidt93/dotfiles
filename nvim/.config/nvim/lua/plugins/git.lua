@@ -2,7 +2,6 @@ return {
   {
     "NeogitOrg/neogit",
     event = "VeryLazy",
-    branch = "nightly",
     config = function()
       require("neogit").setup {
         disable_commit_confirmation = true,
