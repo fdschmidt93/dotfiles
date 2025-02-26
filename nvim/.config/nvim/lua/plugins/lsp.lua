@@ -1,4 +1,5 @@
-return { "neovim/nvim-lspconfig",
+return {
+  "neovim/nvim-lspconfig",
   dependencies = {
     "stevearc/conform.nvim",
     "folke/neodev.nvim",
@@ -7,7 +8,7 @@ return { "neovim/nvim-lspconfig",
     local lsp = vim.lsp
     local nvim_lsp = require "lspconfig"
     local capabilities = lsp.protocol.make_client_capabilities()
-    capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
+    capabilities = require("blink.cmp").get_lsp_capabilities(capabilities)
 
     local on_attach = function(client)
       vim.cmd [[autocmd ColorScheme * :lua require('vim.lsp.diagnostic')._define_default_signs_and_highlights()]]
@@ -48,20 +49,19 @@ return { "neovim/nvim-lspconfig",
     --
     nvim_lsp.pyright.setup {
       on_attach = on_attach,
-      capabilities = capabilities,
+      -- capabilities = capabilities,
       settings = {
         python = {
           analysis = { autoSearchPaths = true, useLibraryCodeForTypes = true },
         },
       },
     }
-    nvim_lsp.ruff_lsp.setup {
+    nvim_lsp.ruff.setup {
       on_attach = function(client)
         on_attach(client)
         -- Disable hover in favor of Pyright
         client.server_capabilities.hoverProvider = false
       end,
-      capabilities = capabilities,
     }
 
     lsp.handlers["textDocument/publishDiagnostics"] = lsp.with(lsp.diagnostic.on_publish_diagnostics, {

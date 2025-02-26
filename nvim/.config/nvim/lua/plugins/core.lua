@@ -15,22 +15,28 @@ return {
 
     config = function()
       require("markview").setup {
-        list_items = {
-          enable = true,
-          shift_width = 2,
-          indent_size = 2,
-          marker_minus = { text = "•" },
+        markdown = {
+          headings = {
+            org_indent = true,
+          },
+          list_items = {
+            enable = true,
+            shift_width = 2,
+            indent_size = 2,
+            marker_minus = { text = "•" },
+          },
         },
-        modes = { "n", "no", "c" },
-        hybrid_modes = { "n" },
+        preview = {
+          modes = { "n", "no", "c" },
+          callbacks = {
+            on_enable = function(_, win)
+              vim.wo[win].conceallevel = 2
+              vim.wo[win].concealcursor = "nc"
+            end,
+          },
+          hybrid_modes = { "n" },
+        },
 
-        -- This is nice to have
-        callbacks = {
-          on_enable = function(_, win)
-            vim.wo[win].conceallevel = 2
-            vim.wo[win].concealcursor = "nc"
-          end,
-        },
         html = {
           enable = true,
           tags = {

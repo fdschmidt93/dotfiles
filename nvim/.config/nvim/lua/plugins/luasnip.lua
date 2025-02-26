@@ -1,9 +1,8 @@
-local types = require "luasnip.util.types"
-
 return {
   "L3MON4D3/LuaSnip",
-  lazy = true,
+  lazy = false,
   config = function()
+    local types = require "luasnip.util.types"
     local ls = require "luasnip"
     ls.config.set_config {
       update_events = "InsertLeave",
@@ -16,11 +15,11 @@ return {
             virt_text = { { "●", "GruvboxOrange" } },
           },
         },
-        -- [types.insertNode] = {
-        -- 	active = {
-        -- 		virt_text = { { "●", "GruvboxBlue" } },
-        -- 	},
-        -- },
+        [types.insertNode] = {
+          active = {
+            virt_text = { { "●", "GruvboxBlue" } },
+          },
+        },
       },
     }
     require("luasnip.loaders.from_lua").load()

@@ -1,136 +1,65 @@
 return {
-  "hrsh7th/nvim-cmp",
-  event = { "InsertEnter", "CmdlineEnter" },
-  dependencies = {
-    "gruvbox",
-    "hrsh7th/cmp-buffer",
-    "hrsh7th/cmp-path",
-    "hrsh7th/cmp-nvim-lsp",
-    "hrsh7th/cmp-cmdline",
-    "hrsh7th/cmp-nvim-lsp-signature-help",
-    "hrsh7th/cmp-omni",
-    "saadparwaiz1/cmp_luasnip",
-    "lukas-reineke/cmp-rg",
-    "L3MON4D3/LuaSnip",
-  },
-  config = function()
-    local cmp = require "cmp"
-    local luasnip = require "luasnip"
+  "saghen/blink.cmp",
+  lazy = false, -- lazy loading handled internally
+  -- optional: provides snippets for the snippet source
+  -- dependencies = 'rafamadriz/friendly-snippets',
 
-    local border = {
-      "🭽",
-      "▔",
-      "🭾",
-      "▕",
-      "🭿",
-      "▁",
-      "🭼",
-      "▏",
-    }
-    local kind_icons = {
-      Text = "",
-      Method = "",
-      Function = "",
-      Constructor = "",
-      Field = "ﰠ",
-      Variable = "",
-      Class = "",
-      Interface = "",
-      Module = "",
-      Property = "",
-      Unit = "",
-      Value = "",
-      Enum = "",
-      Keyword = "",
-      Snippet = "",
-      Color = "",
-      File = "",
-      Reference = "",
-      Folder = "",
-      EnumMember = "",
-      Constant = "",
-      Struct = "פּ",
-      Event = "",
-      Operator = "",
-      TypeParameter = "",
-    }
-    local sources = {
-      { name = "nvim_lsp" },
-      { name = "nvim_lsp_signature_help" },
-      { name = "path" },
-      { name = "luasnip" },
-    }
-    -- if vim.uv.cwd() ~= vim.uv.os_homedir() then
-    --   table.insert(sources, { name = "rg" })
-    -- end
-    cmp.setup {
-      experimental = {
-        ghost_text = true,
-      },
-      performance = {
-        debounce = 0,
-        throttle = 0,
-      },
-      formatting = {
-        fields = { "kind", "abbr", "menu" },
-        format = function(_, vim_item)
-          vim_item.kind = string.format("%s", kind_icons[vim_item.kind])
-          return vim_item
-        end,
-      },
-      completion = {
-        completeopt = "menu,menuone", -- remove `noselect`.
-      },
-      snippet = {
-        expand = function(args) luasnip.lsp_expand(args.body) end,
-      },
-      window = {
-        completion = {
-          border = border,
-          scrollbar = "┃",
-          winhighlight = "Normal:Pmenu,FloatBorder:FloatBorder,CursorLine:Visual,Search:None",
-        },
-        documentation = {
-          border = border,
-          scrollbar = "┃",
-          winhighlight = "Normal:Pmenu,FloatBorder:FloatBorder,CursorLine:Visual,Search:None",
+  -- use a release tag to download pre-built binaries
+  version = "v0.*",
+  -- OR build from source, requires nightly: https://rust-lang.github.io/rustup/concepts/channels.html#working-with-nightly-rust
+  -- build = 'cargo build --release',
+  -- If you use nix, you can build from source using latest nightly rust with:
+  -- build = 'nix run .#build-plugin',
+
+  ---@module 'blink.cmp'
+  ---@type blink.cmp.Config
+  opts = {
+    -- 'default' for mappings similar to built-in completion
+    -- 'super-tab' for mappings similar to vscode (tab to accept, arrow keys to navigate)
+    -- 'enter' for mappings similar to 'super-tab' but with 'enter' to accept
+    -- see the "default configuration" section below for full documentation on how to define
+    -- your own keymap.
+    keymap = { preset = "default", ["<C-c>"] = { "cancel" } },
+
+    appearance = {
+      -- Sets the fallback highlight groups to nvim-cmp's highlight groups
+      -- Useful for when your theme doesn't support blink.cmp
+      -- will be removed in a future release
+      use_nvim_cmp_as_default = true,
+      -- Set to 'mono' for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
+      -- Adjusts spacing to ensure icons are aligned
+      nerd_font_variant = "mono",
+    },
+
+    -- default list of enabled providers defined so that you can extend it
+    -- elsewhere in your config, without redefining it, via `opts_extend`
+    sources = {
+      default = { "lsp", "path", "snippets", "buffer" },
+      -- optionally disable cmdline completions
+      -- cmdline = {},
+    },
+
+    -- experimental signature help support
+    signature = { enabled = true },
+    completion = {
+      menu = { border = "rounded" },
+      list = {
+        selection = {
+          auto_insert = true,
+          preselect = true,
         },
       },
-      sources = sources,
-      mapping = {
-        ["<C-p>"] = cmp.mapping.select_prev_item(),
-        ["<C-n>"] = cmp.mapping.select_next_item(),
-        ["<C-d>"] = cmp.mapping.scroll_docs(4),
-        ["<C-f>"] = cmp.mapping.scroll_docs(-4),
-        ["<C-Space>"] = cmp.mapping.complete(),
-        ["<C-e>"] = cmp.mapping.close(),
-        ["<ESC>"] = cmp.mapping.close(),
-        ["<CR>"] = cmp.mapping.confirm {
-          behavior = cmp.ConfirmBehavior.Replace,
-          select = true,
-        },
-        ["<C-y>"] = cmp.mapping.confirm {
-          behavior = cmp.ConfirmBehavior.Replace,
-          select = true,
-        },
+      documentation = {
+        auto_show = true,
+        auto_show_delay_ms = 50,
+        window = { border = "rounded" },
       },
-    }
-    -- `:` cmdline setup.
-    cmp.setup.cmdline(":", {
-      completion = {
-        completeopt = "menu,menuone", -- remove `noselect`.
+      ghost_text = {
+        enabled = true,
       },
-      mapping = cmp.mapping.preset.cmdline(),
-      sources = cmp.config.sources({
-        { name = "path" },
-      }, {
-        {
-          name = "cmdline",
-          option = {
-            ignore_cmds = { "Man", "!" },
-          },
-        },
-      }),
-    })
-  end,
+    },
+  },
+  -- allows extending the providers array elsewhere in your config
+  -- without having to redefine it
+  opts_extend = { "sources.default" },
 }

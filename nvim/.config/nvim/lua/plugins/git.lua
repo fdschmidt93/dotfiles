@@ -14,8 +14,19 @@ return {
       }
       vim.keymap.set("n", "<A-n>", [[<cmd>Neogit<CR>]], { silent = true })
     end,
-    dependencies = { "sindrets/diffview.nvim", "plenary.nvim" },
+    dependencies = { "plenary.nvim" },
   },
+
+  {
+    "sindrets/diffview.nvim",
+    event = "VeryLazy",
+    config = function()
+      require("diffview").setup {
+        -- enhanced_diff_hl = true,
+      }
+    end,
+  },
+
   {
     "lewis6991/gitsigns.nvim",
     event = "VeryLazy",

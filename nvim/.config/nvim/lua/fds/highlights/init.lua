@@ -12,7 +12,7 @@ local function set_default_hlgroups()
     ["@constant.builtin"] = { link = "Special", default = true },
     ["@constant.macro"] = { link = "Define", default = true },
 
-    ["@module"] = { link = "Include", default = true },
+    ["@module"] = { link = "Include", default = false },
     ["@label"] = { link = "Label", default = true },
     -- Literals
     ["@string"] = { link = "String", default = true },
@@ -273,7 +273,6 @@ local highlight_groups = {
   { "CmpItemAbbrMatchFuzzy", { fg = palette.bright_yellow, bold = true } },
   { "CmpItemKind", { fg = palette.bright_yellow, bold = true } },
   { "CmpItemMenu", { fg = palette.light1, bg = palette.neutral_aqua } },
-  { "CmpItemMenuDefault", { fg = palette.light1, bg = palette.neutral_aqua } },
 
   -- git
   { "GitSignsAdd", { fg = palette.bright_green, bg = "NONE" } },
@@ -282,6 +281,13 @@ local highlight_groups = {
 
   { "NeogitDiffAdd", { fg = palette.bright_green, bg = blend_colors(palette.bright_green, palette.dark0, 0.1) } },
   { "NeogitDiffDelete", { fg = palette.bright_red, bg = blend_colors(palette.bright_red, palette.dark0, 0.1) } },
+  { "DiffviewDiffAdd", { fg = "NONE", bg = blend_colors(palette.bright_green, palette.dark0, 0.1) } },
+  { "DiffviewDiffDelete", { fg = "NONE", bg = blend_colors(palette.bright_red, palette.dark0, 0.1) } },
+  { "DiffviewDiffChange", { fg = "NONE", bg = blend_colors(palette.bright_orange, palette.dark0, 0.2) } },
+  {
+    "DiffviewDiffText",
+    { fg = palette.bright_yellow, bg = blend_colors(palette.bright_orange, palette.dark0, 0.2), bold = true },
+  },
   {
     "NeogitDiffAddHighlight",
     { fg = palette.bright_green, bg = blend_colors(palette.bright_green, palette.dark0, 0.2), bold = true },
@@ -315,6 +321,13 @@ local highlight_groups = {
   -- IndentBlankLine
   { "IndentBlanklineContextChar", { fg = palette.dark4, bg = "None" } },
   { "gruvbox_yank", { fg = palette.light1, bg = palette.bright_aqua } },
+
+  { "SnacksPickerDir", { link = "LineNr", default = true } },
+  { "SnacksPickerMatch", { fg = palette.bright_orange, bg = "NONE", reverse = false, underline = true } },
+  { "BlinkCmpDocBorder", { link = "FloatBorder", default = true } },
+  { "BlinkCmpMenuBorder", { link = "FloatBorder", default = true } },
+  { "BlinkCmpSignatureHelpBorder", { link = "FloatBorder", default = true } },
+  { "BlinkCmpGhostText", { link = "LineNr", default = true } },
 }
 for _, hl in pairs(highlight_groups) do
   vim.api.nvim_set_hl(0, hl[1], hl[2])
@@ -369,6 +382,6 @@ vim.g.terminal_color_7 = "#ebdbb2"
 vim.cmd [[
 augroup LuaHighlight
   autocmd!
-  autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank({higroup='gruvbox_yank', timeout=250})
+  autocmd TextYankPost * silent! lua require'vim.hl'.on_yank({higroup='gruvbox_yank', timeout=250})
 augroup END
 ]]
