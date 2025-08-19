@@ -10,9 +10,8 @@ return {
   },
   {
     "OXY2DEV/markview.nvim",
-    lazy = false, -- Recommended
-    -- ft = "markdown" -- If you decide to lazy-load anyway
-
+    -- lazy = false, -- Recommended
+    ft = "markdown", -- If you decide to lazy-load anyway
     config = function()
       require("markview").setup {
         markdown = {
@@ -36,7 +35,7 @@ return {
           },
           hybrid_modes = { "n" },
         },
-
+        latex = { enable = true },
         html = {
           enable = true,
           tags = {

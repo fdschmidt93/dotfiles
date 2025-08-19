@@ -9,6 +9,25 @@ return {
       -- takes 15ms of startup
       vim.defer_fn(function()
         require("nvim-treesitter.configs").setup {
+          ensure_installed = {
+            "bash",
+            "fish",
+            "json",
+            "json5",
+            "jsonc",
+            "lua",
+            "markdown",
+            "markdown_inline",
+            "python",
+            "query",
+            "requirements",
+            "rust",
+            "tmux",
+            "toml",
+            "vim",
+            "vimdoc",
+            "yaml",
+          },
           highlight = {
             enable = true, -- false will disable the whole extension
             additional_vim_regex_highlighting = { "org" },

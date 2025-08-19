@@ -17,6 +17,7 @@ return {
     require("conform").setup {
       formatters_by_ft = {
         lua = { "stylua" },
+        tex = { "latexindent" },
       },
     }
 
@@ -47,9 +48,9 @@ return {
       },
     }
     --
-    nvim_lsp.pyright.setup {
+    nvim_lsp.basedpyright.setup {
       on_attach = on_attach,
-      -- capabilities = capabilities,
+      capabilities = capabilities,
       settings = {
         python = {
           analysis = { autoSearchPaths = true, useLibraryCodeForTypes = true },
@@ -73,17 +74,15 @@ return {
       update_in_insert = false,
     })
 
-    local signs = { "", "", "", "" }
-    local lsp_diagnostic_types = { "Error", "Warning", "Information", "Hint" }
-    for i = 1, #lsp_diagnostic_types do
-      local diagnostic_type = string.format("LspDiagnosticsSign%s", lsp_diagnostic_types[i])
-      local opts = {
-        text = signs[i],
-        texthl = string.format("LspDiagnosticsDefault%s", lsp_diagnostic_types[i]),
-        linehl = "",
-        numhl = "",
-      }
-      vim.fn.sign_define(diagnostic_type, opts)
-    end
+    vim.diagnostic.config {
+      signs = {
+        text = {
+          [vim.diagnostic.severity.ERROR] = "",
+          [vim.diagnostic.severity.WARN] = "",
+          [vim.diagnostic.severity.INFO] = "",
+          [vim.diagnostic.severity.HINT] = "",
+        },
+      },
+    }
   end,
 }

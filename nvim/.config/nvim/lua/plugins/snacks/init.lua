@@ -8,6 +8,7 @@ return {
   opts = {
     image = {
       doc = {
+        enabled = false,
         inline = true,
       },
     },
