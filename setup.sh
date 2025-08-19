@@ -35,28 +35,47 @@ trap 'rm -rf "$TMP_DIR"' EXIT
 # Download the latest Neovim nightly release into the temporary directory.
 curl -fsSL https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-x86_64.tar.gz -o "$TMP_DIR/nvim.tar.gz"
 
-info "Extracting Neovim to $HOME/.local..."
-# Remove any previous installation to ensure a clean install.
-rm -rf "$HOME/.local/nvim-linux-x86_64"
+# --- Neovim Installation ---
+if [ ! -d "$HOME/.local/nvim-linux-x86_64" ]; then
+    info "Installing the latest Neovim..."
 
-# Extract the new version into ~/.local
-mkdir -p "$HOME/.local"
-tar -C "$HOME/.local" -xzf "$TMP_DIR/nvim.tar.gz"
+    # Create a temporary directory that will be automatically cleaned up on exit.
+    TMP_DIR=$(mktemp -d)
+    trap 'rm -rf "$TMP_DIR"' EXIT
 
-# Create or update a symlink for convenience
-ln -sfn "$HOME/.local/nvim-linux-x86_64/bin/nvim" "$HOME/.local/bin/nvim"
+    # Download the latest Neovim nightly release into the temporary directory.
+    curl -fsSL https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-x86_64.tar.gz -o "$TMP_DIR/nvim.tar.gz"
 
-# Ensure ~/.local/bin is in PATH
-if ! echo "$PATH" | grep -q "$HOME/.local/bin"; then
-    echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
-    export PATH="$HOME/.local/bin:$PATH"
+    info "Extracting Neovim to $HOME/.local..."
+    # Extract the new version into ~/.local
+    mkdir -p "$HOME/.local"
+    tar -C "$HOME/.local" -xzf "$TMP_DIR/nvim.tar.gz"
+
+    # Create or update a symlink for convenience
+    mkdir -p "$HOME/.local/bin"
+    ln -sfn "$HOME/.local/nvim-linux-x86_64/bin/nvim" "$HOME/.local/bin/nvim"
+
+    # Ensure ~/.local/bin is in PATH
+    if ! echo "$PATH" | grep -q "$HOME/.local/bin"; then
+        echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
+        export PATH="$HOME/.local/bin:$PATH"
+    fi
+
+    info "Neovim installation complete. Version: $($HOME/.local/bin/nvim --version | head -n1)"
+else
+    info "Neovim already installed at $HOME/.local/nvim-linux-x86_64, skipping."
 fi
+
 
 info "Neovim installation complete. Version: $($HOME/.local/bin/nvim --version | head -n1)"
 
 info "Installing fzf via git"
-git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-~/.fzf/install
+if [ ! -d "$HOME/.fzf" ]; then
+  git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/.fzf"
+  "$HOME/.fzf/install"
+else
+  info "fzf already installed, skipping clone"
+fi
 
 # --- Dotfiles Setup ---
 info "Stowing dotfiles for nvim, fish, and tmux..."
