@@ -12,7 +12,7 @@ set -gx FZF_ALT_C_COMMAND "fd --hidden -t d . $HOME"
 set -gx MANPAGER 'nvim +Man!'
 set -gx MANWIDTH 999
 alias vi=nvim
-fish_vi_key_bindings
+fzf --fish | source
 set PYDEVD_IPYTHON_COMPATIBLE_DEBUGGING 1
 
 abbr ca conda activate

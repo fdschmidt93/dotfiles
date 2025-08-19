@@ -18,6 +18,7 @@ sudo apt-get install -y \
     ripgrep \
     fd-find
 
+
 # The 'fd-find' package installs the binary as 'fdfind'.
 # Create a symlink to 'fd' as it's the commonly expected command name.
 info "Symlinking 'fdfind' to 'fd'..."
@@ -52,6 +53,10 @@ if ! echo "$PATH" | grep -q "$HOME/.local/bin"; then
 fi
 
 info "Neovim installation complete. Version: $($HOME/.local/bin/nvim --version | head -n1)"
+
+info "Installing fzf via git"
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install
 
 # --- Dotfiles Setup ---
 info "Stowing dotfiles for nvim, fish, and tmux..."
