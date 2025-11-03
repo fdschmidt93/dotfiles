@@ -1,87 +1,119 @@
 #!/bin/bash
-
-# Exit immediately if a command exits with a non-zero status.
-# Treat unset variables as an error.
 set -eu
 
-# --- Helper function for logging ---
-info() {
-    echo "💡 INFO: $1"
-}
+# ----------------------------
+# Logging
+# ----------------------------
+LOG_FILE="$HOME/setup.log"
+exec > >(tee -i "$LOG_FILE")
+exec 2>&1
 
-# --- Package Installation ---
+info() { echo -e "💡 INFO: $1"; }
+
+# ----------------------------
+# Required commands check
+# ----------------------------
+for cmd in git curl tar mkdir ln; do
+    if ! command -v $cmd &>/dev/null; then
+        echo "❌ Required command '$cmd' not found. Please install it first."
+        exit 1
+    fi
+done
+
+# ----------------------------
+# Sudo handling
+# ----------------------------
+if command -v sudo &>/dev/null; then
+    SUDO="sudo"
+else
+    SUDO=""
+fi
+
+export DEBIAN_FRONTEND=noninteractive
+
+# ----------------------------
+# Install packages
+# ----------------------------
 info "Updating package lists and installing dependencies..."
-sudo apt-get update
-sudo apt-get install -y \
-    fish \
-    stow \
-    ripgrep \
-    fd-find
+$SUDO apt-get update
+$SUDO apt-get install -y \
+    git curl tar fish stow ripgrep tmux fd-find \
+    build-essential nodejs npm \
+    htop jq unzip
 
-
-# The 'fd-find' package installs the binary as 'fdfind'.
-# Create a symlink to 'fd' as it's the commonly expected command name.
+# Symlink 'fdfind' to 'fd'
 info "Symlinking 'fdfind' to 'fd'..."
 mkdir -p ~/.local/bin
 ln -sf "$(which fdfind)" ~/.local/bin/fd
 
-# --- Neovim Installation ---
-info "Installing the latest Neovim..."
+# Ensure ~/.local/bin is in PATH
+if ! echo "$PATH" | grep -q "$HOME/.local/bin"; then
+    echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
+    export PATH="$HOME/.local/bin:$PATH"
+fi
 
-# Create a temporary directory that will be automatically cleaned up on exit.
-TMP_DIR=$(mktemp -d)
-trap 'rm -rf "$TMP_DIR"' EXIT
-
-# Download the latest Neovim nightly release into the temporary directory.
-curl -fsSL https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-x86_64.tar.gz -o "$TMP_DIR/nvim.tar.gz"
-
-# --- Neovim Installation ---
-if [ ! -d "$HOME/.local/nvim-linux-x86_64" ]; then
-    info "Installing the latest Neovim..."
-
-    # Create a temporary directory that will be automatically cleaned up on exit.
+# ----------------------------
+# Neovim Installation
+# ----------------------------
+NVIM_DIR="$HOME/.local/nvim-linux-x86_64"
+if [ ! -d "$NVIM_DIR" ]; then
+    info "Installing latest Neovim..."
     TMP_DIR=$(mktemp -d)
     trap 'rm -rf "$TMP_DIR"' EXIT
-
-    # Download the latest Neovim nightly release into the temporary directory.
     curl -fsSL https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-x86_64.tar.gz -o "$TMP_DIR/nvim.tar.gz"
-
-    info "Extracting Neovim to $HOME/.local..."
-    # Extract the new version into ~/.local
     mkdir -p "$HOME/.local"
     tar -C "$HOME/.local" -xzf "$TMP_DIR/nvim.tar.gz"
-
-    # Create or update a symlink for convenience
-    mkdir -p "$HOME/.local/bin"
-    ln -sfn "$HOME/.local/nvim-linux-x86_64/bin/nvim" "$HOME/.local/bin/nvim"
-
-    # Ensure ~/.local/bin is in PATH
-    if ! echo "$PATH" | grep -q "$HOME/.local/bin"; then
-        echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
-        export PATH="$HOME/.local/bin:$PATH"
-    fi
-
-    info "Neovim installation complete. Version: $($HOME/.local/bin/nvim --version | head -n1)"
+    ln -sfn "$NVIM_DIR/bin/nvim" "$HOME/.local/bin/nvim"
+    info "Neovim installed: $($HOME/.local/bin/nvim --version | head -n1)"
 else
-    info "Neovim already installed at $HOME/.local/nvim-linux-x86_64, skipping."
+    info "Neovim already installed, skipping."
 fi
 
+# ----------------------------
+# Neovim Plugins
+# ----------------------------
+if [ -f "$HOME/.config/nvim/init.lua" ]; then
+    info "Installing Neovim plugins..."
+    $HOME/.local/bin/nvim --headless "+Lazy! sync" +qa
+fi
 
-info "Neovim installation complete. Version: $($HOME/.local/bin/nvim --version | head -n1)"
-
-info "Installing fzf via git"
+# ----------------------------
+# fzf Installation
+# ----------------------------
+info "Installing fzf..."
 if [ ! -d "$HOME/.fzf" ]; then
-  git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/.fzf"
-  "$HOME/.fzf/install"
+    git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/.fzf"
+    "$HOME/.fzf/install" --all
 else
-  info "fzf already installed, skipping clone"
+    info "fzf already installed, skipping."
 fi
 
-# --- Dotfiles Setup ---
-info "Stowing dotfiles for nvim, fish, and tmux..."
-# This assumes the script is run from the root of your dotfiles repository.
-stow --target="$HOME" nvim
-stow --target="$HOME" fish
-stow --target="$HOME" tmux
+# ----------------------------
+# Backup conflicting dotfiles
+# ----------------------------
+BACKUP_DIR="$HOME/dotfiles_backup_$(date +%Y%m%d_%H%M%S)"
+mkdir -p "$BACKUP_DIR"
+info "Backing up existing dotfiles to $BACKUP_DIR..."
+for d in nvim fish tmux; do
+    if [ -d "$HOME/$d" ] || [ -f "$HOME/.$d"* ]; then
+        mv "$HOME/$d" "$BACKUP_DIR/" 2>/dev/null || true
+        mv "$HOME/.$d"* "$BACKUP_DIR/" 2>/dev/null || true
+    fi
+done
 
-info "Setup complete! ✅"
+# ----------------------------
+# Dotfiles Stow
+# ----------------------------
+info "Stowing dotfiles..."
+stow --adopt --target="$HOME" nvim fish tmux
+
+# ----------------------------
+# Optionally set fish as default shell
+# ----------------------------
+if ! grep -qF "$(which fish)" /etc/shells 2>/dev/null; then
+    echo "$(which fish)" | $SUDO tee -a /etc/shells
+fi
+info "Changing default shell to fish..."
+chsh -s "$(which fish)" || true
+
+info "✅ Setup complete! Log available at $LOG_FILE"
