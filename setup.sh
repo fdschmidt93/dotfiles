@@ -53,30 +53,6 @@ if ! echo "$PATH" | grep -q "$HOME/.local/bin"; then
 fi
 
 # ----------------------------
-# Dotfiles setup (Docker-only)
-# ----------------------------
-DOTFILES_DIR="$HOME/dotfiles"
-DOTFILES_REPO="https://github.com/yourusername/dotfiles.git"
-
-# Simple Docker detection
-if [ -f /.dockerenv ] || grep -qE '/docker/|/lxc/' /proc/1/cgroup 2>/dev/null; then
-    DOCKER_BUILD=true
-else
-    DOCKER_BUILD=false
-fi
-
-if [ "$DOCKER_BUILD" = true ]; then
-    info "Detected Docker build: cloning/updating dotfiles..."
-    if [ ! -d "$DOTFILES_DIR" ]; then
-        git clone "$DOTFILES_REPO" "$DOTFILES_DIR"
-    else
-        git -C "$DOTFILES_DIR" pull --rebase
-    fi
-else
-    info "Not in Docker: skipping dotfiles clone/update."
-fi
-
-# ----------------------------
 # Neovim Installation
 # ----------------------------
 NVIM_DIR="$HOME/.local/nvim-linux-x86_64"
