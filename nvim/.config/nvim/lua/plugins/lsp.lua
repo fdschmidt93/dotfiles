@@ -6,7 +6,6 @@ return {
   },
   config = function()
     local lsp = vim.lsp
-    local nvim_lsp = require "lspconfig"
     local capabilities = lsp.protocol.make_client_capabilities()
     capabilities = require("blink.cmp").get_lsp_capabilities(capabilities)
 
@@ -17,14 +16,13 @@ return {
     require("conform").setup {
       formatters_by_ft = {
         lua = { "stylua" },
-        tex = { "latexindent" },
       },
     }
 
     -- nvim_lsp.rust_analyzer.setup { on_attach = on_attach, capabilities = capabilities }
 
-    nvim_lsp.texlab.setup {}
-    nvim_lsp.lua_ls.setup {
+    vim.lsp.config("texlab", {})
+    vim.lsp.config("lua_ls", {
       settings = {
         Lua = {
           runtime = {
@@ -46,24 +44,28 @@ return {
           },
         },
       },
-    }
+    })
+    vim.lsp.enable("lua_ls")
     --
-    nvim_lsp.basedpyright.setup {
+    vim.lsp.config("basedpyright", {
       on_attach = on_attach,
-      capabilities = capabilities,
+      -- capabilities = capabilities,
       settings = {
-        python = {
-          analysis = { autoSearchPaths = true, useLibraryCodeForTypes = true },
+        basedpyright = {
+          analysis = { autoSearchPaths = true, useLibraryCodeForTypes = true, typeCheckingMode = "basic",
+          },
         },
       },
-    }
-    nvim_lsp.ruff.setup {
+    })
+    vim.lsp.enable("basedpyright")
+    vim.lsp.config("ruff", {
       on_attach = function(client)
         on_attach(client)
         -- Disable hover in favor of Pyright
         client.server_capabilities.hoverProvider = false
       end,
-    }
+    })
+    vim.lsp.enable("ruff")
 
     lsp.handlers["textDocument/publishDiagnostics"] = lsp.with(lsp.diagnostic.on_publish_diagnostics, {
       underline = true, -- disable virtual text
@@ -74,15 +76,17 @@ return {
       update_in_insert = false,
     })
 
-    vim.diagnostic.config {
-      signs = {
-        text = {
-          [vim.diagnostic.severity.ERROR] = "",
-          [vim.diagnostic.severity.WARN] = "",
-          [vim.diagnostic.severity.INFO] = "",
-          [vim.diagnostic.severity.HINT] = "",
-        },
-      },
-    }
+    local signs = { "", "", "", "" }
+    local lsp_diagnostic_types = { "Error", "Warning", "Information", "Hint" }
+    for i = 1, #lsp_diagnostic_types do
+      local diagnostic_type = string.format("LspDiagnosticsSign%s", lsp_diagnostic_types[i])
+      local opts = {
+        text = signs[i],
+        texthl = string.format("LspDiagnosticsDefault%s", lsp_diagnostic_types[i]),
+        linehl = "",
+        numhl = "",
+      }
+      vim.fn.sign_define(diagnostic_type, opts)
+    end
   end,
 }

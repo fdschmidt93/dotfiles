@@ -328,8 +328,6 @@ local highlight_groups = {
   { "BlinkCmpMenuBorder", { link = "FloatBorder", default = true } },
   { "BlinkCmpSignatureHelpBorder", { link = "FloatBorder", default = true } },
   { "BlinkCmpGhostText", { link = "LineNr", default = true } },
-  { "BlinkCmpGhostText", { link = "LineNr", default = true } },
-  -- { "BlinkCmpLabelMatch", { fg = palette.bright_yellow, bold = true } },
 }
 for _, hl in pairs(highlight_groups) do
   vim.api.nvim_set_hl(0, hl[1], hl[2])

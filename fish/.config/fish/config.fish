@@ -1,6 +1,6 @@
 set -gx PATH ~/.fzf/bin/ $HOME/.cargo/bin $HOME/.local/bin/ $PATH
 set -x LD_LIBRARY_PATH /usr/local/lib/ $LD_LIBRARY_PATH
-set -gx EDITOR /usr/bin/nvim
+set -gx EDITOR (which nvim)
 set -x INITIAL_QUERY ""
 set -x RG_PREFIX "rg --column --line-number --no-heading --color=always --smart-case "
 set -x FZF_DEFAULT_COMMAND "$RG_PREFIX '$INITIAL_QUERY'" \

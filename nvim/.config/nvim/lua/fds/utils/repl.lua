@@ -30,7 +30,7 @@ function M.shell(opts)
   opts = opts or {}
   opts.listed = vim.F.if_nil(opts.listed, true)
   opts.side = vim.F.if_nil(opts.side, "right") -- default to 'right'
-  opts.cmd = opts.cmd and string.format('$SHELL -C "%s"', opts.cmd) or "$SHELL"
+  opts.cmd = opts.cmd and string.format('$SHELL -c "%s"', opts.cmd) or "$SHELL"
 
   local split = open_term_split(opts.side)
   if not opts.listed then
@@ -41,10 +41,8 @@ function M.shell(opts)
 end
 
 -- Ensure cmd is launched in appropriate conda environment (eg remote tmux).
-M.wrap_conda_env = function(cmd)
-  local conda_env = os.getenv "CONDA_PROMPT_MODIFIER"
-  conda_env = conda_env and conda_env:sub(2, -3) or "base"
-  return "conda activate " .. conda_env .. " && " .. cmd
+M.wrap_uv_env = function(cmd)
+  return "uv run " .. cmd
 end
 
 -- Toggle single existing terminal window.

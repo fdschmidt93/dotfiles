@@ -12,7 +12,7 @@ end
 
 if not has_term then
   local repl = require "fds.utils.repl"
-  local termbuf = repl.shell { cmd = repl.wrap_conda_env "ipython", side = "below", listed = false }
+  local termbuf = repl.shell { cmd = repl.wrap_uv_env "ipython", side = "below", listed = false }
   repl.toggle_termwin("below", termbuf)
 end
 

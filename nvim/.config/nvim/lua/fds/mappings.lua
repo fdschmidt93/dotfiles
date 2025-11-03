@@ -28,13 +28,13 @@ set("n", [[<Leader><C-t>]], function() repl.shell { side = "below" } end, { desc
 set(
   "n",
   [[<Leader>ti]],
-  function() repl.restart_term(repl.wrap_conda_env "ipython", { side = "right" }) end,
+  function() repl.restart_term(repl.wrap_uv_env "ipython", { side = "right" }) end,
   { desc = "Terminal: (re-)start ipython to right" }
 )
 set(
   "n",
   [[<Leader><C-t>i]],
-  function() repl.restart_term(repl.wrap_conda_env "ipython", { side = "below" }) end,
+  function() repl.restart_term(repl.wrap_uv_env "ipython", { side = "below" }) end,
   { desc = "Terminal: (re-)start ipython below" }
 )
 -- toggle terminal
