@@ -53,6 +53,30 @@ if ! echo "$PATH" | grep -q "$HOME/.local/bin"; then
 fi
 
 # ----------------------------
+# Dotfiles setup (Docker-only)
+# ----------------------------
+DOTFILES_DIR="$HOME/dotfiles"
+DOTFILES_REPO="https://github.com/yourusername/dotfiles.git"
+
+# Simple Docker detection
+if [ -f /.dockerenv ] || grep -qE '/docker/|/lxc/' /proc/1/cgroup 2>/dev/null; then
+    DOCKER_BUILD=true
+else
+    DOCKER_BUILD=false
+fi
+
+if [ "$DOCKER_BUILD" = true ]; then
+    info "Detected Docker build: cloning/updating dotfiles..."
+    if [ ! -d "$DOTFILES_DIR" ]; then
+        git clone "$DOTFILES_REPO" "$DOTFILES_DIR"
+    else
+        git -C "$DOTFILES_DIR" pull --rebase
+    fi
+else
+    info "Not in Docker: skipping dotfiles clone/update."
+fi
+
+# ----------------------------
 # Neovim Installation
 # ----------------------------
 NVIM_DIR="$HOME/.local/nvim-linux-x86_64"
@@ -89,31 +113,11 @@ else
 fi
 
 # ----------------------------
-# Backup conflicting dotfiles
-# ----------------------------
-BACKUP_DIR="$HOME/dotfiles_backup_$(date +%Y%m%d_%H%M%S)"
-mkdir -p "$BACKUP_DIR"
-info "Backing up existing dotfiles to $BACKUP_DIR..."
-for d in nvim fish tmux; do
-    if [ -d "$HOME/$d" ] || [ -f "$HOME/.$d"* ]; then
-        mv "$HOME/$d" "$BACKUP_DIR/" 2>/dev/null || true
-        mv "$HOME/.$d"* "$BACKUP_DIR/" 2>/dev/null || true
-    fi
-done
-
-# ----------------------------
 # Dotfiles Stow
 # ----------------------------
 info "Stowing dotfiles..."
+cd "$DOTFILES_DIR"
 stow --adopt --target="$HOME" nvim fish tmux
 
-# ----------------------------
-# Optionally set fish as default shell
-# ----------------------------
-if ! grep -qF "$(which fish)" /etc/shells 2>/dev/null; then
-    echo "$(which fish)" | $SUDO tee -a /etc/shells
-fi
-info "Changing default shell to fish..."
-chsh -s "$(which fish)" || true
-
 info "✅ Setup complete! Log available at $LOG_FILE"
+
