@@ -70,14 +70,6 @@ else
 fi
 
 # ----------------------------
-# Neovim Plugins
-# ----------------------------
-if [ -f "$HOME/.config/nvim/init.lua" ]; then
-    info "Installing Neovim plugins..."
-    $HOME/.local/bin/nvim --headless "+Lazy! sync" +qa
-fi
-
-# ----------------------------
 # fzf Installation
 # ----------------------------
 info "Installing fzf..."
@@ -111,6 +103,15 @@ fi
 
 # Stow the desired packages
 stow --adopt --target="$HOME" nvim fish tmux
+
+# ----------------------------
+# Neovim Plugins
+# ----------------------------
+if [ -f "$HOME/.config/nvim/init.lua" ]; then
+    info "Installing Neovim plugins..."
+    $HOME/.local/bin/nvim --headless "+Lazy! sync" +qa
+fi
+
 
 # Return to the original directory
 cd "$ORIGINAL_DIR"
