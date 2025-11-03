@@ -92,8 +92,26 @@ fi
 # Dotfiles Stow
 # ----------------------------
 info "Stowing dotfiles..."
-cd "$DOTFILES_DIR"
+
+# Save the original directory
+ORIGINAL_DIR="$PWD"
+
+# Check if current directory ends with 'dotfiles'
+if [[ "$PWD" != */dotfiles ]]; then
+    # Try to find 'dotfiles' relative to current dir
+    DOTFILES_DIR=$(find "$PWD" -type d -name dotfiles -maxdepth 2 | head -n 1)
+    
+    if [[ -z "$DOTFILES_DIR" ]]; then
+        echo "Error: could not find 'dotfiles' directory!"
+        exit 1
+    fi
+    
+    cd "$DOTFILES_DIR"
+fi
+
+# Stow the desired packages
 stow --adopt --target="$HOME" nvim fish tmux
 
+# Return to the original directory
+cd "$ORIGINAL_DIR"
 info "✅ Setup complete! Log available at $LOG_FILE"
-
