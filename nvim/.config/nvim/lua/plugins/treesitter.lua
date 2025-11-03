@@ -14,15 +14,16 @@ return {
             enable = true, -- false will disable the whole extension
             additional_vim_regex_highlighting = { "org" },
           },
+          ensure_installed = { "c", "lua", "rust", "markdown", "markdown_inline", "python", "bash", "json", "yaml", "toml" },
           indent = { enable = true, disable = { "python" } },
           incremental_selection = {
             -- this enables incremental selection
             enable = true,
             disable = {},
             keymaps = {
-              init_selection = "<S-Right>", -- maps in normal mode to init the node/scope selection
+              init_selection = "<S-Right>",   -- maps in normal mode to init the node/scope selection
               node_incremental = "<S-Right>", -- increment to the upper named parent
-              scope_incremental = "<S-Up>", -- increment to the upper scope
+              scope_incremental = "<S-Up>",   -- increment to the upper scope
               node_decremental = "<S-Left>",
             },
           },
@@ -77,7 +78,6 @@ return {
             highlight_definitions = { enable = true },
             smart_rename = { enable = true, disable = {}, keymaps = { smart_rename = "grr" } },
           },
-          ensure_installed = "all",
         }
 
         -- ensure python vi[f,o] selection is line-wise for repl
