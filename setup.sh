@@ -34,12 +34,21 @@ export DEBIAN_FRONTEND=noninteractive
 # ----------------------------
 # Install packages
 # ----------------------------
-info "Updating package lists and installing dependencies..."
+# info "Updating package lists and installing dependencies..."
 $SUDO apt-get update
 $SUDO apt-get install -y \
     git curl tar fish stow ripgrep tmux fd-find \
-    build-essential nodejs npm \
-    htop jq unzip
+    build-essential htop jq unzip \
+    gnupg ca-certificates
+
+info "Adding NodeSource LTS repository for latest stable Node.js..."
+curl -fsSL https://deb.nodesource.com/setup_lts.x | $SUDO -E bash -
+
+info "Installing latest stable Node.js..."
+$SUDO apt-get install -y nodejs
+
+info "Done. Installed Node version:"
+node -v
 
 # Symlink 'fdfind' to 'fd'
 info "Symlinking 'fdfind' to 'fd'..."
