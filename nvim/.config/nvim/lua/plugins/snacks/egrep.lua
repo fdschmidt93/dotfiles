@@ -168,29 +168,26 @@ local function egrep(opts, ctx)
   local absolute = (opts.dirs and #opts.dirs > 0) or opts.buffers or opts.rtp
   local cwd = not absolute and vim.fs.normalize(opts and opts.cwd or uv.cwd() or ".") or nil
   local cmd, args = get_cmd(opts, ctx.filter)
-  return require("snacks.picker.source.proc").proc({
-    opts,
-    {
-      notify = false, -- never notify on grep errors, since it's impossible to know if the error is due to the search pattern
-      cmd = cmd,
-      args = args,
-      ---@param item snacks.picker.finder.Item
-      transform = function(item)
-        item.cwd = cwd
-        local file, line, col, text = item.text:match "^(.+):(%d+):(%d+):(.*)$"
-        if not file then
-          if not item.text:match "WARNING" then
-            error("invalid grep output: " .. item.text)
-          end
-          return false
-        else
-          item.line = text
-          item.file = file
-          item.pos = { tonumber(line), tonumber(col) - 1 }
+  return require("snacks.picker.source.proc").proc(ctx:opts({
+    cmd = cmd,
+    args = args,
+    notify = false, -- never notify on grep errors, since it's impossible to know if the error is due to the search pattern
+    ---@param item snacks.picker.finder.Item
+    transform = function(item)
+      item.cwd = cwd
+      local file, line, col, text = item.text:match "^(.+):(%d+):(%d+):(.*)$"
+      if not file then
+        if not item.text:match "WARNING" then
+          error("invalid grep output: " .. item.text)
         end
-      end,
-    },
-  }, ctx)
+        return false
+      else
+        item.line = text
+        item.file = file
+        item.pos = { tonumber(line), tonumber(col) - 1 }
+      end
+    end,
+  }), ctx)
 end
 
 return egrep
