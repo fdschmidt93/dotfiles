@@ -36,6 +36,7 @@ function M.shell(opts)
   if not opts.listed then
     vim.bo[split.bufnr].buflisted = false
   end
+  vim.bo[split.bufnr].swapfile = false
   api.nvim_buf_call(split.bufnr, function() vim.fn.termopen(opts.cmd) end)
   return split
 end
@@ -115,6 +116,7 @@ function M.restart_term(cmd, opts)
     -- get command and open new terminal buffer in termwin
     local term_buf_name = api.nvim_buf_get_name(term_buf)
     local term_cmd = table.remove(vim.split(term_buf_name, ":"))
+    vim.bo[new_termbuf].swapfile = false
     vim.api.nvim_buf_call(new_termbuf, function() vim.fn.termopen(term_cmd) end)
 
     for _, win in ipairs(winid) do
